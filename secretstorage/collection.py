@@ -12,6 +12,7 @@ from secretstorage.item import Item
 from secretstorage.util import *
 
 COLLECTION_IFACE = SS_PREFIX + 'Collection'
+SERVICE_IFACE    = SS_PREFIX + 'Service'
 DEFAULT_COLLECTION = '/org/freedesktop/secrets/aliases/default'
 
 class Collection(object):
@@ -38,11 +39,11 @@ class Collection(object):
 			raise LockedException('Item is locked!')
 
 	def unlock(self, callback=None):
-		"""Requests unlocking the keyring. If `callback` is specified,
+		"""Requests unlocking the collection. If `callback` is specified,
 		calls it when unlocking is complete (see `exec_prompt`
 		description for details). Otherwise, uses async Glib loop."""
 		service_obj = self.bus.get_object(SECRETS, SS_PATH)
-		service_iface = dbus.Interface(service_obj, SS_PREFIX+'Service')
+		service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
 		prompt = service_iface.Unlock([self.collection_path], signature='ao')[1]
 		if len(prompt) > 1:
 			if callback:
@@ -52,6 +53,12 @@ class Collection(object):
 		elif callback:
 			# We still need to call it.
 			callback([], [])
+
+	def lock(self):
+		"""Locks the collection."""
+		service_obj = self.bus.get_object(SECRETS, SS_PATH)
+		service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
+		service_iface.Lock([self.collection_path])
 
 	def get_all_items(self):
 		"""Returns a generator of all items in the collection."""
@@ -77,10 +84,11 @@ class Collection(object):
 		self.ensure_not_locked()
 		self.collection_props_iface.Set(COLLECTION_IFACE, 'Label', label)
 
-	def create_item(self, label, attributes, secret):
+	def create_item(self, label, attributes, secret, replace=False):
 		"""Creates a new item with given `label` (unicode string),
-		`attributes` (dictionary) and `secret` (bytestring).
-		Returns the created item."""
+		`attributes` (dictionary) and `secret` (bytestring). If
+		`replace` is True, replaces the existing item with the same
+		attributes. Returns the created item."""
 		self.ensure_not_locked()
 		if not self.session:
 			self.session = open_session(self.bus)
@@ -90,5 +98,5 @@ class Collection(object):
 			SS_PREFIX+'Item.Attributes': attributes
 		}
 		new_item, prompt = self.collection_iface.CreateItem(properties,
-			secret, True)
+			secret, replace)
 		return Item(self.bus, new_item, self.session)
