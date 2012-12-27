@@ -25,14 +25,12 @@ class ItemTest(unittest.TestCase):
 
 	def test_attributes(self):
 		attributes = self.item.get_attributes()
-		for key in attributes:
-			if key != 'xdg:schema':
-				self.assertEqual(ATTRIBUTES[key], attributes[key])
+		for key in ATTRIBUTES:
+			self.assertEqual(ATTRIBUTES[key], attributes[key])
 		self.item.set_attributes(NEW_ATTRIBUTES)
 		attributes = self.item.get_attributes()
-		for key in attributes:
-			if key != 'xdg:schema':
-				self.assertEqual(NEW_ATTRIBUTES[key], attributes[key])
+		for key in NEW_ATTRIBUTES:
+			self.assertEqual(NEW_ATTRIBUTES[key], attributes[key])
 
 	def test_label(self):
 		self.assertEqual(self.item.get_label(), 'My item')
@@ -46,3 +44,6 @@ class ItemTest(unittest.TestCase):
 
 	def tearDown(self):
 		self.item.delete()
+
+if __name__ == '__main__':
+	unittest.main()
