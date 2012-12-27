@@ -24,9 +24,9 @@ def format_secret(secret, session):
 
 def exec_prompt(bus, prompt, callback):
 	"""Executes the given prompt, when complete calls `callback`
-	function with two arguments: list of dismissed items and list of
-	unlocked items. A main loop should be running and registered for
-	this function to work."""
+	function with two arguments: a boolean representing success of
+	operation and list of unlocked items. A main loop should be running
+	and registered for this function to work."""
 	prompt_obj = bus.get_object(SECRETS, prompt)
 	prompt_iface = dbus.Interface(prompt_obj, SS_PREFIX+'Prompt')
 	prompt_iface.Prompt('')

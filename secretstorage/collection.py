@@ -9,8 +9,7 @@ import dbus
 from secretstorage.defines import SECRETS, SS_PREFIX, SS_PATH
 from secretstorage.exceptions import LockedException
 from secretstorage.item import Item
-from secretstorage.util import open_session, format_secret, \
-	exec_prompt, to_unicode
+from secretstorage.util import *
 
 COLLECTION_IFACE = SS_PREFIX + 'Collection'
 DEFAULT_COLLECTION = '/org/freedesktop/secrets/aliases/default'
@@ -82,6 +81,7 @@ class Collection(object):
 		"""Creates a new item with given `label` (unicode string),
 		`attributes` (dictionary) and `secret` (bytestring).
 		Returns the created item."""
+		self.ensure_not_locked()
 		if not self.session:
 			self.session = open_session(self.bus)
 		secret = format_secret(secret, self.session)
