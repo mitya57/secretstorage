@@ -26,3 +26,6 @@ class CollectionTest(unittest.TestCase):
 		self.assertEqual(self.collection.get_label(), 'Hello!')
 		self.collection.set_label(old_label)
 		self.assertEqual(self.collection.get_label(), old_label)
+
+if __name__ == '__main__':
+	unittest.main()
