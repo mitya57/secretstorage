@@ -24,13 +24,15 @@ def format_secret(secret, session):
 
 def exec_prompt(bus, prompt, callback):
 	"""Executes the given prompt, when complete calls `callback`
-	function with two arguments: a boolean representing success of
-	operation and list of unlocked items. A main loop should be running
-	and registered for this function to work."""
+	function with two arguments: a boolean representing whether the
+	operation was dismissed and list of unlocked item paths. A main loop
+	should be running and registered for this function to work."""
 	prompt_obj = bus.get_object(SECRETS, prompt)
 	prompt_iface = dbus.Interface(prompt_obj, SS_PREFIX+'Prompt')
 	prompt_iface.Prompt('')
-	prompt_iface.connect_to_signal('Completed', callback)
+	def new_callback(dismissed, unlocked):
+		callback(bool(dismissed), unlocked)
+	prompt_iface.connect_to_signal('Completed', new_callback)
 
 def exec_prompt_async_glib(bus, prompt):
 	"""Like `exec_prompt`, but asynchronous (uses GLib main loop)."""
