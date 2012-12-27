@@ -1,0 +1,17 @@
+SecretStorage 0.1
+-----------------
+
+* Initial release
+
+SecretStorage 0.2
+-----------------
+
+* Added `get_item_attributes` function
+* Renamed `get_item_ids` to `get_items_ids`
+* Renamed `get_item_by_id` to `get_item`
+* Renamed `delete_item_by_id` to `delete_item`
+* Made `create_item` return id of the created item
+* Added `secretstorage.exceptions` module
+* Made all functions throw exceptions from that module
+* Updated the documentation
+* Added `delete_test_items.py` script that deletes all test items
