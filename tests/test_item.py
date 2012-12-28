@@ -19,9 +19,32 @@ class ItemTest(unittest.TestCase):
 
 	def setUp(self):
 		bus = dbus.SessionBus()
-		collection = Collection(bus)
-		self.item = collection.create_item('My item', ATTRIBUTES,
+		self.collection = Collection(bus)
+		self.item = self.collection.create_item('My item', ATTRIBUTES,
 			b'pa$$word')
+		self.other_item = self.collection.create_item('My item',
+			ATTRIBUTES, b'')
+
+	def test_equal(self):
+		self.assertEqual(self.item, self.item)
+		self.assertNotEqual(self.item, self.other_item)
+		self.assertEqual(self.other_item, self.other_item)
+
+	def test_searchable(self):
+		search_results = self.collection.search_items(ATTRIBUTES)
+		found = False
+		for item in search_results:
+			if item == self.item:
+				found = True
+		self.assertTrue(found)
+
+	def test_item_in_all_items(self):
+		all_items = self.collection.get_all_items()
+		found = False
+		for item in all_items:
+			if item == self.item:
+				found = True
+		self.assertTrue(found)
 
 	def test_attributes(self):
 		attributes = self.item.get_attributes()
@@ -31,6 +54,7 @@ class ItemTest(unittest.TestCase):
 		attributes = self.item.get_attributes()
 		for key in NEW_ATTRIBUTES:
 			self.assertEqual(NEW_ATTRIBUTES[key], attributes[key])
+		self.item.set_attributes(ATTRIBUTES)
 
 	def test_label(self):
 		self.assertEqual(self.item.get_label(), 'My item')
@@ -44,6 +68,7 @@ class ItemTest(unittest.TestCase):
 
 	def tearDown(self):
 		self.item.delete()
+		self.other_item.delete()
 
 if __name__ == '__main__':
 	unittest.main()
