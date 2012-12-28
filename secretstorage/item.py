@@ -16,12 +16,19 @@ class Item(object):
 	"""Represents a secret item."""
 
 	def __init__(self, bus, item_path, session=None):
+		self.item_path = item_path
 		item_obj = bus.get_object(SECRETS, item_path)
 		self.session = session
 		self.bus = bus
 		self.item_iface = dbus.Interface(item_obj, ITEM_IFACE)
 		self.item_props_iface = dbus.Interface(item_obj,
 			dbus.PROPERTIES_IFACE)
+
+	def __eq__(self, other):
+		return (self.item_path.rsplit('/', 1)[1]
+			== other.item_path.rsplit('/', 1)[1]) \
+		and (self.get_attributes()
+			== other.get_attributes())
 
 	def is_locked(self):
 		"""Returns True if item is locked, otherwise False."""
