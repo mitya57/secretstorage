@@ -69,9 +69,8 @@ class Collection(object):
 	def search_items(self, attributes):
 		"""Returns a generator of items with the given attributes.
 		`attributes` should be a dictionary."""
-		locked, unlocked = self.collection_iface.SearchItems(
-			COLLECTION_IFACE, attributes)
-		for item in locked + unlocked:
+		locked, unlocked = self.collection_iface.SearchItems(attributes)
+		for item_path in locked + unlocked:
 			yield Item(self.bus, item_path, self.session)
 
 	def get_label(self):
