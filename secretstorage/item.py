@@ -6,8 +6,8 @@
 """SecretStorage item contains a *secret*, some *attributes* and a
 *label* visible to user. Editing all these properties and reading the
 secret is possible only when the :doc:`collection <collection>` storing
-the item is unlocked. The collection can be unlocked using
-:meth:`Item.unlock` method."""
+the item is unlocked. The collection can be unlocked using Collection's
+:meth:`secretstorage.collection.Collection.unlock` method."""
 
 import dbus
 from secretstorage.defines import SECRETS, SS_PREFIX
@@ -15,12 +15,16 @@ from secretstorage.exceptions import LockedException, ItemNotFoundException
 from secretstorage.util import open_session, format_secret, to_unicode
 
 ITEM_IFACE = SS_PREFIX + 'Item'
+DEFAULT_COLLECTION = '/org/freedesktop/secrets/aliases/default'
 DBUS_UNKNOWN_METHOD = 'org.freedesktop.DBus.Error.UnknownMethod'
 
 class Item(object):
 	"""Represents a secret item."""
 
 	def __init__(self, bus, item_path, session=None):
+		if isinstance(item_path, int):
+			# An item id was specified instead of the path
+			item_path = '%s/%d' % (DEFAULT_COLLECTION, item_path)
 		self.item_path = item_path
 		item_obj = bus.get_object(SECRETS, item_path)
 		self.session = session
@@ -36,10 +40,11 @@ class Item(object):
 			raise
 
 	def __eq__(self, other):
-		return (self.item_path.rsplit('/', 1)[1]
-			== other.item_path.rsplit('/', 1)[1]) \
-		and (self.get_attributes()
-			== other.get_attributes())
+		return (self._item_id() == other._item_id()) \
+		and (self.get_attributes() == other.get_attributes())
+
+	def _item_id(self):
+		return int(self.item_path.rsplit('/', 1)[1])
 
 	def is_locked(self):
 		"""Returns ``True`` if item is locked, otherwise ``False``."""
@@ -91,3 +96,9 @@ class Item(object):
 			self.session = open_session(self.bus)
 		secret = format_secret(secret, self.session)
 		self.item_iface.SetSecret(secret)
+
+	def to_tuple(self):
+		"""Returns (*attributes*, *secret*) tuple representing the
+		item."""
+		self.ensure_not_locked()
+		return self.get_attributes(), self.get_secret()
