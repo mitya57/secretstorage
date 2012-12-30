@@ -63,7 +63,7 @@ class Collection(object):
 				exec_prompt_async_glib(self.bus, prompt)
 		elif callback:
 			# We still need to call it.
-			callback([], [])
+			callback(False, [])
 
 	def lock(self):
 		"""Locks the collection."""
