@@ -3,11 +3,31 @@
 # Author: Dmitry Shachnev, 2012
 # License: BSD
 
+"""All secretstorage functions may raise various exceptions when
+something goes wrong. All exceptions derive from base
+:exc:`SecretStorageException` class."""
+
 class SecretStorageException(Exception):
+	"""All exceptions derive from this class."""
 	pass
 
 class LockedException(SecretStorageException):
+	"""Raised when an action cannot be performed because the collection
+	is locked. Use :meth:`~secretstorage.collection.Collection.is_locked`
+	to check if the collection is locked, and
+	:meth:`~secretstorage.collection.Collection.unlock` to unlock it.
+	"""
 	pass
 
 class ItemNotFoundException(SecretStorageException):
+	"""Raised when non-existent path was passed to
+	:class:`~secretstorage.item.Item` constructor. Example of handling:
+	
+	>>> try:
+	...     item = secretstorage.Item(item_path)
+	... except secretstorage.ItemNotFoundException:
+	...     print('Item not found!')
+	... 
+	'Item not found!'
+	"""
 	pass

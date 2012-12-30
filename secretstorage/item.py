@@ -3,14 +3,19 @@
 # Author: Dmitry Shachnev, 2013
 # License: BSD
 
-# This file contains implementation of secretstorage.Item class.
+"""SecretStorage item contains a *secret*, some *attributes* and a
+*label* visible to user. Editing all these properties and reading the
+secret is possible only when the :doc:`collection <collection>` storing
+the item is unlocked. The collection can be unlocked using
+:meth:`Item.unlock` method."""
 
 import dbus
 from secretstorage.defines import SECRETS, SS_PREFIX
-from secretstorage.exceptions import LockedException
+from secretstorage.exceptions import LockedException, ItemNotFoundException
 from secretstorage.util import open_session, format_secret, to_unicode
 
 ITEM_IFACE = SS_PREFIX + 'Item'
+DBUS_UNKNOWN_METHOD = 'org.freedesktop.DBus.Error.UnknownMethod'
 
 class Item(object):
 	"""Represents a secret item."""
@@ -23,6 +28,12 @@ class Item(object):
 		self.item_iface = dbus.Interface(item_obj, ITEM_IFACE)
 		self.item_props_iface = dbus.Interface(item_obj,
 			dbus.PROPERTIES_IFACE)
+		try:
+			self.item_props_iface.Get(ITEM_IFACE, 'Label')
+		except dbus.exceptions.DBusException as e:
+			if e._dbus_error_name == DBUS_UNKNOWN_METHOD:
+				raise ItemNotFoundException('Item does not exist!')
+			raise
 
 	def __eq__(self, other):
 		return (self.item_path.rsplit('/', 1)[1]
@@ -31,11 +42,12 @@ class Item(object):
 			== other.get_attributes())
 
 	def is_locked(self):
-		"""Returns True if item is locked, otherwise False."""
+		"""Returns ``True`` if item is locked, otherwise ``False``."""
 		return bool(self.item_props_iface.Get(ITEM_IFACE, 'Locked'))
 
 	def ensure_not_locked(self):
-		"""If collection is locked, raises `LockedException`."""
+		"""If collection is locked, raises
+		:exc:`~secretstorage.exceptions.LockedException`."""
 		if self.is_locked():
 			raise LockedException('Item is locked!')
 
@@ -65,7 +77,7 @@ class Item(object):
 		return self.item_iface.Delete()
 
 	def get_secret(self):
-		"""Returns item secret (`bytes`)."""
+		"""Returns item secret (bytestring)."""
 		self.ensure_not_locked()
 		if not self.session:
 			self.session = open_session(self.bus)

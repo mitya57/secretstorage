@@ -3,7 +3,16 @@
 # Author: Dmitry Shachnev, 2013
 # License: BSD
 
-# This file contains implementation of secretstorage.Item class.
+"""Collection is a place where secret items are stored. Normally, only
+the default collection should be used (usually named "login"), but this
+module allows to use any registered collection.
+
+Collections are usually automatically unlocked when user logs in, but
+collections can also be locked and unlocked using
+:func:`Collection.lock` and :func:`Collection.unlock` methods (unlocking
+requires showing the unlocking prompt to user and can be synchronous or
+asynchronous). Creating new items and editing existing ones is possible
+only in unlocked collection."""
 
 import dbus
 from secretstorage.defines import SECRETS, SS_PREFIX, SS_PATH
@@ -29,19 +38,21 @@ class Collection(object):
 			dbus.PROPERTIES_IFACE)
 
 	def is_locked(self):
-		"""Returns True if item is locked, otherwise False."""
+		"""Returns ``True`` if item is locked, otherwise ``False``."""
 		return bool(self.collection_props_iface.Get(
 			COLLECTION_IFACE, 'Locked'))
 
 	def ensure_not_locked(self):
-		"""If collection is locked, raises `LockedException`."""
+		"""If collection is locked, raises
+		:exc:`~secretstorage.exceptions.LockedException`."""
 		if self.is_locked():
 			raise LockedException('Item is locked!')
 
 	def unlock(self, callback=None):
 		"""Requests unlocking the collection. If `callback` is specified,
-		calls it when unlocking is complete (see `exec_prompt`
-		description for details). Otherwise, uses async Glib loop."""
+		calls it when unlocking is complete (see
+		:func:`~secretstorage.util.exec_prompt` description for
+		details). Otherwise, uses async Glib loop."""
 		service_obj = self.bus.get_object(SECRETS, SS_PATH)
 		service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
 		prompt = service_iface.Unlock([self.collection_path], signature='ao')[1]
@@ -84,10 +95,10 @@ class Collection(object):
 		self.collection_props_iface.Set(COLLECTION_IFACE, 'Label', label)
 
 	def create_item(self, label, attributes, secret, replace=False):
-		"""Creates a new item with given `label` (unicode string),
-		`attributes` (dictionary) and `secret` (bytestring). If
-		`replace` is True, replaces the existing item with the same
-		attributes. Returns the created item."""
+		"""Creates a new :class:`~secretstorage.item.Item` with given
+		`label` (unicode string), `attributes` (dictionary) and `secret`
+		(bytestring). If `replace` is ``True``, replaces the existing
+		item with the same attributes. Returns the created item."""
 		self.ensure_not_locked()
 		if not self.session:
 			self.session = open_session(self.bus)

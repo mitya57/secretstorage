@@ -3,8 +3,8 @@
 # Author: Dmitry Shachnev, 2013
 # License: BSD
 
-# This file contains some common utility functions used by other
-# modules.
+"""This module provides some utility functions, but these shouldn't
+normally be used by external applications."""
 
 import dbus
 from secretstorage.defines import SECRETS, SS_PATH, SS_PREFIX
@@ -35,21 +35,23 @@ def exec_prompt(bus, prompt, callback):
 	prompt_iface.connect_to_signal('Completed', new_callback)
 
 def exec_prompt_async_glib(bus, prompt):
-	"""Like `exec_prompt`, but asynchronous (uses GLib main loop)."""
+	"""Like :func:`exec_prompt`, but asynchronous
+	(uses GLib main loop)."""
 	from gi.repository import GObject
 	loop = GObject.MainLoop()
 	exec_prompt(bus, prompt, lambda dismissed, unlocked: loop.quit())
 	loop.run()
 
 def exec_prompt_async_qt(bus, prompt):
-	"""Like `exec_prompt`, but asynchronous (uses Qt 4 main loop)."""
+	"""Like :func:`exec_prompt`, but asynchronous
+	(uses Qt 4 main loop)."""
 	from PyQt4.QtCore import QCoreApplication
 	app = QCoreApplication([])
 	exec_prompt(bus, prompt, lambda dismissed, unlocked: app.quit())
 	app.exec_()
 
 def to_unicode(string):
-	"""Converts DBus string to unicode string."""
+	"""Converts D-Bus string to unicode string."""
 	try:
 		# For Python 2
 		return unicode(string)
