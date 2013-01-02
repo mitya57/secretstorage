@@ -7,7 +7,7 @@ secrets.
 
 It uses `D-Bus`_-based FreeDesktop.org `Secret Service`_ standard that is,
 for example, supported by `GNOME Keyring`_ (since version 2.30) and by
-KWallet_ (since 4.8).
+KSecretsService_.
 
 It allows one to create new secret items, delete and search for
 passwords matching given attributes. It also supports graphical prompts
@@ -16,7 +16,7 @@ when unlocking is needed.
 .. _`D-Bus`: http://www.freedesktop.org/wiki/Software/dbus
 .. _`Secret Service`: http://standards.freedesktop.org/secret-service/
 .. _`GNOME Keyring`: https://live.gnome.org/GnomeKeyring
-.. _KWallet: http://userbase.kde.org/KDE_Wallet_Manager
+.. _KSecretsService: http://techbase.kde.org/Projects/Utils/ksecretsservice
 
 Initializing D-Bus
 ==================
