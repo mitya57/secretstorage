@@ -55,11 +55,9 @@ Getting item's label, attributes and secret:
 >>> item.get_secret()
 b'pa$$word'
 
-Unlocking collections:
+Locking and unlocking collections:
 
->>> import secretstorage
->>> bus = secretstorage.dbus_init(main_loop=True)
->>> collection = secretstorage.Collection(bus)
+>>> collection.lock()
 >>> collection.is_locked()
 True
 >>> collection.unlock()

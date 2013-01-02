@@ -31,22 +31,38 @@ def exec_prompt(bus, prompt, callback):
 	prompt_iface = dbus.Interface(prompt_obj, SS_PREFIX+'Prompt')
 	prompt_iface.Prompt('')
 	def new_callback(dismissed, unlocked):
-		callback(bool(dismissed), list(unlocked))
+		if isinstance(unlocked, dbus.Array):
+			unlocked = list(unlocked)
+		callback(bool(dismissed), unlocked)
 	prompt_iface.connect_to_signal('Completed', new_callback)
 
 def exec_prompt_async_glib(bus, prompt):
-	"""Like :func:`exec_prompt`, but asynchronous (uses GLib API)."""
+	"""Like :func:`exec_prompt`, but asynchronous (uses loop from GLib
+	API). Retuns (*dismissed*, *unlocked*) tuple."""
 	from gi.repository import GObject
 	loop = GObject.MainLoop()
-	exec_prompt(bus, prompt, lambda dismissed, unlocked: loop.quit())
+	result = []
+	def callback(dismissed, unlocked):
+		result.append(dismissed)
+		result.append(unlocked)
+		loop.quit()
+	exec_prompt(bus, prompt, callback)
 	loop.run()
+	return result[0], result[1]
 
 def exec_prompt_async_qt(bus, prompt):
-	"""Like :func:`exec_prompt`, but asynchronous (uses PyQt4 API)."""
+	"""Like :func:`exec_prompt`, but asynchronous (uses loop from PyQt4
+	API). Retuns (*dismissed*, *unlocked*) tuple."""
 	from PyQt4.QtCore import QCoreApplication
 	app = QCoreApplication([])
-	exec_prompt(bus, prompt, lambda dismissed, unlocked: app.quit())
+	result = []
+	def callback(dismissed, unlocked):
+		result.append(dismissed)
+		result.append(unlocked)
+		loop.quit()
+	exec_prompt(bus, prompt, callback)
 	app.exec_()
+	return result[0], result[1]
 
 def to_unicode(string):
 	"""Converts D-Bus string to unicode string."""
