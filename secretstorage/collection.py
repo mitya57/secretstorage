@@ -16,7 +16,7 @@ only in unlocked collection."""
 
 import dbus
 from secretstorage.defines import SECRETS, SS_PREFIX, SS_PATH
-from secretstorage.exceptions import LockedException
+from secretstorage.exceptions import LockedException, ItemNotFoundException
 from secretstorage.item import Item
 from secretstorage.util import *
 
@@ -52,7 +52,7 @@ class Collection(object):
 		"""Requests unlocking the collection. If `callback` is specified,
 		calls it when unlocking is complete (see
 		:func:`~secretstorage.util.exec_prompt` description for
-		details). Otherwise, uses async Glib loop."""
+		details). Otherwise, uses asynchronous loop from GLib API."""
 		service_obj = self.bus.get_object(SECRETS, SS_PATH)
 		service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
 		prompt = service_iface.Unlock([self.collection_path], signature='ao')[1]
@@ -70,6 +70,11 @@ class Collection(object):
 		service_obj = self.bus.get_object(SECRETS, SS_PATH)
 		service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
 		service_iface.Lock([self.collection_path])
+
+	def delete(self):
+		"""Deletes the collection and all items inside it."""
+		self.ensure_not_locked()
+		return self.collection_iface.Delete()
 
 	def get_all_items(self):
 		"""Returns a generator of all items in the collection."""
@@ -110,3 +115,22 @@ class Collection(object):
 		new_item, prompt = self.collection_iface.CreateItem(properties,
 			secret, replace)
 		return Item(self.bus, new_item, self.session)
+
+def create_collection(bus, label, alias='', session=None):
+	"""Creates a new :class:`Collection` with the given `label` and `alias`
+	and returns it. This action requires prompting. If prompt is dismissed,
+	raises :exc:`~secretstorage.exceptions.ItemNotFoundException`. This is
+	asynchronous function, uses loop from GLib API."""
+	if not session:
+		session = open_session(bus)
+	properties = {SS_PREFIX+'Collection.Label': label}
+	service_obj = bus.get_object(SECRETS, SS_PATH)
+	service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
+	collection_path, prompt = service_iface.CreateCollection(properties,
+		alias)
+	if len(collection_path) > 1:
+		return Collection(bus, collection_path, session=session)
+	dismissed, unlocked = exec_prompt_async_glib(bus, prompt)
+	if dismissed:
+		raise ItemNotFoundException('Prompt dismissed.')
+	return Collection(bus, unlocked, session=session)

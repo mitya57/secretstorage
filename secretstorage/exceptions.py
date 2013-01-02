@@ -29,5 +29,9 @@ class ItemNotFoundException(SecretStorageException):
 	...     print('Item not found!')
 	... 
 	'Item not found!'
+	
+	Also, :func:`~secretstorage.collection.create_collection` may raise
+	this exception when a prompt was dismissed during creating the
+	collection.
 	"""
 	pass

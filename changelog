@@ -1,7 +1,8 @@
 SecretStorage 0.8
 -----------------
 
-* Added classes for Collection and Item.
+* Added Collection and Item classes.
+* Added support for creating and deleting collections.
 * Added synchronous loop unlocking support.
 * Added support for PyQt applications.
 * Added test suite.
