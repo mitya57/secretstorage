@@ -21,10 +21,11 @@ when unlocking is needed.
 Initializing D-Bus
 ==================
 
-If you don't know how D-Bus works, please read `Introduction to D-Bus`_
-firstly.
+.. seealso::
+   If you don't know how D-Bus works, please read `Introduction to D-Bus`_
+   firstly.
 
-.. _`Introduction to D-Bus`: http://www.freedesktop.org/wiki/IntroductionToDBus
+   .. _`Introduction to D-Bus`: http://www.freedesktop.org/wiki/IntroductionToDBus
 
 To use SecretStorage, you need to initialize D-Bus firstly. This can be
 done using this function:
