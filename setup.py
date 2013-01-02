@@ -1,6 +1,9 @@
 #!/usr/bin/python
 
 from distutils.core import setup
+from sphinx.setup_command import BuildDoc
+
+version = '0.8'
 
 long_description = \
 '''This module provides a way for securely storing passwords and other secrets.
@@ -27,7 +30,7 @@ classifiers = ['Development Status :: 4 - Beta',
 ]
 
 setup(name='SecretStorage',
-	version='0.8',
+	version=version,
 	description='Secure passwords storage',
 	long_description=long_description,
 	author='Dmitry Shachnev',
@@ -37,5 +40,6 @@ setup(name='SecretStorage',
 	platforms='Linux',
 	license='BSD',
 	classifiers=classifiers,
+	cmdclass={'build_sphinx': BuildDoc},
 	requires=['dbus']
 )
