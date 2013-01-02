@@ -35,16 +35,14 @@ def exec_prompt(bus, prompt, callback):
 	prompt_iface.connect_to_signal('Completed', new_callback)
 
 def exec_prompt_async_glib(bus, prompt):
-	"""Like :func:`exec_prompt`, but asynchronous
-	(uses GLib main loop)."""
+	"""Like :func:`exec_prompt`, but asynchronous (uses GLib API)."""
 	from gi.repository import GObject
 	loop = GObject.MainLoop()
 	exec_prompt(bus, prompt, lambda dismissed, unlocked: loop.quit())
 	loop.run()
 
 def exec_prompt_async_qt(bus, prompt):
-	"""Like :func:`exec_prompt`, but asynchronous
-	(uses Qt 4 main loop)."""
+	"""Like :func:`exec_prompt`, but asynchronous (uses PyQt4 API)."""
 	from PyQt4.QtCore import QCoreApplication
 	app = QCoreApplication([])
 	exec_prompt(bus, prompt, lambda dismissed, unlocked: app.quit())
