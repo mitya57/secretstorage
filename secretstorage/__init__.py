@@ -12,12 +12,16 @@ __version__ = '0.8'
 # The functions below are provided for compatibility with old
 # SecretStorage versions (<= 0.2).
 
-def dbus_init(main_loop=False, use_qt_loop=False):
+def dbus_init(main_loop=True, use_qt_loop=False):
 	"""Returns new SessionBus_. If `main_loop` is ``True``, registers a
 	main loop (Qt main loop if `use_qt_loop` is ``True``, otherwise GLib
 	main loop).
 
 	.. _SessionBus: http://www.freedesktop.org/wiki/IntroductionToDBus#Buses
+
+	.. note::
+	   Qt uses GLib main loops on UNIX-like systems by default, so one will
+	   never need to set `use_qt_loop` to ``True``.
 	"""
 	if main_loop:
 		if use_qt_loop:
@@ -31,7 +35,7 @@ def dbus_init(main_loop=False, use_qt_loop=False):
 def get_items(search_attributes, unlock_all=True):
 	"""Returns tuples for all items in the default collection matching
 	`search_attributes`."""
-	bus = dbus_init(main_loop=unlock_all)
+	bus = dbus_init()
 	collection = Collection(bus)
 	if unlock_all and collection.is_locked():
 		collection.unlock()
@@ -55,7 +59,7 @@ def get_item_attributes(item_id):
 def get_item_object(item_id, unlock=True):
 	"""Returns the item with given id and unlocks it if `unlock` is
 	`True`."""
-	bus = dbus_init(main_loop=unlock)
+	bus = dbus_init()
 	item = Item(bus, item_id)
 	collection_path = item.item_path.rsplit('/', 1)[0]
 	collection = Collection(bus, collection_path)
@@ -74,7 +78,7 @@ def delete_item(item_id, unlock=True):
 def create_item(label, attributes, secret, unlock=True):
 	"""Creates an item with given `label`, `attributes` and `secret` in
 	the default collection. Returns id of the created item."""
-	bus = dbus_init(main_loop=unlock)
+	bus = dbus_init()
 	collection = Collection(bus)
 	if unlock and collection.is_locked():
 		collection.unlock()
