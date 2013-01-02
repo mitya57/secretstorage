@@ -9,9 +9,6 @@ from secretstorage.item import Item
 
 __version__ = '0.8'
 
-# The functions below are provided for compatibility with old
-# SecretStorage versions (<= 0.2).
-
 def dbus_init(main_loop=True, use_qt_loop=False):
 	"""Returns new SessionBus_. If `main_loop` is ``True``, registers a
 	main loop (Qt main loop if `use_qt_loop` is ``True``, otherwise GLib
@@ -20,8 +17,8 @@ def dbus_init(main_loop=True, use_qt_loop=False):
 	.. _SessionBus: http://www.freedesktop.org/wiki/IntroductionToDBus#Buses
 
 	.. note::
-	   Qt uses GLib main loops on UNIX-like systems by default, so one will
-	   never need to set `use_qt_loop` to ``True``.
+	   Qt uses GLib main loops on UNIX-like systems by default, so one
+	   will never need to set `use_qt_loop` to ``True``.
 	"""
 	if main_loop:
 		if use_qt_loop:
@@ -31,6 +28,9 @@ def dbus_init(main_loop=True, use_qt_loop=False):
 			from dbus.mainloop.glib import DBusGMainLoop
 			DBusGMainLoop(set_as_default=True)
 	return dbus.SessionBus()
+
+# The functions below are provided for compatibility with old
+# SecretStorage versions (<= 0.2).
 
 def get_items(search_attributes, unlock_all=True):
 	"""Returns tuples for all items in the default collection matching
