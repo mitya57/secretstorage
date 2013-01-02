@@ -1,17 +1,27 @@
-SecretStorage 0.1
+SecretStorage 0.8
 -----------------
 
-* Initial release
+* Added classes for Collection and Item.
+* Added synchronous loop unlocking support.
+* Added support for PyQt applications.
+* Added test suite.
+* Rewrote the documentation in Sphinx.
+* Miscellaneous internal improvements.
 
 SecretStorage 0.2
 -----------------
 
-* Added `get_item_attributes` function
-* Renamed `get_item_ids` to `get_items_ids`
-* Renamed `get_item_by_id` to `get_item`
-* Renamed `delete_item_by_id` to `delete_item`
-* Made `create_item` return id of the created item
-* Added `secretstorage.exceptions` module
-* Made all functions throw exceptions from that module
-* Updated the documentation
-* Added `delete_test_items.py` script that deletes all test items
+* Added `get_item_attributes` function.
+* Renamed `get_item_ids` to `get_items_ids`.
+* Renamed `get_item_by_id` to `get_item`.
+* Renamed `delete_item_by_id` to `delete_item`.
+* Made `create_item` return id of the created item.
+* Added `secretstorage.exceptions` module.
+* Made all functions throw exceptions from that module.
+* Updated the documentation.
+* Added `delete_test_items.py` script that deletes all test items.
+
+SecretStorage 0.1
+-----------------
+
+* Initial release.
