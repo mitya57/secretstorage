@@ -1,0 +1,5 @@
+include tests/*.py
+include LICENSE
+include changelog
+include docs/*.rst
+include docs/conf.py
