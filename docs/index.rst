@@ -5,7 +5,7 @@ Welcome to SecretStorage documentation!
 This module provides a way for securely storing passwords and other
 secrets.
 
-It uses D-Bus-based FreeDesktop.org `Secret Service`_ standard that is,
+It uses `D-Bus`_-based FreeDesktop.org `Secret Service`_ standard that is,
 for example, supported by `GNOME Keyring`_ (since version 2.30) and by
 KWallet_ (since 4.8).
 
@@ -13,9 +13,23 @@ It allows one to create new secret items, delete and search for
 passwords matching given attributes. It also supports graphical prompts
 when unlocking is needed.
 
+.. _`D-Bus`: http://www.freedesktop.org/wiki/Software/dbus
 .. _`Secret Service`: http://standards.freedesktop.org/secret-service/
-.. _`GNOME Keyring`: http://live.gnome.org/GnomeKeyring
+.. _`GNOME Keyring`: https://live.gnome.org/GnomeKeyring
 .. _KWallet: http://userbase.kde.org/KDE_Wallet_Manager
+
+Initializing D-Bus
+==================
+
+If you don't know how D-Bus works, please read `Introduction to D-Bus`_
+firstly.
+
+.. _`Introduction to D-Bus`: http://www.freedesktop.org/wiki/IntroductionToDBus
+
+To use SecretStorage, you need to initialize D-Bus firstly. This can be
+done using this function:
+
+.. autofunction:: secretstorage.dbus_init
 
 Examples of using SecretStorage
 ===============================
@@ -23,8 +37,7 @@ Examples of using SecretStorage
 Creating a new item in the default collection:
 
 >>> import secretstorage
->>> import dbus
->>> bus = dbus.SessionBus()
+>>> bus = secretstorage.dbus_init()
 >>> collection = secretstorage.Collection(bus)
 >>> attributes = {'application': 'myapp', 'another attribute':
 ...     'another value'}
@@ -41,20 +54,16 @@ Getting item's label, attributes and secret:
 >>> item.get_secret()
 b'pa$$word'
 
-Locking and unlocking collections:
+Unlocking collections:
 
 >>> import secretstorage
->>> import dbus
->>> from dbus.mainloop.glib import DBusGMainLoop
->>> DBusGMainLoop(set_as_default=True)
->>> bus = dbus.SessionBus()
+>>> bus = secretstorage.dbus_init(main_loop=True)
 >>> collection = secretstorage.Collection(bus)
->>> collection.is_locked()
-False
->>> collection.lock()
 >>> collection.is_locked()
 True
 >>> collection.unlock()
+>>> collection.is_locked()
+False
 
 Asynchronously unlocking the collection (the GLib main loop is used
 here, Qt loop is also supported):
@@ -62,11 +71,13 @@ here, Qt loop is also supported):
 >>> from gi.repository import GObject
 >>> loop = GObject.MainLoop()
 >>> def callback(dismissed, unlocked):
-...     print(dismissed, unlocked)
+...     print('dismissed:', dismissed)
+...     print('unlocked:', unlocked)
 ...     loop.quit()
 ... 
 >>> collection.unlock(callback); loop.run()
-False [dbus.ObjectPath('/org/freedesktop/secrets/aliases/default')]
+dismissed: False
+unlocked: [dbus.ObjectPath('/org/freedesktop/secrets/aliases/default')]
 
 Contents
 ========
