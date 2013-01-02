@@ -12,16 +12,26 @@ __version__ = '0.8'
 # The functions below are provided for compatibility with old
 # SecretStorage versions (<= 0.2).
 
-def _dbus_init(async=False):
-	if async:
-		from dbus.mainloop.glib import DBusGMainLoop
-		DBusGMainLoop(set_as_default=True)
+def dbus_init(main_loop=False, use_qt_loop=False):
+	"""Returns new SessionBus_. If `main_loop` is ``True``, registers a
+	main loop (Qt main loop if `use_qt_loop` is ``True``, otherwise GLib
+	main loop).
+
+	.. _SessionBus: http://www.freedesktop.org/wiki/IntroductionToDBus#Buses
+	"""
+	if main_loop:
+		if use_qt_loop:
+			from dbus.mainloop.qt import DBusQtMainLoop
+			DBusQtMainLoop(set_as_default=True)
+		else:
+			from dbus.mainloop.glib import DBusGMainLoop
+			DBusGMainLoop(set_as_default=True)
 	return dbus.SessionBus()
 
 def get_items(search_attributes, unlock_all=True):
 	"""Returns tuples for all items in the default collection matching
 	`search_attributes`."""
-	bus = _dbus_init(async=unlock_all)
+	bus = dbus_init(main_loop=unlock_all)
 	collection = Collection(bus)
 	if unlock_all and collection.is_locked():
 		collection.unlock()
@@ -31,21 +41,21 @@ def get_items(search_attributes, unlock_all=True):
 def get_items_ids(search_attributes):
 	"""Returns item id for all items in the default collection matching
 	`search_attributes`."""
-	bus = _dbus_init()
+	bus = dbus_init()
 	collection = Collection(bus)
 	search_results = collection.search_items(search_attributes)
 	return [item._item_id() for item in search_results]
 
 def get_item_attributes(item_id):
 	"""Returns item attributes for item with given id."""
-	bus = _dbus_init()
+	bus = dbus_init()
 	item = Item(bus, item_id)
 	return item.get_attributes()
 
 def get_item_object(item_id, unlock=True):
 	"""Returns the item with given id and unlocks it if `unlock` is
 	`True`."""
-	bus = _dbus_init(async=unlock)
+	bus = dbus_init(main_loop=unlock)
 	item = Item(bus, item_id)
 	collection_path = item.item_path.rsplit('/', 1)[0]
 	collection = Collection(bus, collection_path)
@@ -64,7 +74,7 @@ def delete_item(item_id, unlock=True):
 def create_item(label, attributes, secret, unlock=True):
 	"""Creates an item with given `label`, `attributes` and `secret` in
 	the default collection. Returns id of the created item."""
-	bus = _dbus_init(async=unlock)
+	bus = dbus_init(main_loop=unlock)
 	collection = Collection(bus)
 	if unlock and collection.is_locked():
 		collection.unlock()
