@@ -12,11 +12,10 @@ the item is unlocked. The collection can be unlocked using Collection's
 import dbus
 from secretstorage.defines import SECRETS, SS_PREFIX
 from secretstorage.exceptions import LockedException, ItemNotFoundException
-from secretstorage.util import open_session, format_secret, to_unicode
+from secretstorage.util import *
 
 ITEM_IFACE = SS_PREFIX + 'Item'
 DEFAULT_COLLECTION = '/org/freedesktop/secrets/aliases/default'
-DBUS_UNKNOWN_METHOD = 'org.freedesktop.DBus.Error.UnknownMethod'
 
 class Item(object):
 	"""Represents a secret item."""
@@ -29,15 +28,10 @@ class Item(object):
 		item_obj = bus.get_object(SECRETS, item_path)
 		self.session = session
 		self.bus = bus
-		self.item_iface = dbus.Interface(item_obj, ITEM_IFACE)
-		self.item_props_iface = dbus.Interface(item_obj,
+		self.item_iface = InterfaceWrapper(item_obj, ITEM_IFACE)
+		self.item_props_iface = InterfaceWrapper(item_obj,
 			dbus.PROPERTIES_IFACE)
-		try:
-			self.item_props_iface.Get(ITEM_IFACE, 'Label')
-		except dbus.exceptions.DBusException as e:
-			if e._dbus_error_name == DBUS_UNKNOWN_METHOD:
-				raise ItemNotFoundException('Item does not exist!')
-			raise
+		self.item_props_iface.Get(ITEM_IFACE, 'Label')
 
 	def __eq__(self, other):
 		return (self._item_id() == other._item_id()) \
