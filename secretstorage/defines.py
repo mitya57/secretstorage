@@ -8,3 +8,6 @@
 SECRETS = 'org.freedesktop.secrets'
 SS_PREFIX = 'org.freedesktop.Secret.'
 SS_PATH = '/org/freedesktop/secrets'
+
+DBUS_UNKNOWN_METHOD = 'org.freedesktop.DBus.Error.UnknownMethod'
+DBUS_NO_SUCH_OBJECT = 'org.freedesktop.Secret.Error.NoSuchObject'

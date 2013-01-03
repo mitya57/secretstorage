@@ -7,7 +7,29 @@
 normally be used by external applications."""
 
 import dbus
-from secretstorage.defines import SECRETS, SS_PATH, SS_PREFIX
+from secretstorage.defines import *
+from secretstorage.exceptions import ItemNotFoundException
+
+class InterfaceWrapper(dbus.Interface):
+	"""Wraps ``dbus.Interface`` class and replaces some D-Bus exceptions
+	with :doc:`SecretStorage exceptions <exceptions>`."""
+
+	def catch_errors(self, function_in):
+		def function_out(*args):
+			try:
+				return function_in(*args)
+			except dbus.exceptions.DBusException as e:
+				if e._dbus_error_name in (DBUS_UNKNOWN_METHOD,
+				DBUS_NO_SUCH_OBJECT):
+					raise ItemNotFoundException('Item does not exist!')
+				raise
+		return function_out
+
+	def __getattr__(self, attribute):
+		result = dbus.Interface.__getattr__(self, attribute)
+		if callable(result):
+			result = self.catch_errors(result)
+		return result
 
 def open_session(bus):
 	"""Returns a new Secret Service session."""

@@ -32,9 +32,9 @@ class Collection(object):
 		self.bus = bus
 		self.session = session
 		self.collection_path = collection_path
-		self.collection_iface = dbus.Interface(collection_obj,
+		self.collection_iface = InterfaceWrapper(collection_obj,
 			COLLECTION_IFACE)
-		self.collection_props_iface = dbus.Interface(collection_obj,
+		self.collection_props_iface = InterfaceWrapper(collection_obj,
 			dbus.PROPERTIES_IFACE)
 
 	def is_locked(self):
@@ -54,7 +54,7 @@ class Collection(object):
 		:func:`~secretstorage.util.exec_prompt` description for
 		details). Otherwise, uses asynchronous loop from GLib API."""
 		service_obj = self.bus.get_object(SECRETS, SS_PATH)
-		service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
+		service_iface = InterfaceWrapper(service_obj, SERVICE_IFACE)
 		prompt = service_iface.Unlock([self.collection_path], signature='ao')[1]
 		if len(prompt) > 1:
 			if callback:
@@ -68,7 +68,7 @@ class Collection(object):
 	def lock(self):
 		"""Locks the collection."""
 		service_obj = self.bus.get_object(SECRETS, SS_PATH)
-		service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
+		service_iface = InterfaceWrapper(service_obj, SERVICE_IFACE)
 		service_iface.Lock([self.collection_path])
 
 	def delete(self):
