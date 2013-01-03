@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 from distutils.core import setup
-from sphinx.setup_command import BuildDoc
 
 version = '0.8'
 
@@ -29,6 +28,14 @@ classifiers = ['Development Status :: 4 - Beta',
 	'Topic :: Software Development :: Libraries :: Python Modules'
 ]
 
+cmdclass = {}
+try:
+	from sphinx.setup_command import BuildDoc
+except:
+	pass
+else:
+	cmdclass['build_sphinx'] = BuildDoc
+
 setup(name='SecretStorage',
 	version=version,
 	description='Secure storing of passwords and another secrets',
@@ -40,6 +47,6 @@ setup(name='SecretStorage',
 	platforms='Linux',
 	license='BSD',
 	classifiers=classifiers,
-	cmdclass={'build_sphinx': BuildDoc},
+	cmdclass=cmdclass,
 	requires=['dbus']
 )
