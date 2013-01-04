@@ -19,9 +19,10 @@ class InterfaceWrapper(dbus.Interface):
 			try:
 				return function_in(*args)
 			except dbus.exceptions.DBusException as e:
-				if e._dbus_error_name in (DBUS_UNKNOWN_METHOD,
-				DBUS_NO_SUCH_OBJECT):
+				if e.get_dbus_name() == DBUS_UNKNOWN_METHOD:
 					raise ItemNotFoundException('Item does not exist!')
+				if e.get_dbus_name() == DBUS_NO_SUCH_OBJECT:
+					raise ItemNotFoundException(e.get_dbus_message())
 				raise
 		return function_out
 
