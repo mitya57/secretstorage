@@ -5,9 +5,7 @@
 # This file tests the secretstorage.Collection class.
 
 import unittest
-import dbus
-from secretstorage.collection import Collection
-from secretstorage.item import Item
+from secretstorage import dbus_init, Collection, Item
 
 ATTRIBUTES = {'application': 'secretstorage-test', 'attribute': 'qwerty'}
 NEW_ATTRIBUTES = {'application': 'secretstorage-test',
@@ -18,7 +16,7 @@ class ItemTest(unittest.TestCase):
 	class work and do not crash."""
 
 	def setUp(self):
-		bus = dbus.SessionBus()
+		bus = dbus_init(main_loop=False)
 		self.collection = Collection(bus)
 		self.item = self.collection.create_item('My item', ATTRIBUTES,
 			b'pa$$word')

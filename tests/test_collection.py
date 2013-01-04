@@ -5,15 +5,14 @@
 # This file tests the secretstorage.Collection class.
 
 import unittest
-import dbus
-from secretstorage.collection import Collection
+from secretstorage import dbus_init, Collection
 
 class CollectionTest(unittest.TestCase):
 	"""A test case that tests that all common methods of Collection
 	class work and do not crash."""
 
 	def setUp(self):
-		bus = dbus.SessionBus()
+		bus = dbus_init(main_loop=False)
 		self.collection = Collection(bus)
 
 	def test_all_items(self):
