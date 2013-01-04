@@ -13,7 +13,7 @@ class ExceptionsTest(unittest.TestCase):
 	are raised correctly."""
 
 	def setUp(self):
-		self.bus = secretstorage.dbus_init()
+		self.bus = secretstorage.dbus_init(main_loop=False)
 		self.collection = secretstorage.Collection(self.bus)
 
 	def test_double_deleting(self):
