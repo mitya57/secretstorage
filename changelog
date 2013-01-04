@@ -6,6 +6,7 @@ SecretStorage 0.8
 * Added synchronous loop unlocking support.
 * Added support for PyQt applications.
 * Added test suite.
+* Convert D-Bus exceptions to SecretStorage exceptions.
 * Rewrote the documentation in Sphinx.
 * Miscellaneous internal improvements.
 

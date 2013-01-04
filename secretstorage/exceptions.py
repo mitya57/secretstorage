@@ -11,6 +11,11 @@ class SecretStorageException(Exception):
 	"""All exceptions derive from this class."""
 	pass
 
+class SecretServiceNotAvailableException(Exception):
+	"""Raised by :class:`~secretstorage.collection.Collection` or
+	:class:`~secretstorage.item.Item` constructors when the Secret Service
+	API is not available."""
+
 class LockedException(SecretStorageException):
 	"""Raised when an action cannot be performed because the collection
 	is locked. Use :meth:`~secretstorage.collection.Collection.is_locked`

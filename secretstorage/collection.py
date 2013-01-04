@@ -15,8 +15,8 @@ asynchronous). Creating new items and editing existing ones is possible
 only in unlocked collection."""
 
 import dbus
-from secretstorage.defines import SECRETS, SS_PREFIX, SS_PATH
-from secretstorage.exceptions import LockedException, ItemNotFoundException
+from secretstorage.defines import *
+from secretstorage.exceptions import *
 from secretstorage.item import Item
 from secretstorage.util import *
 
@@ -28,7 +28,12 @@ class Collection(object):
 	"""Represents a collection."""
 
 	def __init__(self, bus, collection_path=DEFAULT_COLLECTION, session=None):
-		collection_obj = bus.get_object(SECRETS, collection_path)
+		try:
+			collection_obj = bus.get_object(SECRETS, collection_path)
+		except dbus.exceptions.DBusException as e:
+			if e.get_dbus_name() == DBUS_SERVICE_UNKNOWN:
+				raise SecretServiceNotAvailableException(e.get_dbus_message())
+			raise
 		self.bus = bus
 		self.session = session
 		self.collection_path = collection_path
