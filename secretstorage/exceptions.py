@@ -20,16 +20,16 @@ class LockedException(SecretStorageException):
 	pass
 
 class ItemNotFoundException(SecretStorageException):
-	"""Raised when non-existent path was passed to
-	:class:`~secretstorage.item.Item` constructor. Example of handling:
-	
+	"""Raised when an item does not exist or has been deleted. Example of
+	handling:
+
 	>>> try:
 	...     item = secretstorage.Item(item_path)
 	... except secretstorage.ItemNotFoundException:
 	...     print('Item not found!')
 	... 
 	'Item not found!'
-	
+
 	Also, :func:`~secretstorage.collection.create_collection` may raise
 	this exception when a prompt was dismissed during creating the
 	collection.
