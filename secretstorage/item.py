@@ -25,7 +25,12 @@ class Item(object):
 			# An item id was specified instead of the path
 			item_path = '%s/%d' % (DEFAULT_COLLECTION, item_path)
 		self.item_path = item_path
-		item_obj = bus.get_object(SECRETS, item_path)
+		try:
+			item_obj = bus.get_object(SECRETS, item_path)
+		except dbus.exceptions.DBusException as e:
+			if e.get_dbus_name() == DBUS_SERVICE_UNKNOWN:
+				raise SecretServiceNotAvailableException(e.get_dbus_message())
+			raise
 		self.session = session
 		self.bus = bus
 		self.item_iface = InterfaceWrapper(item_obj, ITEM_IFACE)
