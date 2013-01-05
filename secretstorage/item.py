@@ -11,7 +11,7 @@ the item is unlocked. The collection can be unlocked using Collection's
 
 import dbus
 from secretstorage.defines import SECRETS, SS_PREFIX
-from secretstorage.exceptions import LockedException, ItemNotFoundException
+from secretstorage.exceptions import LockedException
 from secretstorage.util import *
 
 ITEM_IFACE = SS_PREFIX + 'Item'
