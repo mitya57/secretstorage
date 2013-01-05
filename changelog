@@ -1,5 +1,5 @@
-SecretStorage 0.8
------------------
+SecretStorage 0.8, 2012-01-05
+=============================
 
 * Added Collection and Item classes.
 * Added support for creating and deleting collections.
@@ -10,8 +10,8 @@ SecretStorage 0.8
 * Rewrote the documentation in Sphinx.
 * Miscellaneous internal improvements.
 
-SecretStorage 0.2
------------------
+SecretStorage 0.2, 2012-06-22
+=============================
 
 * Added `get_item_attributes` function.
 * Renamed `get_item_ids` to `get_items_ids`.
@@ -23,7 +23,7 @@ SecretStorage 0.2
 * Updated the documentation.
 * Added `delete_test_items.py` script that deletes all test items.
 
-SecretStorage 0.1
------------------
+SecretStorage 0.1, 2012-06-02
+=============================
 
 * Initial release.
