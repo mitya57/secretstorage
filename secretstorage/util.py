@@ -15,9 +15,9 @@ class InterfaceWrapper(dbus.Interface):
 	with :doc:`SecretStorage exceptions <exceptions>`."""
 
 	def catch_errors(self, function_in):
-		def function_out(*args):
+		def function_out(*args, **kwargs):
 			try:
-				return function_in(*args)
+				return function_in(*args, **kwargs)
 			except dbus.exceptions.DBusException as e:
 				if e.get_dbus_name() == DBUS_UNKNOWN_METHOD:
 					raise ItemNotFoundException('Item does not exist!')
