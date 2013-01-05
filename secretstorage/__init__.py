@@ -7,7 +7,7 @@ import dbus
 from secretstorage.collection import Collection
 from secretstorage.item import Item
 
-__version__ = '0.8'
+__version__ = '0.8.1'
 
 def dbus_init(main_loop=True, use_qt_loop=False):
 	"""Returns new SessionBus_. If `main_loop` is ``True``, registers a
