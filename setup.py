@@ -5,7 +5,7 @@ from distutils.core import setup
 
 version = '0.8'
 
-readme_file = open(os.path.join(os.path.dirname(__file__), 'README.rst'))
+readme_file = open(os.path.join(os.path.dirname(__file__), 'README'))
 long_description = '\n' + readme_file.read()
 readme_file.close()
 
