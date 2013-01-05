@@ -27,8 +27,8 @@ Initializing D-Bus
 
    .. _`Introduction to D-Bus`: http://www.freedesktop.org/wiki/IntroductionToDBus
 
-To use SecretStorage, you need to initialize D-Bus firstly. This can be
-done using this function:
+Before using SecretStorage, you need to initialize D-Bus. This can be done
+using this function:
 
 .. autofunction:: secretstorage.dbus_init
 
