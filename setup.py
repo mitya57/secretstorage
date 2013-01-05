@@ -1,17 +1,13 @@
 #!/usr/bin/python
 
+import os.path
 from distutils.core import setup
 
 version = '0.8'
 
-long_description = \
-'''This module provides a way for securely storing passwords and other secrets.
-
-It uses DBus Secret Service API that is supported by GNOME Keyring (>= 2.30) and
-KSecretsService.
-
-It allows one to create new passwords, delete and search for passwords matching
-given attributes. It also supports graphical prompts when unlocking is needed.'''
+readme_file = open(os.path.join(os.path.dirname(__file__), 'README.rst'))
+long_description = '\n' + readme_file.read()
+readme_file.close()
 
 classifiers = ['Development Status :: 4 - Beta',
 	'License :: OSI Approved :: BSD License',
