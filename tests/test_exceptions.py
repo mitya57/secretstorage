@@ -12,9 +12,10 @@ class ExceptionsTest(unittest.TestCase):
 	"""A test case that ensures that all SecretStorage exceptions
 	are raised correctly."""
 
-	def setUp(self):
-		self.bus = secretstorage.dbus_init(main_loop=False)
-		self.collection = secretstorage.Collection(self.bus)
+	@classmethod
+	def setUpClass(cls):
+		cls.bus = secretstorage.dbus_init(main_loop=False)
+		cls.collection = secretstorage.Collection(cls.bus)
 
 	def test_double_deleting(self):
 		item = self.collection.create_item('MyItem',

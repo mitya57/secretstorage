@@ -11,9 +11,10 @@ class CollectionTest(unittest.TestCase):
 	"""A test case that tests that all common methods of Collection
 	class work and do not crash."""
 
-	def setUp(self):
+	@classmethod
+	def setUpClass(cls):
 		bus = dbus_init(main_loop=False)
-		self.collection = Collection(bus)
+		cls.collection = Collection(bus)
 
 	def test_all_items(self):
 		for item in self.collection.get_all_items():

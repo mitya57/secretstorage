@@ -15,12 +15,13 @@ class ItemTest(unittest.TestCase):
 	"""A test case that tests that all common methods of Item
 	class work and do not crash."""
 
-	def setUp(self):
+	@classmethod
+	def setUpClass(cls):
 		bus = dbus_init(main_loop=False)
-		self.collection = Collection(bus)
-		self.item = self.collection.create_item('My item', ATTRIBUTES,
+		cls.collection = Collection(bus)
+		cls.item = cls.collection.create_item('My item', ATTRIBUTES,
 			b'pa$$word')
-		self.other_item = self.collection.create_item('My item',
+		cls.other_item = cls.collection.create_item('My item',
 			ATTRIBUTES, b'')
 
 	def test_equal(self):
@@ -64,9 +65,10 @@ class ItemTest(unittest.TestCase):
 		self.item.set_secret(b'newpa$$word')
 		self.assertEqual(self.item.get_secret(), b'newpa$$word')
 
-	def tearDown(self):
-		self.item.delete()
-		self.other_item.delete()
+	@classmethod
+	def tearDownClass(cls):
+		cls.item.delete()
+		cls.other_item.delete()
 
 if __name__ == '__main__':
 	unittest.main()
