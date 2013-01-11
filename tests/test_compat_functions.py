@@ -17,8 +17,9 @@ class CompatFunctionsTest(unittest.TestCase):
 	"""A test case that tests compatibility functions, based on old
 	SecretStorage test."""
 
-	def setUp(self):
-		self.item_id = secretstorage.create_item('Test item',
+	@classmethod
+	def setUpClass(cls):
+		cls.item_id = secretstorage.create_item('Test item',
 			ATTRIBUTES, PASSWORD)
 
 	def test_get_items(self):
@@ -40,8 +41,9 @@ class CompatFunctionsTest(unittest.TestCase):
 		self.assertEqual(attrs['application'], 'secretstorage-test')
 		self.assertEqual(attrs['attribute'], rand)
 
-	def tearDown(self):
-		secretstorage.delete_item(self.item_id)
+	@classmethod
+	def tearDownClass(cls):
+		secretstorage.delete_item(cls.item_id)
 
 if __name__ == '__main__':
 	unittest.main()
