@@ -10,15 +10,15 @@ from secretstorage.item import Item
 __version__ = '0.8.1'
 
 def dbus_init(main_loop=True, use_qt_loop=False):
-	"""Returns new SessionBus_. If `main_loop` is ``True``, registers a
-	main loop (Qt main loop if `use_qt_loop` is ``True``, otherwise GLib
-	main loop).
+	"""Returns new SessionBus_. If `main_loop` is :const:`True`, registers
+	a main loop (Qt main loop if `use_qt_loop` is :const:`True`, otherwise
+	GLib main loop).
 
 	.. _SessionBus: http://www.freedesktop.org/wiki/IntroductionToDBus#Buses
 
 	.. note::
 	   Qt uses GLib main loops on UNIX-like systems by default, so one
-	   will never need to set `use_qt_loop` to ``True``.
+	   will rarely need to set `use_qt_loop` to :const:`True`.
 	"""
 	if main_loop:
 		if use_qt_loop:
