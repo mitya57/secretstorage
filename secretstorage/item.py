@@ -46,7 +46,8 @@ class Item(object):
 		return int(self.item_path.rsplit('/', 1)[1])
 
 	def is_locked(self):
-		"""Returns ``True`` if item is locked, otherwise ``False``."""
+		"""Returns :const:`True` if item is locked, otherwise
+		:const:`False`."""
 		return bool(self.item_props_iface.Get(ITEM_IFACE, 'Locked'))
 
 	def ensure_not_locked(self):

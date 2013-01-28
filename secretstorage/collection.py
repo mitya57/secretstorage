@@ -43,7 +43,8 @@ class Collection(object):
 			dbus.PROPERTIES_IFACE)
 
 	def is_locked(self):
-		"""Returns ``True`` if item is locked, otherwise ``False``."""
+		"""Returns :const:`True` if item is locked, otherwise
+		:const:`False`."""
 		return bool(self.collection_props_iface.Get(
 			COLLECTION_IFACE, 'Locked'))
 
@@ -107,7 +108,7 @@ class Collection(object):
 	def create_item(self, label, attributes, secret, replace=False):
 		"""Creates a new :class:`~secretstorage.item.Item` with given
 		`label` (unicode string), `attributes` (dictionary) and `secret`
-		(bytestring). If `replace` is ``True``, replaces the existing
+		(bytestring). If `replace` is :const:`True`, replaces the existing
 		item with the same attributes. Returns the created item."""
 		self.ensure_not_locked()
 		if not self.session:
