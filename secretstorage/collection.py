@@ -58,7 +58,8 @@ class Collection(object):
 		"""Requests unlocking the collection. If `callback` is specified,
 		calls it when unlocking is complete (see
 		:func:`~secretstorage.util.exec_prompt` description for
-		details). Otherwise, uses asynchronous loop from GLib API."""
+		details) and returns a boolean representing whether the operation was
+		dismissed. Otherwise, uses asynchronous loop from GLib API."""
 		service_obj = self.bus.get_object(SECRETS, SS_PATH)
 		service_iface = InterfaceWrapper(service_obj, SERVICE_IFACE)
 		prompt = service_iface.Unlock([self.collection_path], signature='ao')[1]
@@ -66,7 +67,7 @@ class Collection(object):
 			if callback:
 				exec_prompt(self.bus, prompt, callback)
 			else:
-				exec_prompt_async_glib(self.bus, prompt)
+				return exec_prompt_async_glib(self.bus, prompt)[0]
 		elif callback:
 			# We still need to call it.
 			callback(False, [])
