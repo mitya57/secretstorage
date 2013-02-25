@@ -4,7 +4,7 @@
 # License: BSD
 
 import dbus
-from secretstorage.collection import Collection
+from secretstorage.collection import Collection, create_collection
 from secretstorage.item import Item
 
 __version__ = '0.8.1'
