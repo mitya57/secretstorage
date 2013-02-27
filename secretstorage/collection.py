@@ -106,15 +106,18 @@ class Collection(object):
 		self.ensure_not_locked()
 		self.collection_props_iface.Set(COLLECTION_IFACE, 'Label', label)
 
-	def create_item(self, label, attributes, secret, replace=False):
+	def create_item(self, label, attributes, secret, replace=False,
+	content_type='text/plain'):
 		"""Creates a new :class:`~secretstorage.item.Item` with given
 		`label` (unicode string), `attributes` (dictionary) and `secret`
 		(bytestring). If `replace` is :const:`True`, replaces the existing
-		item with the same attributes. Returns the created item."""
+		item with the same attributes. If `content_type` is given, also
+		sets the content type of the secret (``text/plain`` by default).
+		Returns the created item."""
 		self.ensure_not_locked()
 		if not self.session:
 			self.session = open_session(self.bus)
-		secret = format_secret(secret, self.session)
+		secret = format_secret(self.session, secret, content_type)
 		properties = {
 			SS_PREFIX+'Item.Label': label,
 			SS_PREFIX+'Item.Attributes': attributes

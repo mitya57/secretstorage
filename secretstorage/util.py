@@ -38,12 +38,12 @@ def open_session(bus):
 	service_iface = dbus.Interface(service_obj, SS_PREFIX+'Service')
 	return service_iface.OpenSession('plain', '', signature='sv')[1]
 
-def format_secret(secret, session):
+def format_secret(session, secret, content_type):
 	"""Formats `secret` to make possible to pass it to the
 	Secret Service API."""
 	if not isinstance(secret, bytes):
 		secret = secret.encode('utf-8')
-	return dbus.Struct((session, '', dbus.ByteArray(secret), 'text/plain'))
+	return dbus.Struct((session, '', dbus.ByteArray(secret), content_type))
 
 def exec_prompt(bus, prompt, callback):
 	"""Executes the given `prompt`, when complete calls `callback`
