@@ -67,6 +67,8 @@ class ItemTest(unittest.TestCase):
 
 	def test_secret_content_type(self):
 		self.assertEqual(self.item.get_secret_content_type(), 'text/plain')
+		# The check below fails in gnome-keyring because it doesn't really
+		# support content types.
 		#self.assertEqual(self.other_item.get_secret_content_type(), 'data/null')
 
 	@classmethod
