@@ -89,12 +89,22 @@ class Item(object):
 		secret = self.item_iface.GetSecret(self.session)
 		return bytes(bytearray(secret[2]))
 
-	def set_secret(self, secret):
-		"""Sets item secret to `secret`."""
+	def get_secret_content_type(self):
+		"""Returns content type of item secret (string)."""
 		self.ensure_not_locked()
 		if not self.session:
 			self.session = open_session(self.bus)
-		secret = format_secret(secret, self.session)
+		secret = self.item_iface.GetSecret(self.session)
+		return str(secret[3])
+
+	def set_secret(self, secret, content_type='text/plain'):
+		"""Sets item secret to `secret`. If `content_type` is given,
+		also sets the content type of the secret (``text/plain`` by
+		default)."""
+		self.ensure_not_locked()
+		if not self.session:
+			self.session = open_session(self.bus)
+		secret = format_secret(self.session, secret, content_type)
 		self.item_iface.SetSecret(secret)
 
 	def to_tuple(self):
