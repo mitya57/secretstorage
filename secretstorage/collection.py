@@ -126,6 +126,7 @@ class Collection(object):
 			secret, replace)
 		return Item(self.bus, new_item, self.session)
 
+@check_service_available
 def create_collection(bus, label, alias='', session=None):
 	"""Creates a new :class:`Collection` with the given `label` and `alias`
 	and returns it. This action requires prompting. If prompt is dismissed,
@@ -145,6 +146,7 @@ def create_collection(bus, label, alias='', session=None):
 		raise ItemNotFoundException('Prompt dismissed.')
 	return Collection(bus, unlocked, session=session)
 
+@check_service_available
 def get_all_collections(bus):
 	"""Returns a generator of all available collections."""
 	service_obj = bus.get_object(SECRETS, SS_PATH)
@@ -154,6 +156,7 @@ def get_all_collections(bus):
 	'Collections'):
 		yield Collection(bus, collection_path)
 
+@check_service_available
 def get_collection_by_alias(bus, alias):
 	"""Returns the collection with alias `alias`. If there is no such
 	collection, raises
