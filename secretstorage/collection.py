@@ -144,3 +144,23 @@ def create_collection(bus, label, alias='', session=None):
 	if dismissed:
 		raise ItemNotFoundException('Prompt dismissed.')
 	return Collection(bus, unlocked, session=session)
+
+def get_all_collections(bus):
+	"""Returns a generator of all available collections."""
+	service_obj = bus.get_object(SECRETS, SS_PATH)
+	service_props_iface = dbus.Interface(service_obj,
+		dbus.PROPERTIES_IFACE)
+	for collection_path in service_props_iface.Get(SERVICE_IFACE,
+	'Collections'):
+		yield Collection(bus, collection_path)
+
+def get_collection_by_alias(bus, alias):
+	"""Returns the collection with alias `alias`. If there is no such
+	collection, raises
+	:exc:`~secretstorage.exceptions.ItemNotFoundException`."""
+	service_obj = bus.get_object(SECRETS, SS_PATH)
+	service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
+	collection_path = service_iface.ReadAlias(alias)
+	if len(collection_path) <= 1:
+		raise ItemNotFoundException('No collection with such alias.')
+	return Collection(bus, collection_path)
