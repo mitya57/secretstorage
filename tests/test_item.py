@@ -5,6 +5,7 @@
 # This file tests the secretstorage.Collection class.
 
 import unittest
+import time
 from secretstorage import dbus_init, Collection, Item
 
 ATTRIBUTES = {'application': 'secretstorage-test', 'attribute': 'qwerty'}
@@ -70,6 +71,11 @@ class ItemTest(unittest.TestCase):
 		# The check below fails in gnome-keyring because it doesn't really
 		# support content types.
 		#self.assertEqual(self.other_item.get_secret_content_type(), 'data/null')
+
+	def test_modified(self):
+		now = time.time()
+		modified = self.item.get_modified()
+		self.assertAlmostEqual(now, modified, places=-1)
 
 	@classmethod
 	def tearDownClass(cls):
