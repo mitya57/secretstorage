@@ -165,5 +165,6 @@ def search_items(bus, attributes):
 	attributes. `attributes` should be a dictionary."""
 	service_obj = bus_get_object(bus, SECRETS, SS_PATH)
 	service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
-	for item_path in service_iface.SearchItems(attributes):
+	locked, unlocked = service_iface.SearchItems(attributes)
+	for item_path in locked + unlocked:
 		yield Item(bus, item_path)

@@ -6,7 +6,7 @@
 
 import unittest
 import time
-from secretstorage import dbus_init, Collection, Item
+from secretstorage import dbus_init, search_items, Collection, Item
 
 ATTRIBUTES = {'application': 'secretstorage-test', 'attribute': 'qwerty'}
 NEW_ATTRIBUTES = {'application': 'secretstorage-test',
@@ -18,8 +18,8 @@ class ItemTest(unittest.TestCase):
 
 	@classmethod
 	def setUpClass(cls):
-		bus = dbus_init(main_loop=False)
-		cls.collection = Collection(bus)
+		cls.bus = dbus_init(main_loop=False)
+		cls.collection = Collection(cls.bus)
 		cls.item = cls.collection.create_item('My item', ATTRIBUTES,
 			b'pa$$word')
 		cls.other_item = cls.collection.create_item('My item',
@@ -32,19 +32,13 @@ class ItemTest(unittest.TestCase):
 
 	def test_searchable(self):
 		search_results = self.collection.search_items(ATTRIBUTES)
-		found = False
-		for item in search_results:
-			if item == self.item:
-				found = True
-		self.assertTrue(found)
+		self.assertIn(self.item, search_results)
+		search_results = search_items(self.bus, ATTRIBUTES)
+		self.assertIn(self.item, search_results)
 
 	def test_item_in_all_items(self):
 		all_items = self.collection.get_all_items()
-		found = False
-		for item in all_items:
-			if item == self.item:
-				found = True
-		self.assertTrue(found)
+		self.assertIn(self.item, all_items)
 
 	def test_attributes(self):
 		attributes = self.item.get_attributes()
@@ -81,6 +75,9 @@ class ItemTest(unittest.TestCase):
 	def tearDownClass(cls):
 		cls.item.delete()
 		cls.other_item.delete()
+
+if not hasattr(ItemTest, 'assertIn'): # Python <= 2.6
+	ItemTest.assertIn = lambda self, a, b: self.assertTrue(a in b)
 
 if __name__ == '__main__':
 	unittest.main()
