@@ -5,7 +5,7 @@
 
 import dbus
 from secretstorage.collection import Collection, create_collection, \
-get_all_collections, get_collection_by_alias
+get_all_collections, get_collection_by_alias, search_items
 from secretstorage.item import Item
 
 __version__ = '0.8.1'
