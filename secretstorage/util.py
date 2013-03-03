@@ -12,7 +12,7 @@ from secretstorage.exceptions import ItemNotFoundException, \
 	SecretServiceNotAvailableException
 
 class InterfaceWrapper(dbus.Interface):
-	"""Wraps ``dbus.Interface`` class and replaces some D-Bus exceptions
+	"""Wraps :cls:`dbus.Interface` class and replaces some D-Bus exceptions
 	with :doc:`SecretStorage exceptions <exceptions>`."""
 
 	def catch_errors(self, function_in):
@@ -35,7 +35,7 @@ class InterfaceWrapper(dbus.Interface):
 
 def bus_get_object(bus, name, object_path):
 	"""A wrapper around :func:`SessionBus.getObject` that raises
-	:exc:`~secretstorage.exceptions.SecretStorageNotAvailableException`
+	:exc:`~secretstorage.exceptions.SecretServiceNotAvailableException`
 	when appropriate."""
 	try:
 		return bus.get_object(name, object_path)

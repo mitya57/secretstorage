@@ -26,6 +26,11 @@ class ExceptionsTest(unittest.TestCase):
 	def test_non_existing_item(self):
 		self.assertRaises(ItemNotFoundException, secretstorage.Item,
 			self.bus, '/not/existing/path')
+	
+	def test_non_existing_collection(self):
+		self.assertRaises(ItemNotFoundException,
+			secretstorage.get_collection_by_alias,
+			self.bus, 'non-existing-alias')
 
 if __name__ == '__main__':
 	unittest.main()
