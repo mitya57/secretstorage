@@ -8,7 +8,8 @@ normally be used by external applications."""
 
 import dbus
 from secretstorage.defines import *
-from secretstorage.exceptions import ItemNotFoundException
+from secretstorage.exceptions import ItemNotFoundException, \
+	SecretServiceNotAvailableException
 
 class InterfaceWrapper(dbus.Interface):
 	"""Wraps ``dbus.Interface`` class and replaces some D-Bus exceptions
@@ -32,17 +33,16 @@ class InterfaceWrapper(dbus.Interface):
 			result = self.catch_errors(result)
 		return result
 
-def check_service_available(function_in):
-	"""Raise :exc:`~secretstorage.exceptions.SecretServiceNotAvailableException`
-	when Secret Service is not available."""
-	def function_out(*args, **kwargs):
-		try:
-			return function_in(*args, **kwargs)
-		except dbus.exceptions.DBusException as e:
-			if e.get_dbus_name() == DBUS_SERVICE_UNKNOWN:
-				raise SecretServiceNotAvailableException(e.get_dbus_message())
-			raise
-	return function_out
+def bus_get_object(bus, name, object_path):
+	"""A wrapper around :func:`SessionBus.getObject` that raises
+	:exc:`~secretstorage.exceptions.SecretStorageNotAvailableException`
+	when appropriate."""
+	try:
+		return bus.get_object(name, object_path)
+	except dbus.exceptions.DBusException as e:
+		if e.get_dbus_name() in (DBUS_SERVICE_UNKNOWN, DBUS_EXEC_FAILED):
+			raise SecretServiceNotAvailableException(e.get_dbus_message())
+		raise
 
 def open_session(bus):
 	"""Returns a new Secret Service session."""
