@@ -87,8 +87,11 @@ class Collection(object):
 	def search_items(self, attributes):
 		"""Returns a generator of items with the given attributes.
 		`attributes` should be a dictionary."""
-		locked, unlocked = self.collection_iface.SearchItems(attributes)
-		for item_path in locked + unlocked:
+		result = self.collection_iface.SearchItems(attributes)
+		if isinstance(result, tuple):
+			# bug in GNOME Keyring <= 3.7.5
+			result = result[0] + result[1]
+		for item_path in result:
 			yield Item(self.bus, item_path, self.session)
 
 	def get_label(self):
