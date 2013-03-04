@@ -6,7 +6,7 @@
 
 import unittest
 import time
-from secretstorage import dbus_init, search_items, Collection, Item
+from secretstorage import dbus_init, search_items, Collection
 
 ATTRIBUTES = {'application': 'secretstorage-test', 'attribute': 'qwerty'}
 NEW_ATTRIBUTES = {'application': 'secretstorage-test',
