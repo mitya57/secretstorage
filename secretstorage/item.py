@@ -6,8 +6,8 @@
 """SecretStorage item contains a *secret*, some *attributes* and a
 *label* visible to user. Editing all these properties and reading the
 secret is possible only when the :doc:`collection <collection>` storing
-the item is unlocked. The collection can be unlocked using Collection's
-:meth:`secretstorage.collection.Collection.unlock` method."""
+the item is unlocked. The collection can be unlocked using collection's
+:meth:`~secretstorage.collection.Collection.unlock` method."""
 
 import dbus
 from secretstorage.defines import SECRETS, SS_PREFIX
