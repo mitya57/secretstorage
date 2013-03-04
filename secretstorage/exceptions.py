@@ -9,7 +9,6 @@ something goes wrong. All exceptions derive from base
 
 class SecretStorageException(Exception):
 	"""All exceptions derive from this class."""
-	pass
 
 class SecretServiceNotAvailableException(Exception):
 	"""Raised by :class:`~secretstorage.collection.Collection` or
@@ -22,7 +21,6 @@ class LockedException(SecretStorageException):
 	to check if the collection is locked, and
 	:meth:`~secretstorage.collection.Collection.unlock` to unlock it.
 	"""
-	pass
 
 class ItemNotFoundException(SecretStorageException):
 	"""Raised when an item does not exist or has been deleted. Example of
@@ -39,4 +37,3 @@ class ItemNotFoundException(SecretStorageException):
 	this exception when a prompt was dismissed during creating the
 	collection.
 	"""
-	pass
