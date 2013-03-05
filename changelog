@@ -1,4 +1,4 @@
-SecretStorage 0.9, UNRELEASED
+SecretStorage 0.9, 2013-03-05
 =============================
 
 * Added support for content types in secrets.

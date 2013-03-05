@@ -8,7 +8,7 @@ from secretstorage.collection import Collection, create_collection, \
 get_all_collections, get_collection_by_alias, search_items
 from secretstorage.item import Item
 
-__version__ = '0.8.1'
+__version__ = '0.9.0'
 
 def dbus_init(main_loop=True, use_qt_loop=False):
 	"""Returns new SessionBus_. If `main_loop` is :const:`True`, registers
