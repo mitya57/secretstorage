@@ -47,7 +47,7 @@ class Collection(object):
 		"""If collection is locked, raises
 		:exc:`~secretstorage.exceptions.LockedException`."""
 		if self.is_locked():
-			raise LockedException('Item is locked!')
+			raise LockedException('Collection is locked!')
 
 	def unlock(self, callback=None):
 		"""Requests unlocking the collection. If `callback` is specified,
