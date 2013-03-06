@@ -7,6 +7,9 @@ import dbus
 from secretstorage.collection import Collection, create_collection, \
 get_all_collections, get_collection_by_alias, search_items
 from secretstorage.item import Item
+from secretstorage.exceptions import SecretStorageException, \
+SecretServiceNotAvailableException, LockedException, \
+ItemNotFoundException
 
 __version__ = '0.9.0'
 
