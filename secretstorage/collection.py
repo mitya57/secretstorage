@@ -15,10 +15,12 @@ asynchronous). Creating new items and editing existing ones is possible
 only in unlocked collection."""
 
 import dbus
-from secretstorage.defines import *
-from secretstorage.exceptions import *
+from secretstorage.defines import SS_PREFIX, SS_PATH, SECRETS
+from secretstorage.exceptions import LockedException, ItemNotFoundException
 from secretstorage.item import Item
-from secretstorage.util import *
+from secretstorage.util import bus_get_object, InterfaceWrapper, \
+ exec_prompt, exec_prompt_async_glib, format_secret, open_session, \
+ to_unicode
 
 COLLECTION_IFACE = SS_PREFIX + 'Collection'
 SERVICE_IFACE    = SS_PREFIX + 'Service'
