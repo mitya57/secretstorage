@@ -95,7 +95,7 @@ def exec_prompt_async_qt(bus, prompt):
 	def callback(dismissed, unlocked):
 		result.append(dismissed)
 		result.append(unlocked)
-		loop.quit()
+		app.quit()
 	exec_prompt(bus, prompt, callback)
 	app.exec_()
 	return result[0], result[1]
