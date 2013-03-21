@@ -74,8 +74,8 @@ def exec_prompt(bus, prompt, callback):
 def exec_prompt_async_glib(bus, prompt):
 	"""Like :func:`exec_prompt`, but asynchronous (uses loop from GLib
 	API). Returns (*dismissed*, *unlocked*) tuple."""
-	from gi.repository import GObject
-	loop = GObject.MainLoop()
+	from gi.repository import GLib
+	loop = GLib.MainLoop()
 	result = []
 	def callback(dismissed, unlocked):
 		result.append(dismissed)
