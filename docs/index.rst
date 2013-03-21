@@ -67,8 +67,8 @@ False
 Asynchronously unlocking the collection (the GLib main loop is used
 here, Qt loop is also supported):
 
->>> from gi.repository import GObject
->>> loop = GObject.MainLoop()
+>>> from gi.repository import GLib
+>>> loop = GLib.MainLoop()
 >>> def callback(dismissed, unlocked):
 ...     print('dismissed:', dismissed)
 ...     print('unlocked:', unlocked)
