@@ -12,7 +12,8 @@ the item is unlocked. The collection can be unlocked using collection's
 import dbus
 from secretstorage.defines import SECRETS, SS_PREFIX
 from secretstorage.exceptions import LockedException
-from secretstorage.util import *
+from secretstorage.util import InterfaceWrapper, bus_get_object, \
+ open_session, format_secret, to_unicode
 
 ITEM_IFACE = SS_PREFIX + 'Item'
 DEFAULT_COLLECTION = '/org/freedesktop/secrets/aliases/default'

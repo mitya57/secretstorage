@@ -7,9 +7,10 @@
 normally be used by external applications."""
 
 import dbus
-from secretstorage.defines import *
+from secretstorage.defines import DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT, \
+ DBUS_SERVICE_UNKNOWN, DBUS_EXEC_FAILED, SECRETS, SS_PATH, SS_PREFIX
 from secretstorage.exceptions import ItemNotFoundException, \
-	SecretServiceNotAvailableException
+ SecretServiceNotAvailableException
 
 class InterfaceWrapper(dbus.Interface):
 	"""Wraps :cls:`dbus.Interface` class and replaces some D-Bus exceptions
