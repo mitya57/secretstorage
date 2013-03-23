@@ -3,6 +3,13 @@
 # Author: Dmitry Shachnev, 2013
 # License: BSD
 
+"""This file provides quick access to all SecretStorage API. Please
+refer to documentation of individual modules for API details.
+
+It also provides some functions for compatibility with older
+SecretStorage releases. Those functions are not recommended for use
+in new software."""
+
 import dbus
 from secretstorage.collection import Collection, create_collection, \
  get_all_collections, get_collection_by_alias, search_items
