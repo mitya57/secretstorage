@@ -72,8 +72,8 @@ def exec_prompt(bus, prompt, callback):
 		callback(bool(dismissed), unlocked)
 	prompt_iface.connect_to_signal('Completed', new_callback)
 
-def exec_prompt_async_glib(bus, prompt):
-	"""Like :func:`exec_prompt`, but asynchronous (uses loop from GLib
+def exec_prompt_glib(bus, prompt):
+	"""Like :func:`exec_prompt`, but synchronous (uses loop from GLib
 	API). Returns (*dismissed*, *unlocked*) tuple."""
 	from gi.repository import GLib
 	loop = GLib.MainLoop()
@@ -86,8 +86,8 @@ def exec_prompt_async_glib(bus, prompt):
 	loop.run()
 	return result[0], result[1]
 
-def exec_prompt_async_qt(bus, prompt):
-	"""Like :func:`exec_prompt`, but asynchronous (uses loop from PyQt4
+def exec_prompt_qt(bus, prompt):
+	"""Like :func:`exec_prompt`, but synchronous (uses loop from PyQt4
 	API). Returns (*dismissed*, *unlocked*) tuple."""
 	from PyQt4.QtCore import QCoreApplication
 	app = QCoreApplication([])
@@ -99,6 +99,10 @@ def exec_prompt_async_qt(bus, prompt):
 	exec_prompt(bus, prompt, callback)
 	app.exec_()
 	return result[0], result[1]
+
+# Compatibility aliases
+exec_prompt_async_glib = exec_prompt_glib
+exec_prompt_async_qt   = exec_prompt_qt
 
 def to_unicode(string):
 	"""Converts D-Bus string to unicode string."""
