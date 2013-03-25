@@ -19,7 +19,7 @@ from secretstorage.defines import SS_PREFIX, SS_PATH, SECRETS
 from secretstorage.exceptions import LockedException, ItemNotFoundException
 from secretstorage.item import Item
 from secretstorage.util import bus_get_object, InterfaceWrapper, \
- exec_prompt, exec_prompt_async_glib, format_secret, open_session, \
+ exec_prompt, exec_prompt_glib, format_secret, open_session, \
  to_unicode
 
 COLLECTION_IFACE = SS_PREFIX + 'Collection'
@@ -56,7 +56,7 @@ class Collection(object):
 		calls it when unlocking is complete (see
 		:func:`~secretstorage.util.exec_prompt` description for
 		details) and returns a boolean representing whether the operation was
-		dismissed. Otherwise, uses asynchronous loop from GLib API."""
+		dismissed. Otherwise, uses loop from GLib API."""
 		service_obj = self.bus.get_object(SECRETS, SS_PATH)
 		service_iface = InterfaceWrapper(service_obj, SERVICE_IFACE)
 		prompt = service_iface.Unlock([self.collection_path], signature='ao')[1]
@@ -64,7 +64,7 @@ class Collection(object):
 			if callback:
 				exec_prompt(self.bus, prompt, callback)
 			else:
-				return exec_prompt_async_glib(self.bus, prompt)[0]
+				return exec_prompt_glib(self.bus, prompt)[0]
 		elif callback:
 			# We still need to call it.
 			callback(False, [])
@@ -130,7 +130,7 @@ def create_collection(bus, label, alias='', session=None):
 	"""Creates a new :class:`Collection` with the given `label` and `alias`
 	and returns it. This action requires prompting. If prompt is dismissed,
 	raises :exc:`~secretstorage.exceptions.ItemNotFoundException`. This is
-	asynchronous function, uses loop from GLib API."""
+	synchronous function, uses loop from GLib API."""
 	if not session:
 		session = open_session(bus)
 	properties = {SS_PREFIX+'Collection.Label': label}
@@ -140,7 +140,7 @@ def create_collection(bus, label, alias='', session=None):
 		alias)
 	if len(collection_path) > 1:
 		return Collection(bus, collection_path, session=session)
-	dismissed, unlocked = exec_prompt_async_glib(bus, prompt)
+	dismissed, unlocked = exec_prompt_glib(bus, prompt)
 	if dismissed:
 		raise ItemNotFoundException('Prompt dismissed.')
 	return Collection(bus, unlocked, session=session)
