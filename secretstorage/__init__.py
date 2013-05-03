@@ -12,7 +12,8 @@ in new software."""
 
 import dbus
 from secretstorage.collection import Collection, create_collection, \
- get_all_collections, get_collection_by_alias, search_items
+ get_all_collections, get_default_collection, get_any_collection, \
+ get_collection_by_alias, search_items
 from secretstorage.item import Item
 from secretstorage.exceptions import SecretStorageException, \
  SecretServiceNotAvailableException, LockedException, \

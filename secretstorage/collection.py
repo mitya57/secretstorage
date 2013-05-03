@@ -25,6 +25,7 @@ from secretstorage.util import bus_get_object, InterfaceWrapper, \
 COLLECTION_IFACE = SS_PREFIX + 'Collection'
 SERVICE_IFACE    = SS_PREFIX + 'Service'
 DEFAULT_COLLECTION = '/org/freedesktop/secrets/aliases/default'
+SESSION_COLLECTION = '/org/freedesktop/secrets/collection/session'
 
 class Collection(object):
 	"""Represents a collection."""
@@ -38,6 +39,7 @@ class Collection(object):
 			COLLECTION_IFACE)
 		self.collection_props_iface = InterfaceWrapper(collection_obj,
 			dbus.PROPERTIES_IFACE)
+		self.collection_props_iface.Get(COLLECTION_IFACE, 'Label')
 
 	def is_locked(self):
 		"""Returns :const:`True` if item is locked, otherwise
@@ -153,6 +155,35 @@ def get_all_collections(bus):
 	for collection_path in service_props_iface.Get(SERVICE_IFACE,
 	'Collections'):
 		yield Collection(bus, collection_path)
+
+def get_default_collection(bus, session=None):
+	"""Returns the default collection. If it doesn't exist,
+	creates it."""
+	try:
+		return Collection(bus)
+	except ItemNotFoundException:
+		return create_collection(bus, 'Default collection',
+		'default', session)
+
+def get_any_collection(bus):
+	"""Returns any collection, in the following order of preference:
+
+	- The default collection;
+	- The "session" collection (usually temporary);
+	- The first collection in the collections list."""
+	try:
+		return Collection(bus)
+	except ItemNotFoundException:
+		pass
+	try:
+		return Collection(bus, SESSION_COLLECTION)
+	except ItemNotFoundException:
+		pass
+	collections = list(get_all_collections(bus))
+	if collections:
+		return collections[0]
+	else:
+		raise ItemNotFoundException('No collections found.')
 
 def get_collection_by_alias(bus, alias):
 	"""Returns the collection with alias `alias`. If there is no such
