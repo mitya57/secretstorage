@@ -186,8 +186,8 @@ def get_any_collection(bus):
 		raise ItemNotFoundException('No collections found.')
 
 def get_collection_by_alias(bus, alias):
-	"""Returns the collection with alias `alias`. If there is no such
-	collection, raises
+	"""Returns the collection with the given `alias`. If there is no
+	such collection, raises
 	:exc:`~secretstorage.exceptions.ItemNotFoundException`."""
 	service_obj = bus_get_object(bus, SECRETS, SS_PATH)
 	service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
