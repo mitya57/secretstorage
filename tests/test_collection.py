@@ -24,6 +24,10 @@ class CollectionTest(unittest.TestCase):
 		for item in self.collection.get_all_items():
 			item.get_label()
 
+	def test_create_empty_item(self):
+		item = self.collection.create_item('', {}, b'')
+		item.delete()
+
 	def test_label(self):
 		old_label = self.collection.get_label()
 		self.collection.set_label('Hello!')

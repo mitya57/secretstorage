@@ -120,6 +120,7 @@ class Collection(object):
 		if not self.session:
 			self.session = open_session(self.bus)
 		secret = format_secret(self.session, secret, content_type)
+		attributes = dbus.Dictionary(attributes, signature='ss')
 		properties = {
 			SS_PREFIX+'Item.Label': label,
 			SS_PREFIX+'Item.Attributes': attributes
