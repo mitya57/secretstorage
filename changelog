@@ -1,3 +1,15 @@
+SecretStorage 1.0
+=============================
+
+* Renamed `exec_prompt_async_*` functions to just `exec_prompt_*`
+  (old aliases kept for compatibility purposes).
+* Added two helper functions:
+    - `get_any_collection()` for getting default or session
+      collection;
+    - `get_default_collection()` for getting or creating the
+      default collection.
+* Fix creation of items with empty attributes dict.
+
 SecretStorage 0.9, 2013-03-05
 =============================
 
