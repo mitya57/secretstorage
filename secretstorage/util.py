@@ -35,7 +35,7 @@ class InterfaceWrapper(dbus.Interface):
 		return result
 
 def bus_get_object(bus, name, object_path):
-	"""A wrapper around :func:`SessionBus.get_object` that raises
+	"""A wrapper around :meth:`SessionBus.get_object` that raises
 	:exc:`~secretstorage.exceptions.SecretServiceNotAvailableException`
 	when appropriate."""
 	try:
