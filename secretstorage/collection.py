@@ -4,8 +4,9 @@
 # License: BSD
 
 """Collection is a place where secret items are stored. Normally, only
-the default collection should be used (usually named "login"), but this
-module allows to use any registered collection.
+the default collection should be used, but this module allows to use any
+registered collection. Use :func:`get_default_collection` to get the
+default collection (and create it, if necessary).
 
 Collections are usually automatically unlocked when user logs in, but
 collections can also be locked and unlocked using
@@ -163,7 +164,7 @@ def get_default_collection(bus, session=None):
 	try:
 		return Collection(bus)
 	except ItemNotFoundException:
-		return create_collection(bus, 'Default collection',
+		return create_collection(bus, 'Default',
 		'default', session)
 
 def get_any_collection(bus):
