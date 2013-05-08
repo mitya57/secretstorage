@@ -10,7 +10,7 @@ something goes wrong. All exceptions derive from base
 class SecretStorageException(Exception):
 	"""All exceptions derive from this class."""
 
-class SecretServiceNotAvailableException(Exception):
+class SecretServiceNotAvailableException(SecretStorageException):
 	"""Raised by :class:`~secretstorage.item.Item` or
 	:class:`~secretstorage.collection.Collection` constructors, or by
 	other functions in the :mod:`secretstorage.collection` module, when
