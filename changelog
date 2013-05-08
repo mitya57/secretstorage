@@ -2,20 +2,20 @@ SecretStorage 0.9, 2013-03-05
 =============================
 
 * Added support for content types in secrets.
-* Added Item.get_modified() method.
-* Added get_all_collections() and get_collection_by_alias()
+* Added `Item.get_modified()` method.
+* Added `get_all_collections()` and `get_collection_by_alias()`
   functions.
-* Added search_items() function for global search.
-* Made synchronous version of Collection.unlock() return a
+* Added `search_items()` function for global search.
+* Made synchronous version of `Collection.unlock()` return a
   boolean representing whether the operation was dismissed.
 * Fixed wrong parsing of Secret Service result in
-  Collection.get_modified().
+  `Collection.get_modified()`.
 * Various test suite and documentation improvements.
 
 SecretStorage 0.8, 2013-01-05
 =============================
 
-* Added Collection and Item classes.
+* Added `Collection` and `Item` classes.
 * Added support for creating and deleting collections.
 * Added synchronous loop unlocking support.
 * Added support for PyQt applications.
