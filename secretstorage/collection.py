@@ -10,7 +10,7 @@ default collection (and create it, if necessary).
 
 Collections are usually automatically unlocked when user logs in, but
 collections can also be locked and unlocked using
-:func:`Collection.lock` and :func:`Collection.unlock` methods (unlocking
+:meth:`Collection.lock` and :meth:`Collection.unlock` methods (unlocking
 requires showing the unlocking prompt to user and can be synchronous or
 asynchronous). Creating new items and editing existing ones is possible
 only in unlocked collection."""
