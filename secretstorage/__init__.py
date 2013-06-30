@@ -23,7 +23,7 @@ __version__ = '1.0.0'
 
 def dbus_init(main_loop=True, use_qt_loop=False):
 	"""Returns new SessionBus_. If `main_loop` is :const:`True`, registers
-	a main loop (Qt main loop if `use_qt_loop` is :const:`True`, otherwise
+	a main loop (PyQt5 main loop if `use_qt_loop` is :const:`True`, otherwise
 	GLib main loop).
 
 	.. _SessionBus: http://www.freedesktop.org/wiki/IntroductionToDBus#Buses
@@ -34,7 +34,7 @@ def dbus_init(main_loop=True, use_qt_loop=False):
 	"""
 	if main_loop:
 		if use_qt_loop:
-			from dbus.mainloop.qt import DBusQtMainLoop
+			from dbus.mainloop.pyqt5 import DBusQtMainLoop
 			DBusQtMainLoop(set_as_default=True)
 		else:
 			from dbus.mainloop.glib import DBusGMainLoop

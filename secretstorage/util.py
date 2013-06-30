@@ -91,9 +91,9 @@ def exec_prompt_glib(bus, prompt):
 	return result[0], result[1]
 
 def exec_prompt_qt(bus, prompt):
-	"""Like :func:`exec_prompt`, but synchronous (uses loop from PyQt4
+	"""Like :func:`exec_prompt`, but synchronous (uses loop from PyQt5
 	API). Returns (*dismissed*, *unlocked*) tuple."""
-	from PyQt4.QtCore import QCoreApplication
+	from PyQt5.QtCore import QCoreApplication
 	app = QCoreApplication([])
 	result = []
 	def callback(dismissed, unlocked):
