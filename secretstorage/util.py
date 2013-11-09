@@ -45,7 +45,8 @@ def bus_get_object(bus, name, object_path):
 	try:
 		return bus.get_object(name, object_path)
 	except dbus.exceptions.DBusException as e:
-		if e.get_dbus_name() in (DBUS_SERVICE_UNKNOWN, DBUS_EXEC_FAILED):
+		if e.get_dbus_name() in (DBUS_SERVICE_UNKNOWN, DBUS_EXEC_FAILED,
+		                         DBUS_NO_REPLY):
 			raise SecretServiceNotAvailableException(e.get_dbus_message())
 		raise
 
