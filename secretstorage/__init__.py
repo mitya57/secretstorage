@@ -15,6 +15,7 @@ from secretstorage.collection import Collection, create_collection, \
  get_all_collections, get_default_collection, get_any_collection, \
  get_collection_by_alias, search_items
 from secretstorage.item import Item
+from secretstorage.defines import DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED
 from secretstorage.exceptions import SecretStorageException, \
  SecretServiceNotAvailableException, LockedException, \
  ItemNotFoundException
@@ -39,7 +40,13 @@ def dbus_init(main_loop=True, use_qt_loop=False):
 		else:
 			from dbus.mainloop.glib import DBusGMainLoop
 			DBusGMainLoop(set_as_default=True)
-	return dbus.SessionBus()
+	try:
+		return dbus.SessionBus()
+	except dbus.exceptions.DBusException as e:
+		if e.get_dbus_name() in (DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED):
+			raise SecretServiceNotAvailableException(
+				e.get_dbus_message())
+		raise
 
 # The functions below are provided for compatibility with old
 # SecretStorage versions (<= 0.2).
