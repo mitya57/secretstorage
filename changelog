@@ -1,3 +1,10 @@
+SecretStorage 1.1, 2013-11-15
+=============================
+
+* Ported to PyQt5.
+* Added `Item.get_created()` method.
+* Improvements to error handling.
+
 SecretStorage 1.0, 2013-05-08
 =============================
 
