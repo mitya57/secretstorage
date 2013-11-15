@@ -20,7 +20,7 @@ from secretstorage.exceptions import SecretStorageException, \
  SecretServiceNotAvailableException, LockedException, \
  ItemNotFoundException
 
-__version__ = '1.0.0'
+__version__ = '1.1.0'
 
 def dbus_init(main_loop=True, use_qt_loop=False):
 	"""Returns new SessionBus_. If `main_loop` is :const:`True`, registers
