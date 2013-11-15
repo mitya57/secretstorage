@@ -3,7 +3,7 @@
 import os.path
 from distutils.core import setup
 
-version = '1.0.0'
+version = '1.1.0'
 
 readme_file = open(os.path.join(os.path.dirname(__file__), 'README'))
 long_description = '\n' + readme_file.read()
