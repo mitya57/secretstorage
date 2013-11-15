@@ -20,6 +20,7 @@ class ItemTest(unittest.TestCase):
 	def setUpClass(cls):
 		cls.bus = dbus_init(main_loop=False)
 		cls.collection = Collection(cls.bus)
+		cls.created_timestamp = time.time()
 		cls.item = cls.collection.create_item('My item', ATTRIBUTES,
 			b'pa$$word')
 		cls.other_item = cls.collection.create_item('My item',
@@ -71,6 +72,10 @@ class ItemTest(unittest.TestCase):
 		now = time.time()
 		modified = self.item.get_modified()
 		self.assertAlmostEqual(now, modified, places=-1)
+
+	def test_created(self):
+		created = self.item.get_created()
+		self.assertAlmostEqual(self.created_timestamp, created, places=-1)
 
 	@classmethod
 	def tearDownClass(cls):

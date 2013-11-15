@@ -103,6 +103,11 @@ class Item(object):
 		secret = format_secret(self.session, secret, content_type)
 		self.item_iface.SetSecret(secret)
 
+	def get_created(self):
+		"""Returns UNIX timestamp (integer) representing the time
+		when the item was created."""
+		return int(self.item_props_iface.Get(ITEM_IFACE, 'Created'))
+
 	def get_modified(self):
 		"""Returns UNIX timestamp (integer) representing the time
 		when the item was last modified."""
