@@ -43,7 +43,8 @@ def dbus_init(main_loop=True, use_qt_loop=False):
 	try:
 		return dbus.SessionBus()
 	except dbus.exceptions.DBusException as e:
-		if e.get_dbus_name() in (DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED):
+		if e.get_dbus_name() in (DBUS_NOT_SUPPORTED,
+		DBUS_EXEC_FAILED, DBUS_NO_REPLY):
 			raise SecretServiceNotAvailableException(
 				e.get_dbus_message())
 		raise
