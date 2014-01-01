@@ -15,7 +15,8 @@ from secretstorage.collection import Collection, create_collection, \
  get_all_collections, get_default_collection, get_any_collection, \
  get_collection_by_alias, search_items
 from secretstorage.item import Item
-from secretstorage.defines import DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED
+from secretstorage.defines import DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED, \
+ DBUS_NO_REPLY
 from secretstorage.exceptions import SecretStorageException, \
  SecretServiceNotAvailableException, LockedException, \
  ItemNotFoundException
