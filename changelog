@@ -1,3 +1,9 @@
+SecretStorage 2.0, 2014-01-27
+=============================
+
+* Add support for encrypted sessions and use them by default.
+* Get rid of Introspect() calls to make D-Bus messaging faster.
+
 SecretStorage 1.1, 2013-11-15
 =============================
 
