@@ -90,6 +90,8 @@ class Item(object):
 			self.session = open_session(self.bus)
 		secret = self.item_iface.GetSecret(self.session.object_path,
 			signature='o')
+		if not self.session.encrypted:
+			return bytes(bytearray(secret[2]))
 		aes_cipher = AESCipher(self.session.aes_key, mode=MODE_CBC,
 			IV=bytes(bytearray(secret[1])))
 		padded_secret = bytearray(aes_cipher.decrypt(

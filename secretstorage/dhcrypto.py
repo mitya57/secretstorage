@@ -41,11 +41,12 @@ else:
 
 DH_PRIME_1024 = bytes_to_long(DH_PRIME_1024_BYTES)
 
-class CryptoSession(object):
+class Session(object):
 	def __init__(self):
 		self.object_path = None
 		self.server_public_key = None
 		self.aes_key = None
+		self.encrypted = True
 		# 128-bytes-long strong random number
 		self.my_private_key = getrandbits(0x400)
 		self.my_public_key = pow(2, self.my_private_key, DH_PRIME_1024)

@@ -9,8 +9,8 @@ normally be used by external applications."""
 import dbus
 from secretstorage.defines import DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT, \
  DBUS_SERVICE_UNKNOWN, DBUS_NO_REPLY, DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED, \
- SECRETS, SS_PATH, SS_PREFIX, ALGORITHM_DH
-from secretstorage.dhcrypto import CryptoSession
+ SECRETS, SS_PATH, SS_PREFIX, ALGORITHM_DH, ALGORITHM_PLAIN
+from secretstorage.dhcrypto import Session
 from secretstorage.exceptions import ItemNotFoundException, \
  SecretServiceNotAvailableException
 from Crypto.Random.random import getrandbits
@@ -58,21 +58,35 @@ def open_session(bus):
 	"""Returns a new Secret Service session."""
 	service_obj = bus_get_object(bus, SECRETS, SS_PATH)
 	service_iface = dbus.Interface(service_obj, SS_PREFIX+'Service')
-	crypto_session = CryptoSession()
-	output, result = service_iface.OpenSession(
-		dbus.String(ALGORITHM_DH),
-		dbus.ByteArray(long_to_bytes(crypto_session.my_public_key)),
-		signature='sv'
-	)
-	crypto_session.set_server_public_key(bytes_to_long(output))
-	crypto_session.object_path = result
-	return crypto_session
+	session = Session()
+	try:
+		output, result = service_iface.OpenSession(
+			ALGORITHM_DH,
+			dbus.ByteArray(long_to_bytes(session.my_public_key)),
+			signature='sv'
+		)
+	except dbus.exceptions.DBusException as e:
+		if e.get_dbus_name() != DBUS_NOT_SUPPORTED:
+			raise
+		output, result = service_iface.OpenSession(
+			ALGORITHM_PLAIN,
+			'',
+			signature='sv'
+		)
+		session.encrypted = False
+	else:
+		session.set_server_public_key(bytes_to_long(output))
+	session.object_path = result
+	return session
 
 def format_secret(session, secret, content_type):
 	"""Formats `secret` to make possible to pass it to the
 	Secret Service API."""
 	if not isinstance(secret, bytes):
 		secret = secret.encode('utf-8')
+	if not session.encrypted:
+		return dbus.Struct((session.object_path, '',
+			dbus.ByteArray(secret), content_type))
 	# PKCS-7 style padding
 	padding = 0x10 - (len(secret) & 0xf)
 	secret += bytes(bytearray((padding,)) * padding)
