@@ -77,6 +77,8 @@ def format_secret(session, secret, content_type):
 	padding = 0x10 - (len(secret) & 0xf)
 	secret += bytes(bytearray((padding,)) * padding)
 	aes_iv = long_to_bytes(getrandbits(0x80))
+	# If shorter than 16 bytes, prepend zero bytes
+	aes_iv = b'\x00' * (0x10 - len(aes_iv)) + aes_iv
 	aes_cipher = AESCipher(session.aes_key, mode=MODE_CBC, IV=aes_iv)
 	return dbus.Struct((
 		session.object_path,
