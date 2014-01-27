@@ -35,8 +35,5 @@ class CollectionTest(unittest.TestCase):
 		self.collection.set_label(old_label)
 		self.assertEqual(self.collection.get_label(), old_label)
 
-if not hasattr(CollectionTest, 'assertIn'): # Python <= 2.6
-	CollectionTest.assertIn = lambda self, a, b: self.assertTrue(a in b)
-
 if __name__ == '__main__':
 	unittest.main()

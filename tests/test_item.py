@@ -82,8 +82,5 @@ class ItemTest(unittest.TestCase):
 		cls.item.delete()
 		cls.other_item.delete()
 
-if not hasattr(ItemTest, 'assertIn'): # Python <= 2.6
-	ItemTest.assertIn = lambda self, a, b: self.assertTrue(a in b)
-
 if __name__ == '__main__':
 	unittest.main()
