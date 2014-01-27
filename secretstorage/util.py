@@ -15,7 +15,6 @@ from secretstorage.exceptions import ItemNotFoundException, \
  SecretServiceNotAvailableException
 from Crypto.Random.random import getrandbits
 from Crypto.Cipher.AES import AESCipher, MODE_CBC
-#from Crypto.Util.number import long_to_bytes, bytes_to_long
 from secretstorage.dhcrypto import long_to_bytes, bytes_to_long
 
 class InterfaceWrapper(dbus.Interface):
