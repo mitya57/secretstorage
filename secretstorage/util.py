@@ -9,9 +9,14 @@ normally be used by external applications."""
 import dbus
 from secretstorage.defines import DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT, \
  DBUS_SERVICE_UNKNOWN, DBUS_NO_REPLY, DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED, \
- SECRETS, SS_PATH, SS_PREFIX
+ SECRETS, SS_PATH, SS_PREFIX, ALGORITHM_DH
+from secretstorage.dhcrypto import CryptoSession
 from secretstorage.exceptions import ItemNotFoundException, \
  SecretServiceNotAvailableException
+from Crypto.Random.random import getrandbits
+from Crypto.Cipher.AES import AESCipher, MODE_CBC
+#from Crypto.Util.number import long_to_bytes, bytes_to_long
+from secretstorage.dhcrypto import long_to_bytes, bytes_to_long
 
 class InterfaceWrapper(dbus.Interface):
 	"""Wraps :cls:`dbus.Interface` class and replaces some D-Bus exceptions
@@ -54,14 +59,32 @@ def open_session(bus):
 	"""Returns a new Secret Service session."""
 	service_obj = bus.get_object(SECRETS, SS_PATH)
 	service_iface = dbus.Interface(service_obj, SS_PREFIX+'Service')
-	return service_iface.OpenSession('plain', '', signature='sv')[1]
+	crypto_session = CryptoSession()
+	output, result = service_iface.OpenSession(
+		dbus.String(ALGORITHM_DH),
+		dbus.ByteArray(long_to_bytes(crypto_session.my_public_key)),
+		signature='sv'
+	)
+	crypto_session.set_server_public_key(bytes_to_long(output))
+	crypto_session.object_path = result
+	return crypto_session
 
 def format_secret(session, secret, content_type):
 	"""Formats `secret` to make possible to pass it to the
 	Secret Service API."""
 	if not isinstance(secret, bytes):
 		secret = secret.encode('utf-8')
-	return dbus.Struct((session, '', dbus.ByteArray(secret), content_type))
+	# PKCS-7 style padding
+	padding = 0x10 - (len(secret) & 0xf)
+	secret += bytes(bytearray((padding,)) * padding)
+	aes_iv = long_to_bytes(getrandbits(0x80))
+	aes_cipher = AESCipher(session.aes_key, mode=MODE_CBC, IV=aes_iv)
+	return dbus.Struct((
+		session.object_path,
+		dbus.Array(aes_iv),
+		dbus.Array(bytearray(aes_cipher.encrypt(secret))),
+		content_type
+	))
 
 def exec_prompt(bus, prompt, callback):
 	"""Executes the given `prompt`, when complete calls `callback`

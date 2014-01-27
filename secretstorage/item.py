@@ -14,6 +14,7 @@ from secretstorage.defines import SECRETS, SS_PREFIX
 from secretstorage.exceptions import LockedException
 from secretstorage.util import InterfaceWrapper, bus_get_object, \
  open_session, format_secret, to_unicode
+from Crypto.Cipher.AES import AESCipher, MODE_CBC
 
 ITEM_IFACE = SS_PREFIX + 'Item'
 DEFAULT_COLLECTION = '/org/freedesktop/secrets/aliases/default'
@@ -82,15 +83,17 @@ class Item(object):
 		self.ensure_not_locked()
 		if not self.session:
 			self.session = open_session(self.bus)
-		secret = self.item_iface.GetSecret(self.session)
-		return bytes(bytearray(secret[2]))
+		secret = self.item_iface.GetSecret(self.session.object_path)
+		aes_cipher = AESCipher(self.session.aes_key, mode=MODE_CBC, IV=bytes(bytearray(secret[1])))
+		padded_secret = bytearray(aes_cipher.decrypt(bytes(bytearray(secret[2]))))
+		return padded_secret[:-padded_secret[-1]]
 
 	def get_secret_content_type(self):
 		"""Returns content type of item secret (string)."""
 		self.ensure_not_locked()
 		if not self.session:
 			self.session = open_session(self.bus)
-		secret = self.item_iface.GetSecret(self.session)
+		secret = self.item_iface.GetSecret(self.session.object_path)
 		return str(secret[3])
 
 	def set_secret(self, secret, content_type='text/plain'):
