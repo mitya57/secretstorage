@@ -47,7 +47,7 @@ def bus_get_object(bus, name, object_path):
 	:exc:`~secretstorage.exceptions.SecretServiceNotAvailableException`
 	when appropriate."""
 	try:
-		return bus.get_object(name, object_path)
+		return bus.get_object(name, object_path, introspect=False)
 	except dbus.exceptions.DBusException as e:
 		if e.get_dbus_name() in (DBUS_SERVICE_UNKNOWN, DBUS_EXEC_FAILED,
 		                         DBUS_NO_REPLY):
@@ -56,7 +56,7 @@ def bus_get_object(bus, name, object_path):
 
 def open_session(bus):
 	"""Returns a new Secret Service session."""
-	service_obj = bus.get_object(SECRETS, SS_PATH)
+	service_obj = bus_get_object(bus, SECRETS, SS_PATH)
 	service_iface = dbus.Interface(service_obj, SS_PREFIX+'Service')
 	crypto_session = CryptoSession()
 	output, result = service_iface.OpenSession(
@@ -92,9 +92,9 @@ def exec_prompt(bus, prompt, callback):
 	function with two arguments: a boolean representing whether the
 	operation was dismissed and a list of unlocked item paths. A main
 	loop should be running and registered for this function to work."""
-	prompt_obj = bus.get_object(SECRETS, prompt)
+	prompt_obj = bus_get_object(bus, SECRETS, prompt)
 	prompt_iface = dbus.Interface(prompt_obj, SS_PREFIX+'Prompt')
-	prompt_iface.Prompt('')
+	prompt_iface.Prompt('', signature='s')
 	def new_callback(dismissed, unlocked):
 		if isinstance(unlocked, dbus.Array):
 			unlocked = list(unlocked)

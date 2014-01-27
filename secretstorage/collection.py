@@ -40,13 +40,14 @@ class Collection(object):
 			COLLECTION_IFACE)
 		self.collection_props_iface = InterfaceWrapper(collection_obj,
 			dbus.PROPERTIES_IFACE)
-		self.collection_props_iface.Get(COLLECTION_IFACE, 'Label')
+		self.collection_props_iface.Get(COLLECTION_IFACE, 'Label',
+			signature='ss')
 
 	def is_locked(self):
 		"""Returns :const:`True` if item is locked, otherwise
 		:const:`False`."""
 		return bool(self.collection_props_iface.Get(
-			COLLECTION_IFACE, 'Locked'))
+			COLLECTION_IFACE, 'Locked', signature='ss'))
 
 	def ensure_not_locked(self):
 		"""If collection is locked, raises
@@ -60,7 +61,7 @@ class Collection(object):
 		:func:`~secretstorage.util.exec_prompt` description for
 		details) and returns a boolean representing whether the operation was
 		dismissed. Otherwise, uses loop from GLib API."""
-		service_obj = self.bus.get_object(SECRETS, SS_PATH)
+		service_obj = bus_get_object(self.bus, SECRETS, SS_PATH)
 		service_iface = InterfaceWrapper(service_obj, SERVICE_IFACE)
 		prompt = service_iface.Unlock([self.collection_path], signature='ao')[1]
 		if len(prompt) > 1:
@@ -74,25 +75,26 @@ class Collection(object):
 
 	def lock(self):
 		"""Locks the collection."""
-		service_obj = self.bus.get_object(SECRETS, SS_PATH)
+		service_obj = bus_get_object(self.bus, SECRETS, SS_PATH)
 		service_iface = InterfaceWrapper(service_obj, SERVICE_IFACE)
-		service_iface.Lock([self.collection_path])
+		service_iface.Lock([self.collection_path], signature='ao')
 
 	def delete(self):
 		"""Deletes the collection and all items inside it."""
 		self.ensure_not_locked()
-		self.collection_iface.Delete()
+		self.collection_iface.Delete(signature='')
 
 	def get_all_items(self):
 		"""Returns a generator of all items in the collection."""
 		for item_path in self.collection_props_iface.Get(
-		COLLECTION_IFACE, 'Items'):
+		COLLECTION_IFACE, 'Items', signature='ss'):
 			yield Item(self.bus, item_path, self.session)
 
 	def search_items(self, attributes):
 		"""Returns a generator of items with the given attributes.
 		`attributes` should be a dictionary."""
-		result = self.collection_iface.SearchItems(attributes)
+		result = self.collection_iface.SearchItems(attributes,
+			signature='a{ss}')
 		if isinstance(result, tuple):
 			# bug in GNOME Keyring <= 3.7.5
 			result = result[0] + result[1]
@@ -101,13 +103,15 @@ class Collection(object):
 
 	def get_label(self):
 		"""Returns the collection label."""
-		label = self.collection_props_iface.Get(COLLECTION_IFACE, 'Label')
+		label = self.collection_props_iface.Get(COLLECTION_IFACE,
+			'Label', signature='ss')
 		return to_unicode(label)
 
 	def set_label(self, label):
 		"""Sets collection label to `label`."""
 		self.ensure_not_locked()
-		self.collection_props_iface.Set(COLLECTION_IFACE, 'Label', label)
+		self.collection_props_iface.Set(COLLECTION_IFACE, 'Label',
+			label, signature='ssv')
 
 	def create_item(self, label, attributes, secret, replace=False,
 	content_type='text/plain'):
@@ -127,7 +131,7 @@ class Collection(object):
 			SS_PREFIX+'Item.Attributes': attributes
 		}
 		new_item, prompt = self.collection_iface.CreateItem(properties,
-			secret, replace)
+			secret, replace, signature='a{sv}(oayays)b')
 		return Item(self.bus, new_item, self.session)
 
 def create_collection(bus, label, alias='', session=None):
@@ -141,7 +145,7 @@ def create_collection(bus, label, alias='', session=None):
 	service_obj = bus_get_object(bus, SECRETS, SS_PATH)
 	service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
 	collection_path, prompt = service_iface.CreateCollection(properties,
-		alias)
+		alias, signature='a{sv}s')
 	if len(collection_path) > 1:
 		return Collection(bus, collection_path, session=session)
 	dismissed, unlocked = exec_prompt_glib(bus, prompt)
@@ -155,7 +159,7 @@ def get_all_collections(bus):
 	service_props_iface = dbus.Interface(service_obj,
 		dbus.PROPERTIES_IFACE)
 	for collection_path in service_props_iface.Get(SERVICE_IFACE,
-	'Collections'):
+	'Collections', signature='ss'):
 		yield Collection(bus, collection_path)
 
 def get_default_collection(bus, session=None):
@@ -193,7 +197,7 @@ def get_collection_by_alias(bus, alias):
 	:exc:`~secretstorage.exceptions.ItemNotFoundException`."""
 	service_obj = bus_get_object(bus, SECRETS, SS_PATH)
 	service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
-	collection_path = service_iface.ReadAlias(alias)
+	collection_path = service_iface.ReadAlias(alias, signature='s')
 	if len(collection_path) <= 1:
 		raise ItemNotFoundException('No collection with such alias.')
 	return Collection(bus, collection_path)
@@ -203,6 +207,7 @@ def search_items(bus, attributes):
 	attributes. `attributes` should be a dictionary."""
 	service_obj = bus_get_object(bus, SECRETS, SS_PATH)
 	service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
-	locked, unlocked = service_iface.SearchItems(attributes)
+	locked, unlocked = service_iface.SearchItems(attributes,
+		signature='a{ss}')
 	for item_path in locked + unlocked:
 		yield Item(bus, item_path)
