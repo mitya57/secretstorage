@@ -26,9 +26,12 @@ Building the module
    SecretStorage supports all versions of Python since 2.6. Here we assume
    that your Python version is 3.x.
 
-SecretStorage requires `dbus-python`_ for working (available in Debian-based
-distributions in `python3-dbus package`_). To build SecretStorage, use this
-command::
+SecretStorage requires these packages to work:
+
+* `dbus-python`_ (available in Debian-based distributions in `python3-dbus package`_);
+* PyCrypto_ (available in Debian-based distributions in `python3-crypto package`_).
+
+To build SecretStorage, use this command::
 
    python3 setup.py build
 
@@ -37,7 +40,9 @@ If you have Sphinx_ installed, you can also build the documentation::
    python3 setup.py build_sphinx
 
 .. _`dbus-python`: http://www.freedesktop.org/wiki/Software/DBusBindings#dbus-python
+.. _PyCrypto: https://www.dlitz.net/software/pycrypto/
 .. _`python3-dbus package`: http://packages.debian.org/sid/python3-dbus
+.. _`python3-crypto package`: http://packages.debian.org/sid/python3-crypto
 .. _Sphinx: http://sphinx-doc.org/
 
 Get the code

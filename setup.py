@@ -44,5 +44,5 @@ setup(name='SecretStorage',
 	license='BSD',
 	classifiers=classifiers,
 	cmdclass=cmdclass,
-	requires=['dbus']
+	requires=['dbus', 'Crypto']
 )
