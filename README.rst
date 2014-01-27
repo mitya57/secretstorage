@@ -49,6 +49,6 @@ Get the code
 ============
 
 SecretStorage is available under BSD license. The source code can be found
-in ``lp:python-secretstorage`` branch on Launchpad_.
+on GitHub_.
 
-.. _Launchpad: https://launchpad.net/python-secretstorage
+.. _GitHub: https://github.com/mitya57/secretstorage

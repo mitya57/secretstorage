@@ -18,6 +18,10 @@ when unlocking is needed.
 .. _`GNOME Keyring`: https://live.gnome.org/GnomeKeyring
 .. _KSecretsService: http://techbase.kde.org/Projects/Utils/ksecretsservice
 
+SecretStorage code is hosted on GitHub_.
+
+.. _GitHub: https://github.com/mitya57/secretstorage
+
 Initializing D-Bus
 ==================
 
