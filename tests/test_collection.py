@@ -5,7 +5,7 @@
 # This file tests the secretstorage.Collection class.
 
 import unittest
-from secretstorage import dbus_init, Collection, get_all_collections
+from secretstorage import dbus_init, get_any_collection, get_all_collections, Collection
 
 class CollectionTest(unittest.TestCase):
 	"""A test case that tests that all common methods of Collection
@@ -14,7 +14,7 @@ class CollectionTest(unittest.TestCase):
 	@classmethod
 	def setUpClass(cls):
 		cls.bus = dbus_init(main_loop=False)
-		cls.collection = Collection(cls.bus)
+		cls.collection = get_any_collection(cls.bus)
 
 	def test_all_collections(self):
 		labels = map(Collection.get_label, get_all_collections(self.bus))

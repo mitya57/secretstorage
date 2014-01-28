@@ -6,7 +6,7 @@
 
 import unittest
 import time
-from secretstorage import dbus_init, search_items, Collection
+from secretstorage import dbus_init, search_items, get_any_collection
 
 ATTRIBUTES = {'application': 'secretstorage-test', 'attribute': 'qwerty'}
 NEW_ATTRIBUTES = {'application': 'secretstorage-test',
@@ -19,7 +19,7 @@ class ItemTest(unittest.TestCase):
 	@classmethod
 	def setUpClass(cls):
 		cls.bus = dbus_init(main_loop=False)
-		cls.collection = Collection(cls.bus)
+		cls.collection = get_any_collection(cls.bus)
 		cls.created_timestamp = time.time()
 		cls.item = cls.collection.create_item('My item', ATTRIBUTES,
 			b'pa$$word')
