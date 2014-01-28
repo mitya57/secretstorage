@@ -20,6 +20,7 @@ from secretstorage.defines import DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED, \
 from secretstorage.exceptions import SecretStorageException, \
  SecretServiceNotAvailableException, LockedException, \
  ItemNotFoundException
+from os.path import join
 
 __version__ = '2.0.0'
 
@@ -57,7 +58,7 @@ def get_items(search_attributes, unlock_all=True):
 	"""Returns tuples for all items in the default collection matching
 	`search_attributes`."""
 	bus = dbus_init()
-	collection = Collection(bus)
+	collection = get_any_collection(bus)
 	if unlock_all and collection.is_locked():
 		collection.unlock()
 	search_results = collection.search_items(search_attributes)
@@ -67,23 +68,23 @@ def get_items_ids(search_attributes):
 	"""Returns item id for all items in the default collection matching
 	`search_attributes`."""
 	bus = dbus_init()
-	collection = Collection(bus)
+	collection = get_any_collection(bus)
 	search_results = collection.search_items(search_attributes)
 	return [item._item_id() for item in search_results]
 
 def get_item_attributes(item_id):
 	"""Returns item attributes for item with given id."""
 	bus = dbus_init()
-	item = Item(bus, item_id)
+	collection = get_any_collection(bus)
+	item = Item(bus, join(collection.collection_path, str(item_id)))
 	return item.get_attributes()
 
 def get_item_object(item_id, unlock=True):
 	"""Returns the item with given id and unlocks it if `unlock` is
 	`True`."""
 	bus = dbus_init()
-	item = Item(bus, item_id)
-	collection_path = item.item_path.rsplit('/', 1)[0]
-	collection = Collection(bus, collection_path)
+	collection = get_any_collection(bus)
+	item = Item(bus, join(collection.collection_path, str(item_id)))
 	if unlock and collection.is_locked():
 		collection.unlock()
 	return item
@@ -100,7 +101,7 @@ def create_item(label, attributes, secret, unlock=True):
 	"""Creates an item with given `label`, `attributes` and `secret` in
 	the default collection. Returns id of the created item."""
 	bus = dbus_init()
-	collection = Collection(bus)
+	collection = get_any_collection(bus)
 	if unlock and collection.is_locked():
 		collection.unlock()
 	item = collection.create_item(label, attributes, secret)
