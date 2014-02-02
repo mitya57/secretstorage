@@ -22,7 +22,8 @@ from secretstorage.exceptions import SecretStorageException, \
  ItemNotFoundException
 from os.path import join
 
-__version__ = '2.0.0'
+__version_tuple__ = (2, 0, 1)
+__version__ = '.'.join(map(str, __version_tuple__))
 
 def dbus_init(main_loop=True, use_qt_loop=False):
 	"""Returns new SessionBus_. If `main_loop` is :const:`True`, registers
