@@ -182,6 +182,8 @@ def get_any_collection(bus):
 	except ItemNotFoundException:
 		pass
 	try:
+		# GNOME Keyring provides session collection where items
+		# are stored in process memory.
 		return Collection(bus, SESSION_COLLECTION)
 	except ItemNotFoundException:
 		pass
