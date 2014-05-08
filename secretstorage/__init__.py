@@ -26,9 +26,10 @@ __version_tuple__ = (2, 0, 1)
 __version__ = '.'.join(map(str, __version_tuple__))
 
 def dbus_init(main_loop=True, use_qt_loop=False):
-	"""Returns new SessionBus_. If `main_loop` is :const:`True`, registers
-	a main loop (PyQt5 main loop if `use_qt_loop` is :const:`True`, otherwise
-	GLib main loop).
+	"""Returns new SessionBus_. If `main_loop` is :const:`True` and no
+	D-Bus main loop is registered yet, registers a default main loop
+	(PyQt5 main loop if `use_qt_loop` is :const:`True`, otherwise GLib
+	main loop).
 
 	.. _SessionBus: http://www.freedesktop.org/wiki/IntroductionToDBus#Buses
 
