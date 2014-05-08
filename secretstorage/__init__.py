@@ -37,6 +37,8 @@ def dbus_init(main_loop=True, use_qt_loop=False):
 	   will rarely need to set `use_qt_loop` to :const:`True`.
 	"""
 	if main_loop:
+		if dbus.get_default_main_loop():
+			return dbus.SessionBus() # Loop is already set up
 		if use_qt_loop:
 			from dbus.mainloop.pyqt5 import DBusQtMainLoop
 			DBusQtMainLoop(set_as_default=True)
