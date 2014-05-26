@@ -30,7 +30,7 @@ if hasattr(int, 'from_bytes'):
 else:
 	from Crypto.Util.number import bytes_to_long as _to_long
 	# We need to support both list and bytes input
-	bytes_to_long = lambda b: _to_long(bytearray(b))
+	bytes_to_long = lambda b: _to_long(bytes(bytearray(b)))
 
 if hasattr(int, 'to_bytes'):
 	def long_to_bytes(number):
