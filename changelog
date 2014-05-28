@@ -1,3 +1,11 @@
+SecretStorage 2.1, 2014-05-28
+=============================
+
+* Support running tests with GNOME Keyring when there is no
+  default collection.
+* When D-Bus main loop is already set, do not set it again.
+* Make dhcrypto module work with Python < 2.7.4.
+
 SecretStorage 2.0, 2014-01-27
 =============================
 
