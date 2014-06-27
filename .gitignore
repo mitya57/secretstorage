@@ -1,3 +1,5 @@
 build
 dist
 MANIFEST
+__pycache__
+*.pyc
