@@ -55,6 +55,8 @@ class Session(object):
 		common_secret = pow(server_public_key, self.my_private_key,
 			DH_PRIME_1024)
 		common_secret = long_to_bytes(common_secret)
+		# Prepend NULL bytes if needed
+		common_secret = b'\x00' * (0x80 - len(common_secret)) + common_secret
 		# HKDF with null salt, empty info and SHA-256 hash
 		salt = b'\x00' * 0x20
 		pseudo_random_key = hmac.new(salt, common_secret, sha256).digest()
