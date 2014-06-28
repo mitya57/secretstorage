@@ -14,8 +14,8 @@ from secretstorage.defines import DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT, \
 from secretstorage.dhcrypto import Session
 from secretstorage.exceptions import ItemNotFoundException, \
  SecretServiceNotAvailableException
-from Crypto.Random.random import getrandbits
-from Crypto.Cipher.AES import AESCipher, MODE_CBC
+from Crypto.Random import get_random_bytes
+from Crypto.Cipher.AES import AESCipher, MODE_CBC, block_size
 from secretstorage.dhcrypto import long_to_bytes, bytes_to_long
 
 class InterfaceWrapper(dbus.Interface):
@@ -92,9 +92,7 @@ def format_secret(session, secret, content_type):
 	# PKCS-7 style padding
 	padding = 0x10 - (len(secret) & 0xf)
 	secret += bytes(bytearray((padding,)) * padding)
-	aes_iv = long_to_bytes(getrandbits(0x80))
-	# If shorter than 16 bytes, prepend zero bytes
-	aes_iv = b'\x00' * (0x10 - len(aes_iv)) + aes_iv
+	aes_iv = get_random_bytes(block_size)
 	aes_cipher = AESCipher(session.aes_key, mode=MODE_CBC, IV=aes_iv)
 	return dbus.Struct((
 		session.object_path,
