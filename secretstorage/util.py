@@ -7,6 +7,7 @@
 normally be used by external applications."""
 
 import dbus
+from functools import wraps
 from secretstorage.defines import DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT, \
  DBUS_SERVICE_UNKNOWN, DBUS_NO_REPLY, DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED, \
  SECRETS, SS_PATH, SS_PREFIX, ALGORITHM_DH, ALGORITHM_PLAIN
@@ -22,6 +23,7 @@ class InterfaceWrapper(dbus.Interface):
 	with :doc:`SecretStorage exceptions <exceptions>`."""
 
 	def catch_errors(self, function_in):
+		@wraps(function_in)
 		def function_out(*args, **kwargs):
 			try:
 				return function_in(*args, **kwargs)
