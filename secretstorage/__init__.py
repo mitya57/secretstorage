@@ -22,7 +22,7 @@ from secretstorage.exceptions import SecretStorageException, \
  ItemNotFoundException
 from os.path import join
 
-__version_tuple__ = (2, 1, 0)
+__version_tuple__ = (2, 1, 1)
 __version__ = '.'.join(map(str, __version_tuple__))
 
 def dbus_init(main_loop=True, use_qt_loop=False):

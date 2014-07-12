@@ -3,13 +3,14 @@
 import os.path
 from distutils.core import setup
 
-version = '2.1.0'
+version = '2.1.1'
 
 readme_file = open(os.path.join(os.path.dirname(__file__), 'README.rst'))
 long_description = '\n' + readme_file.read()
 readme_file.close()
 
-classifiers = ['Development Status :: 4 - Beta',
+classifiers = [
+	'Development Status :: 5 - Production/Stable',
 	'License :: OSI Approved :: BSD License',
 	'Operating System :: POSIX',
 	'Programming Language :: Python',
