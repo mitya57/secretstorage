@@ -29,7 +29,7 @@ classifiers = [
 cmdclass = {}
 try:
 	from sphinx.setup_command import BuildDoc
-except:
+except ImportError:
 	pass
 else:
 	cmdclass['build_sphinx'] = BuildDoc
