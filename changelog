@@ -2,7 +2,7 @@ SecretStorage 2.1.1, 2014-07-12
 ===============================
 
 * Fixed a bug where common secret was incorrectly generated
-  sometimes (one time of 256).
+  sometimes (one time of 128).
 * Other minor improvements.
 
 SecretStorage 2.1, 2014-05-28
