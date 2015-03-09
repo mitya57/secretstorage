@@ -37,9 +37,7 @@ def dbus_init(main_loop=True, use_qt_loop=False):
 	   Qt uses GLib main loops on UNIX-like systems by default, so one
 	   will rarely need to set `use_qt_loop` to :const:`True`.
 	"""
-	if main_loop:
-		if dbus.get_default_main_loop():
-			return dbus.SessionBus() # Loop is already set up
+	if main_loop and not dbus.get_default_main_loop():
 		if use_qt_loop:
 			from dbus.mainloop.pyqt5 import DBusQtMainLoop
 			DBusQtMainLoop(set_as_default=True)
