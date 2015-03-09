@@ -31,7 +31,7 @@ def dbus_init(main_loop=True, use_qt_loop=False):
 	(PyQt5 main loop if `use_qt_loop` is :const:`True`, otherwise GLib
 	main loop).
 
-	.. _SessionBus: http://www.freedesktop.org/wiki/IntroductionToDBus#Buses
+	.. _SessionBus: http://www.freedesktop.org/wiki/IntroductionToDBus/#buses
 
 	.. note::
 	   Qt uses GLib main loops on UNIX-like systems by default, so one

@@ -15,8 +15,8 @@ when unlocking is needed.
 
 .. _`D-Bus`: http://www.freedesktop.org/wiki/Software/dbus
 .. _`Secret Service`: http://standards.freedesktop.org/secret-service/
-.. _`GNOME Keyring`: https://live.gnome.org/GnomeKeyring
-.. _KSecretsService: http://techbase.kde.org/Projects/Utils/ksecretsservice
+.. _`GNOME Keyring`: https://wiki.gnome.org/Projects/GnomeKeyring
+.. _KSecretsService: https://techbase.kde.org/Projects/Utils/ksecretsservice
 
 SecretStorage code is hosted on GitHub_.
 
