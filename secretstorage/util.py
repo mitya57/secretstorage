@@ -146,7 +146,7 @@ def exec_prompt_qt(bus, prompt):
 def unlock_objects(bus, paths, callback=None):
 	"""Requests unlocking objects specified in `paths`. If `callback`
 	is specified, calls it when unlocking is complete (see
-	:func:`~secretstorage.util.exec_prompt` description for details).
+	:func:`exec_prompt` description for details).
 	Otherwise, uses the loop from GLib API and returns a boolean
 	representing whether the operation was dismissed."""
 	service_obj = bus_get_object(bus, SECRETS, SS_PATH)
