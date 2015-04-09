@@ -17,6 +17,8 @@ from Crypto.Random import get_random_bytes
 from Crypto.Cipher.AES import AESCipher, MODE_CBC, block_size
 from secretstorage.dhcrypto import long_to_bytes, bytes_to_long
 
+SERVICE_IFACE = SS_PREFIX + 'Service'
+
 class InterfaceWrapper(dbus.Interface):
 	"""Wraps :cls:`dbus.Interface` class and replaces some D-Bus exceptions
 	with :doc:`SecretStorage exceptions <exceptions>`."""
@@ -140,6 +142,24 @@ def exec_prompt_qt(bus, prompt):
 	exec_prompt(bus, prompt, callback)
 	app.exec_()
 	return result[0], result[1]
+
+def unlock_objects(bus, paths, callback=None):
+	"""Requests unlocking objects specified in `paths`. If `callback`
+	is specified, calls it when unlocking is complete (see
+	:func:`~secretstorage.util.exec_prompt` description for details).
+	Otherwise, uses the loop from GLib API and returns a boolean
+	representing whether the operation was dismissed."""
+	service_obj = bus_get_object(bus, SECRETS, SS_PATH)
+	service_iface = InterfaceWrapper(service_obj, SERVICE_IFACE)
+	prompt = service_iface.Unlock(paths, signature='ao')[1]
+	if len(prompt) > 1:
+		if callback:
+			exec_prompt(bus, prompt, callback)
+		else:
+			return exec_prompt_glib(bus, prompt)[0]
+	elif callback:
+		# We still need to call it.
+		callback(False, [])
 
 # Compatibility aliases
 exec_prompt_async_glib = exec_prompt_glib

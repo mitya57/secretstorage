@@ -20,8 +20,7 @@ from secretstorage.defines import SS_PREFIX, SS_PATH, SECRETS
 from secretstorage.exceptions import LockedException, ItemNotFoundException
 from secretstorage.item import Item
 from secretstorage.util import bus_get_object, InterfaceWrapper, \
- exec_prompt, exec_prompt_glib, format_secret, open_session, \
- to_unicode
+ exec_prompt_glib, format_secret, open_session, to_unicode, unlock_objects
 
 COLLECTION_IFACE = SS_PREFIX + 'Collection'
 SERVICE_IFACE    = SS_PREFIX + 'Service'
@@ -61,17 +60,7 @@ class Collection(object):
 		:func:`~secretstorage.util.exec_prompt` description for details).
 		Otherwise, uses loop from GLib API and returns a boolean
 		representing whether the operation was dismissed."""
-		service_obj = bus_get_object(self.bus, SECRETS, SS_PATH)
-		service_iface = InterfaceWrapper(service_obj, SERVICE_IFACE)
-		prompt = service_iface.Unlock([self.collection_path], signature='ao')[1]
-		if len(prompt) > 1:
-			if callback:
-				exec_prompt(self.bus, prompt, callback)
-			else:
-				return exec_prompt_glib(self.bus, prompt)[0]
-		elif callback:
-			# We still need to call it.
-			callback(False, [])
+		return unlock_objects(self.bus, [self.collection_path], callback)
 
 	def lock(self):
 		"""Locks the collection."""
