@@ -13,7 +13,7 @@ import dbus
 from secretstorage.defines import SECRETS, SS_PREFIX
 from secretstorage.exceptions import LockedException
 from secretstorage.util import InterfaceWrapper, bus_get_object, \
- open_session, format_secret, to_unicode
+ open_session, format_secret, to_unicode, unlock_objects
 from Crypto.Cipher.AES import AESCipher, MODE_CBC
 
 ITEM_IFACE = SS_PREFIX + 'Item'
@@ -53,6 +53,16 @@ class Item(object):
 		:exc:`~secretstorage.exceptions.LockedException`."""
 		if self.is_locked():
 			raise LockedException('Item is locked!')
+
+	def unlock(self, callback=None):
+		"""Requests unlocking the item. Usually, this will mean that the
+		whole collection containing this item will be unlocked.
+
+		If `callback` is specified, calls it when unlocking is complete
+		(see :func:`~secretstorage.util.exec_prompt` description for
+		details). Otherwise, uses the loop from GLib API and returns a
+		boolean representing whether the operation was dismissed."""
+		return unlock_objects(self.bus, [self.item_path], callback)
 
 	def get_attributes(self):
 		"""Returns item attributes (dictionary)."""
