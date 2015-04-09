@@ -58,9 +58,9 @@ class Collection(object):
 	def unlock(self, callback=None):
 		"""Requests unlocking the collection. If `callback` is specified,
 		calls it when unlocking is complete (see
-		:func:`~secretstorage.util.exec_prompt` description for
-		details) and returns a boolean representing whether the operation was
-		dismissed. Otherwise, uses loop from GLib API."""
+		:func:`~secretstorage.util.exec_prompt` description for details).
+		Otherwise, uses loop from GLib API and returns a boolean
+		representing whether the operation was dismissed."""
 		service_obj = bus_get_object(self.bus, SECRETS, SS_PATH)
 		service_iface = InterfaceWrapper(service_obj, SERVICE_IFACE)
 		prompt = service_iface.Unlock([self.collection_path], signature='ao')[1]
