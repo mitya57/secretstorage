@@ -4,7 +4,7 @@ Module description
 This module provides a way for securely storing passwords and other secrets.
 
 It uses D-Bus `Secret Service`_ API that is supported by GNOME Keyring
-(>= 2.30) and KSecretsService.
+(since version 2.30) and KSecretsService.
 
 The main classes provided are ``secretstorage.Item``, representing a secret
 item (that has a *label*, a *secret* and some *attributes*) and
