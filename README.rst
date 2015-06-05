@@ -17,7 +17,7 @@ locking and unlocking collections (asynchronous unlocking is also supported).
 The documentation can be found on `pythonhosted.org`_.
 
 .. _`Secret Service`: http://standards.freedesktop.org/secret-service/
-.. _`pythonhosted.org`: http://pythonhosted.org/SecretStorage/
+.. _`pythonhosted.org`: https://pythonhosted.org/SecretStorage/
 
 Building the module
 ===================
@@ -28,8 +28,8 @@ Building the module
 
 SecretStorage requires these packages to work:
 
-* `dbus-python`_ (available in Debian-based distributions in `python3-dbus package`_);
-* PyCrypto_ (available in Debian-based distributions in `python3-crypto package`_).
+* `dbus-python`_;
+* PyCrypto_ (also `available on PyPI`_).
 
 To build SecretStorage, use this command::
 
@@ -39,10 +39,9 @@ If you have Sphinx_ installed, you can also build the documentation::
 
    python3 setup.py build_sphinx
 
-.. _`dbus-python`: http://www.freedesktop.org/wiki/Software/DBusBindings#dbus-python
+.. _`dbus-python`: http://www.freedesktop.org/wiki/Software/DBusBindings/#dbus-python
 .. _PyCrypto: https://www.dlitz.net/software/pycrypto/
-.. _`python3-dbus package`: http://packages.debian.org/sid/python3-dbus
-.. _`python3-crypto package`: http://packages.debian.org/sid/python3-crypto
+.. _`available on PyPI`: https://pypi.python.org/pypi/pycrypto
 .. _Sphinx: http://sphinx-doc.org/
 
 Get the code
