@@ -1,7 +1,10 @@
 #!/usr/bin/python
 
 import os.path
-from distutils.core import setup
+try:
+	from setuptools import setup
+except ImportError:
+	from distutils.core import setup
 
 version = '2.1.1'
 
@@ -26,14 +29,6 @@ classifiers = [
 	'Topic :: Software Development :: Libraries :: Python Modules'
 ]
 
-cmdclass = {}
-try:
-	from sphinx.setup_command import BuildDoc
-except ImportError:
-	pass
-else:
-	cmdclass['build_sphinx'] = BuildDoc
-
 setup(name='SecretStorage',
 	version=version,
 	description='Secure storing of passwords and other secrets',
@@ -45,6 +40,5 @@ setup(name='SecretStorage',
 	platforms='Linux',
 	license='BSD',
 	classifiers=classifiers,
-	cmdclass=cmdclass,
 	requires=['dbus', 'Crypto']
 )
