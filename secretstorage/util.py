@@ -151,7 +151,8 @@ def unlock_objects(bus, paths, callback=None):
 	representing whether the operation was dismissed."""
 	service_obj = bus_get_object(bus, SECRETS, SS_PATH)
 	service_iface = InterfaceWrapper(service_obj, SERVICE_IFACE)
-	prompt = service_iface.Unlock(paths, signature='ao')[1]
+	unlocked_paths, prompt = service_iface.Unlock(paths, signature='ao')
+	unlocked_paths = list(unlocked_paths)  # Convert from dbus.Array
 	if len(prompt) > 1:
 		if callback:
 			exec_prompt(bus, prompt, callback)
@@ -159,7 +160,7 @@ def unlock_objects(bus, paths, callback=None):
 			return exec_prompt_glib(bus, prompt)[0]
 	elif callback:
 		# We still need to call it.
-		callback(False, [])
+		callback(False, unlocked_paths)
 
 # Compatibility aliases
 exec_prompt_async_glib = exec_prompt_glib
