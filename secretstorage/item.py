@@ -68,8 +68,8 @@ class Item(object):
 		"""Returns item attributes (dictionary)."""
 		attrs = self.item_props_iface.Get(ITEM_IFACE, 'Attributes',
 			signature='ss')
-		return dict([(to_unicode(key), to_unicode(value))
-			for key, value in attrs.items()])
+		return {to_unicode(key): to_unicode(value)
+			for key, value in attrs.items()}
 
 	def set_attributes(self, attributes):
 		"""Sets item attributes to `attributes` (dictionary)."""
