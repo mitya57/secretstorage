@@ -162,10 +162,6 @@ def unlock_objects(bus, paths, callback=None):
 		# We still need to call it.
 		callback(False, unlocked_paths)
 
-# Compatibility aliases
-exec_prompt_async_glib = exec_prompt_glib
-exec_prompt_async_qt   = exec_prompt_qt
-
 def to_unicode(string):
 	"""Converts D-Bus string to unicode string."""
 	try:
