@@ -3,3 +3,4 @@ dist
 MANIFEST
 __pycache__
 *.pyc
+SecretStorage.egg-info
