@@ -43,7 +43,7 @@ Creating a new item in the default collection:
 
 >>> import secretstorage
 >>> bus = secretstorage.dbus_init()
->>> collection = secretstorage.Collection(bus)
+>>> collection = secretstorage.get_default_collection(bus)
 >>> attributes = {'application': 'myapp', 'another attribute':
 ...     'another value'}
 >>> item = collection.create_item('My first item', attributes,
@@ -51,7 +51,6 @@ Creating a new item in the default collection:
 
 Getting item's label, attributes and secret:
 
->>> item = collection.create_item('My first item', attributes, b'pa$$word')
 >>> item.get_label()
 'My first item'
 >>> item.get_attributes()
