@@ -84,9 +84,6 @@ class Collection(object):
 		`attributes` should be a dictionary."""
 		result = self.collection_iface.SearchItems(attributes,
 			signature='a{ss}')
-		if isinstance(result, tuple):
-			# bug in GNOME Keyring <= 3.7.5
-			result = result[0] + result[1]
 		for item_path in result:
 			yield Item(self.bus, item_path, self.session)
 
