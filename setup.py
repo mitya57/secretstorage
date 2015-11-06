@@ -31,7 +31,7 @@ classifiers = [
 
 setup(name='SecretStorage',
 	version=version,
-	description='Secure storing of passwords and other secrets',
+	description='Python bindings to FreeDesktop.org Secret Service API',
 	long_description=long_description,
 	author='Dmitry Shachnev',
 	author_email='mitya57@gmail.com',
