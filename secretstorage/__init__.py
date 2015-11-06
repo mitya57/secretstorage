@@ -21,6 +21,8 @@ from secretstorage.exceptions import SecretStorageException, \
  SecretServiceNotAvailableException, LockedException, \
  ItemNotFoundException
 from os.path import join
+from functools import wraps
+from warnings import warn
 
 __version_tuple__ = (2, 1, 2)
 __version__ = '.'.join(map(str, __version_tuple__))
@@ -56,6 +58,16 @@ def dbus_init(main_loop=True, use_qt_loop=False):
 # The functions below are provided for compatibility with old
 # SecretStorage versions (<= 0.2).
 
+def _deprecated(function_in):
+	@wraps(function_in)
+	def function_out(*args, **kwargs):
+		warn('Function %s is deprecated. Please use the documented API'
+		     ' instead.' % function_in.__name__, DeprecationWarning,
+		     stacklevel=2)
+		return function_in(*args, **kwargs)
+	return function_out
+
+@_deprecated
 def get_items(search_attributes, unlock_all=True):
 	"""Returns tuples for all items in the default collection matching
 	`search_attributes`."""
@@ -66,6 +78,7 @@ def get_items(search_attributes, unlock_all=True):
 	search_results = collection.search_items(search_attributes)
 	return [item.to_tuple() for item in search_results]
 
+@_deprecated
 def get_items_ids(search_attributes):
 	"""Returns item id for all items in the default collection matching
 	`search_attributes`."""
@@ -74,6 +87,7 @@ def get_items_ids(search_attributes):
 	search_results = collection.search_items(search_attributes)
 	return [item._item_id() for item in search_results]
 
+@_deprecated
 def get_item_attributes(item_id):
 	"""Returns item attributes for item with given id."""
 	bus = dbus_init()
@@ -81,6 +95,7 @@ def get_item_attributes(item_id):
 	item = Item(bus, join(collection.collection_path, str(item_id)))
 	return item.get_attributes()
 
+@_deprecated
 def get_item_object(item_id, unlock=True):
 	"""Returns the item with given id and unlocks it if `unlock` is
 	`True`."""
@@ -91,14 +106,17 @@ def get_item_object(item_id, unlock=True):
 		collection.unlock()
 	return item
 
+@_deprecated
 def get_item(item_id, unlock=True):
 	"""Returns tuple representing the item with given id."""
 	return get_item_object(item_id, unlock).to_tuple()
 
+@_deprecated
 def delete_item(item_id, unlock=True):
 	"""Deletes the item with given id."""
 	return get_item_object(item_id, unlock).delete()
 
+@_deprecated
 def create_item(label, attributes, secret, unlock=True):
 	"""Creates an item with given `label`, `attributes` and `secret` in
 	the default collection. Returns id of the created item."""
