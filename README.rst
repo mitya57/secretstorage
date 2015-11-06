@@ -44,6 +44,29 @@ If you have Sphinx_ installed, you can also build the documentation::
 .. _`available on PyPI`: https://pypi.python.org/pypi/pycrypto
 .. _Sphinx: http://sphinx-doc.org/
 
+Testing the module
+==================
+
+First, make sure that you have the Secret Service daemon installed.
+The `GNOME Keyring`_ is the reference server-side implementation for the
+Secret Service specification.
+
+.. _`GNOME Keyring`: https://download.gnome.org/sources/gnome-keyring/
+
+Then, start the daemon and unlock the ``default`` collection, if needed.
+The testsuite will fail to run if the ``default`` collection exists and is
+locked. If it does not exist, the testsuite can also use the temporary
+``session`` collection, as provided by the GNOME Keyring.
+
+Then, run the Python unittest module::
+
+   python3 -m unittest discover -s tests
+
+If you want to run the tests in an isolated or headless environment, run
+this command in a D-Bus session::
+
+   dbus-run-session -- python3 -m unittest discover -s tests
+
 Get the code
 ============
 
