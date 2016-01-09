@@ -61,7 +61,9 @@ class Item(object):
 		If `callback` is specified, calls it when unlocking is complete
 		(see :func:`~secretstorage.util.exec_prompt` description for
 		details). Otherwise, uses the loop from GLib API and returns a
-		boolean representing whether the operation was dismissed."""
+		boolean representing whether the operation was dismissed.
+
+		.. versionadded:: 2.1.2"""
 		return unlock_objects(self.bus, [self.item_path], callback)
 
 	def get_attributes(self):
@@ -129,7 +131,9 @@ class Item(object):
 
 	def get_created(self):
 		"""Returns UNIX timestamp (integer) representing the time
-		when the item was created."""
+		when the item was created.
+
+		.. versionadded:: 1.1"""
 		return int(self.item_props_iface.Get(ITEM_IFACE, 'Created',
 			signature='ss'))
 

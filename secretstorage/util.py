@@ -148,7 +148,9 @@ def unlock_objects(bus, paths, callback=None):
 	is specified, calls it when unlocking is complete (see
 	:func:`exec_prompt` description for details).
 	Otherwise, uses the loop from GLib API and returns a boolean
-	representing whether the operation was dismissed."""
+	representing whether the operation was dismissed.
+
+	.. versionadded:: 2.1.2"""
 	service_obj = bus_get_object(bus, SECRETS, SS_PATH)
 	service_iface = InterfaceWrapper(service_obj, SERVICE_IFACE)
 	unlocked_paths, prompt = service_iface.Unlock(paths, signature='ao')
