@@ -44,6 +44,24 @@ pygments_style = 'sphinx'
 # a list of builtin themes.
 html_theme = 'alabaster'
 
+# Theme options are theme-specific and customize the look and feel of a theme
+# further.  For a list of options available for each theme, see the
+# documentation.
+html_theme_options = {
+    'description': 'Python bindings to the FreeDesktop.org Secret Service API',
+    'description_font_style': 'italic',
+    'github_user': 'mitya57',
+    'github_repo': 'secretstorage',
+    'github_banner': True,
+    'github_button': False,
+    'sidebar_width': '260px',
+}
+
+# Custom sidebar templates, maps document names to template names.
+html_sidebars = {
+    '**': ['about.html', 'navigation.html', 'sourcelink.html', 'searchbox.html']
+}
+
 # -- Options for LaTeX output --------------------------------------------------
 
 # Grouping the document tree into LaTeX files. List of tuples
