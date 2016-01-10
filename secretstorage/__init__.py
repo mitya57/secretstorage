@@ -24,7 +24,7 @@ from os.path import join
 from functools import wraps
 from warnings import warn
 
-__version_tuple__ = (2, 1, 3)
+__version_tuple__ = (2, 1, 4)
 __version__ = '.'.join(map(str, __version_tuple__))
 
 def dbus_init(main_loop=True, use_qt_loop=False):

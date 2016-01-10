@@ -6,7 +6,7 @@ try:
 except ImportError:
 	from distutils.core import setup
 
-version = '2.1.3'
+version = '2.1.4'
 
 readme_file = open(os.path.join(os.path.dirname(__file__), 'README.rst'))
 long_description = '\n' + readme_file.read()
