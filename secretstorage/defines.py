@@ -10,6 +10,7 @@ SS_PREFIX = 'org.freedesktop.Secret.'
 SS_PATH = '/org/freedesktop/secrets'
 
 DBUS_UNKNOWN_METHOD  = 'org.freedesktop.DBus.Error.UnknownMethod'
+DBUS_ACCESS_DENIED   = 'org.freedesktop.DBus.Error.AccessDenied'
 DBUS_SERVICE_UNKNOWN = 'org.freedesktop.DBus.Error.ServiceUnknown'
 DBUS_EXEC_FAILED     = 'org.freedesktop.DBus.Error.Spawn.ExecFailed'
 DBUS_NO_REPLY        = 'org.freedesktop.DBus.Error.NoReply'
