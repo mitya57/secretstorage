@@ -50,6 +50,7 @@ html_theme = 'alabaster'
 html_theme_options = {
     'description': 'Python bindings to the FreeDesktop.org Secret Service API',
     'description_font_style': 'italic',
+    'github_button': False,
     'sidebar_width': '260px',
 }
 
