@@ -10,7 +10,7 @@ the item is unlocked. The collection can be unlocked using collection's
 :meth:`~secretstorage.collection.Collection.unlock` method."""
 
 import dbus
-from secretstorage.defines import SECRETS, SS_PREFIX
+from secretstorage.defines import SS_PREFIX
 from secretstorage.exceptions import LockedException
 from secretstorage.util import InterfaceWrapper, bus_get_object, \
  open_session, format_secret, to_unicode, unlock_objects
@@ -27,7 +27,7 @@ class Item(object):
 			# An item id was specified instead of the path
 			item_path = '%s/%d' % (DEFAULT_COLLECTION, item_path)
 		self.item_path = item_path
-		item_obj = bus_get_object(bus, SECRETS, item_path)
+		item_obj = bus_get_object(bus, item_path)
 		self.session = session
 		self.bus = bus
 		self.item_iface = InterfaceWrapper(item_obj, ITEM_IFACE)

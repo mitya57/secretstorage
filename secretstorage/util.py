@@ -9,7 +9,7 @@ normally be used by external applications."""
 import dbus
 from secretstorage.defines import DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT, \
  DBUS_SERVICE_UNKNOWN, DBUS_NO_REPLY, DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED, \
- SECRETS, SS_PATH, SS_PREFIX, ALGORITHM_DH, ALGORITHM_PLAIN
+ SS_PATH, SS_PREFIX, ALGORITHM_DH, ALGORITHM_PLAIN
 from secretstorage.dhcrypto import Session
 from secretstorage.exceptions import ItemNotFoundException, \
  SecretServiceNotAvailableException
@@ -44,10 +44,11 @@ class InterfaceWrapper(dbus.Interface):
 			result = self.catch_errors(result)
 		return result
 
-def bus_get_object(bus, name, object_path):
+def bus_get_object(bus, object_path, service_name=None):
 	"""A wrapper around :meth:`SessionBus.get_object` that raises
 	:exc:`~secretstorage.exceptions.SecretServiceNotAvailableException`
 	when appropriate."""
+	name = service_name or 'org.freedesktop.secrets'
 	try:
 		return bus.get_object(name, object_path, introspect=False)
 	except dbus.exceptions.DBusException as e:
@@ -58,7 +59,7 @@ def bus_get_object(bus, name, object_path):
 
 def open_session(bus):
 	"""Returns a new Secret Service session."""
-	service_obj = bus_get_object(bus, SECRETS, SS_PATH)
+	service_obj = bus_get_object(bus, SS_PATH)
 	service_iface = dbus.Interface(service_obj, SS_PREFIX+'Service')
 	session = Session()
 	try:
@@ -106,7 +107,7 @@ def exec_prompt(bus, prompt, callback):
 	function with two arguments: a boolean representing whether the
 	operation was dismissed and a list of unlocked item paths. A main
 	loop should be running and registered for this function to work."""
-	prompt_obj = bus_get_object(bus, SECRETS, prompt)
+	prompt_obj = bus_get_object(bus, prompt)
 	prompt_iface = dbus.Interface(prompt_obj, SS_PREFIX+'Prompt')
 	prompt_iface.Prompt('', signature='s')
 	def new_callback(dismissed, unlocked):
@@ -151,7 +152,7 @@ def unlock_objects(bus, paths, callback=None):
 	representing whether the operation was dismissed.
 
 	.. versionadded:: 2.1.2"""
-	service_obj = bus_get_object(bus, SECRETS, SS_PATH)
+	service_obj = bus_get_object(bus, SS_PATH)
 	service_iface = InterfaceWrapper(service_obj, SERVICE_IFACE)
 	unlocked_paths, prompt = service_iface.Unlock(paths, signature='ao')
 	unlocked_paths = list(unlocked_paths)  # Convert from dbus.Array

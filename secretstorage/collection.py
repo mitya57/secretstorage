@@ -16,7 +16,7 @@ asynchronous). Creating new items and editing existing ones is possible
 only in unlocked collection."""
 
 import dbus
-from secretstorage.defines import SS_PREFIX, SS_PATH, SECRETS
+from secretstorage.defines import SS_PREFIX, SS_PATH
 from secretstorage.exceptions import LockedException, ItemNotFoundException
 from secretstorage.item import Item
 from secretstorage.util import bus_get_object, InterfaceWrapper, \
@@ -31,7 +31,7 @@ class Collection(object):
 	"""Represents a collection."""
 
 	def __init__(self, bus, collection_path=DEFAULT_COLLECTION, session=None):
-		collection_obj = bus_get_object(bus, SECRETS, collection_path)
+		collection_obj = bus_get_object(bus, collection_path)
 		self.bus = bus
 		self.session = session
 		self.collection_path = collection_path
@@ -64,7 +64,7 @@ class Collection(object):
 
 	def lock(self):
 		"""Locks the collection."""
-		service_obj = bus_get_object(self.bus, SECRETS, SS_PATH)
+		service_obj = bus_get_object(self.bus, SS_PATH)
 		service_iface = InterfaceWrapper(service_obj, SERVICE_IFACE)
 		service_iface.Lock([self.collection_path], signature='ao')
 
@@ -128,7 +128,7 @@ def create_collection(bus, label, alias='', session=None):
 	if not session:
 		session = open_session(bus)
 	properties = {SS_PREFIX+'Collection.Label': label}
-	service_obj = bus_get_object(bus, SECRETS, SS_PATH)
+	service_obj = bus_get_object(bus, SS_PATH)
 	service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
 	collection_path, prompt = service_iface.CreateCollection(properties,
 		alias, signature='a{sv}s')
@@ -141,7 +141,7 @@ def create_collection(bus, label, alias='', session=None):
 
 def get_all_collections(bus):
 	"""Returns a generator of all available collections."""
-	service_obj = bus_get_object(bus, SECRETS, SS_PATH)
+	service_obj = bus_get_object(bus, SS_PATH)
 	service_props_iface = dbus.Interface(service_obj,
 		dbus.PROPERTIES_IFACE)
 	for collection_path in service_props_iface.Get(SERVICE_IFACE,
@@ -183,7 +183,7 @@ def get_collection_by_alias(bus, alias):
 	"""Returns the collection with the given `alias`. If there is no
 	such collection, raises
 	:exc:`~secretstorage.exceptions.ItemNotFoundException`."""
-	service_obj = bus_get_object(bus, SECRETS, SS_PATH)
+	service_obj = bus_get_object(bus, SS_PATH)
 	service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
 	collection_path = service_iface.ReadAlias(alias, signature='s')
 	if len(collection_path) <= 1:
@@ -193,7 +193,7 @@ def get_collection_by_alias(bus, alias):
 def search_items(bus, attributes):
 	"""Returns a generator of items in all collections with the given
 	attributes. `attributes` should be a dictionary."""
-	service_obj = bus_get_object(bus, SECRETS, SS_PATH)
+	service_obj = bus_get_object(bus, SS_PATH)
 	service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
 	locked, unlocked = service_iface.SearchItems(attributes,
 		signature='a{ss}')

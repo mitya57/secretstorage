@@ -5,7 +5,6 @@
 
 # This file contains some common defines.
 
-SECRETS = 'org.freedesktop.secrets'
 SS_PREFIX = 'org.freedesktop.Secret.'
 SS_PATH = '/org/freedesktop/secrets'
 
