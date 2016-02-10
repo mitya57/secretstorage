@@ -17,6 +17,7 @@ from Crypto.Random import get_random_bytes
 from Crypto.Cipher.AES import AESCipher, MODE_CBC, block_size
 from secretstorage.dhcrypto import long_to_bytes, bytes_to_long
 
+BUS_NAME = 'org.freedesktop.secrets'
 SERVICE_IFACE = SS_PREFIX + 'Service'
 
 class InterfaceWrapper(dbus.Interface):
@@ -48,7 +49,7 @@ def bus_get_object(bus, object_path, service_name=None):
 	"""A wrapper around :meth:`SessionBus.get_object` that raises
 	:exc:`~secretstorage.exceptions.SecretServiceNotAvailableException`
 	when appropriate."""
-	name = service_name or 'org.freedesktop.secrets'
+	name = service_name or BUS_NAME
 	try:
 		return bus.get_object(name, object_path, introspect=False)
 	except dbus.exceptions.DBusException as e:
