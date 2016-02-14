@@ -15,7 +15,7 @@ if __name__ == '__main__':
 	      (sys.version_info[:3] + (os.path.dirname(secretstorage.__file__),)))
 	mock = None
 	if len(sys.argv) > 1 and os.path.isfile(sys.argv[1]):
-		mock = subprocess.Popen(('python3', sys.argv[1],),
+		mock = subprocess.Popen(('/usr/bin/python3', sys.argv[1],),
 		                        stdout=subprocess.PIPE,
 		                        universal_newlines=True)
 		bus_name = mock.stdout.readline().rstrip()
