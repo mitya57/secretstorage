@@ -1,3 +1,7 @@
+.. image:: https://api.travis-ci.org/mitya57/secretstorage.svg
+   :target: https://travis-ci.org/mitya57/secretstorage
+   :alt: Travis CI status
+
 Module description
 ==================
 
