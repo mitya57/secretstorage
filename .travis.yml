@@ -1,12 +1,18 @@
 sudo: required
 dist: trusty
-install:
+language: python
+python:
+  - "2.7"
+  - "3.2"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+before_install:
   - sudo apt-get update
-  - sudo apt-get install python3-crypto
+  - sudo apt-get install -y libdbus-glib-1-dev
+install: pip install dbus-python pycrypto
 before_script:
   - git clone git://git.gnome.org/libsecret.git
 script:
-  - dbus-launch --exit-with-session /usr/bin/python2 tests/run_tests.py libsecret/libsecret/mock-service-normal.py
-  - dbus-launch --exit-with-session /usr/bin/python3 tests/run_tests.py libsecret/libsecret/mock-service-normal.py
-  - dbus-launch --exit-with-session /usr/bin/python2 tests/run_tests.py libsecret/libsecret/mock-service-only-plain.py
-  - dbus-launch --exit-with-session /usr/bin/python3 tests/run_tests.py libsecret/libsecret/mock-service-only-plain.py
+  - dbus-launch --exit-with-session python tests/run_tests.py libsecret/libsecret/mock-service-normal.py
+  - dbus-launch --exit-with-session python tests/run_tests.py libsecret/libsecret/mock-service-only-plain.py
