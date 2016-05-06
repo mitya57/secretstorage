@@ -20,9 +20,6 @@ from secretstorage.defines import DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED, \
 from secretstorage.exceptions import SecretStorageException, \
  SecretServiceNotAvailableException, LockedException, \
  ItemNotFoundException
-from os.path import join
-from functools import wraps
-from warnings import warn
 
 __version_tuple__ = (2, 1, 4)
 __version__ = '.'.join(map(str, __version_tuple__))
