@@ -36,11 +36,7 @@ class Item(object):
 		self.item_props_iface.Get(ITEM_IFACE, 'Label', signature='ss')
 
 	def __eq__(self, other):
-		return (self._item_id() == other._item_id()) \
-		and (self.get_attributes() == other.get_attributes())
-
-	def _item_id(self):
-		return int(self.item_path.rsplit('/', 1)[1])
+		return self.item_path == other.item_path
 
 	def is_locked(self):
 		"""Returns :const:`True` if item is locked, otherwise
