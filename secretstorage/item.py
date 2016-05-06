@@ -17,15 +17,11 @@ from secretstorage.util import InterfaceWrapper, bus_get_object, \
 from Crypto.Cipher.AES import AESCipher, MODE_CBC
 
 ITEM_IFACE = SS_PREFIX + 'Item'
-DEFAULT_COLLECTION = '/org/freedesktop/secrets/aliases/default'
 
 class Item(object):
 	"""Represents a secret item."""
 
 	def __init__(self, bus, item_path, session=None):
-		if isinstance(item_path, int):
-			# An item id was specified instead of the path
-			item_path = '%s/%d' % (DEFAULT_COLLECTION, item_path)
 		self.item_path = item_path
 		item_obj = bus_get_object(bus, item_path)
 		self.session = session
