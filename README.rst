@@ -20,7 +20,7 @@ locking and unlocking collections (asynchronous unlocking is also supported).
 
 The documentation can be found on `pythonhosted.org`_.
 
-.. _`Secret Service`: http://standards.freedesktop.org/secret-service/
+.. _`Secret Service`: https://specifications.freedesktop.org/secret-service/
 .. _`pythonhosted.org`: https://pythonhosted.org/SecretStorage/
 
 Building the module
@@ -43,7 +43,7 @@ If you have Sphinx_ installed, you can also build the documentation::
 
    python3 setup.py build_sphinx
 
-.. _`dbus-python`: http://www.freedesktop.org/wiki/Software/DBusBindings/#dbus-python
+.. _`dbus-python`: https://www.freedesktop.org/wiki/Software/DBusBindings/#dbus-python
 .. _PyCrypto: https://www.dlitz.net/software/pycrypto/
 .. _`available on PyPI`: https://pypi.python.org/pypi/pycrypto
 .. _Sphinx: http://sphinx-doc.org/

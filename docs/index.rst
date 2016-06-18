@@ -13,8 +13,8 @@ It allows one to create new secret items, delete and search for
 passwords matching given attributes. It also supports graphical prompts
 when unlocking is needed.
 
-.. _`D-Bus`: http://www.freedesktop.org/wiki/Software/dbus
-.. _`Secret Service`: http://standards.freedesktop.org/secret-service/
+.. _`D-Bus`: https://www.freedesktop.org/wiki/Software/dbus
+.. _`Secret Service`: https://specifications.freedesktop.org/secret-service/
 .. _`GNOME Keyring`: https://wiki.gnome.org/Projects/GnomeKeyring
 .. _KSecretsService: https://techbase.kde.org/Projects/Utils/ksecretsservice
 
@@ -29,7 +29,7 @@ Initializing D-Bus
    If you don't know how D-Bus works, please read `Introduction to D-Bus`_
    firstly.
 
-   .. _`Introduction to D-Bus`: http://www.freedesktop.org/wiki/IntroductionToDBus
+   .. _`Introduction to D-Bus`: https://www.freedesktop.org/wiki/IntroductionToDBus
 
 Before using SecretStorage, you need to initialize D-Bus. This can be done
 using this function:
