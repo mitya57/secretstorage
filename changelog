@@ -1,3 +1,11 @@
+SecretStorage 2.2.0, 2016-06-18
+===============================
+
+* Deprecated compatibility functions are dropped.
+* Installation from PyPI now pulls in dbus-python.
+* Travis CI tests added.
+* Other minor fixes, simplifications and improvements.
+
 SecretStorage 2.1.4, 2016-01-10
 ===============================
 

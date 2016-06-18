@@ -31,9 +31,9 @@ copyright = '2016, Dmitry Shachnev'
 # built documents.
 #
 # The short X.Y version.
-version = '2.1'
+version = '2.2'
 # The full version, including alpha/beta/rc tags.
-release = '2.1.4'
+release = '2.2.0'
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
