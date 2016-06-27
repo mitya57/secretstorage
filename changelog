@@ -1,3 +1,9 @@
+SecretStorage 2.2.1, 2016-06-27
+===============================
+
+* Made dbus-python dependency optional because compiling it from sources
+  is not an option for many users. See issues #4 and #5 for details.
+
 SecretStorage 2.2.0, 2016-06-18
 ===============================
 
