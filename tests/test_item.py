@@ -59,6 +59,7 @@ class ItemTest(unittest.TestCase):
 	def test_secret(self):
 		self.assertEqual(self.item.get_secret(), b'pa$$word')
 		self.item.set_secret(b'newpa$$word')
+		self.assertIsInstance(self.item.get_secret(), bytes)
 		self.assertEqual(self.item.get_secret(), b'newpa$$word')
 		self.assertEqual(self.other_item.get_secret(), b'')
 

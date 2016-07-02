@@ -100,7 +100,7 @@ class Item(object):
 			IV=bytes(bytearray(secret[1])))
 		padded_secret = bytearray(aes_cipher.decrypt(
 			bytes(bytearray(secret[2]))))
-		return padded_secret[:-padded_secret[-1]]
+		return bytes(padded_secret[:-padded_secret[-1]])
 
 	def get_secret_content_type(self):
 		"""Returns content type of item secret (string)."""
