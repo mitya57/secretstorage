@@ -9,9 +9,9 @@ algorithm.'''
 
 import hmac
 import math
+import os
 
 from hashlib import sha256
-from Crypto.Random.random import getrandbits
 
 # A standard 1024 bits (128 bytes) prime number for use in Diffie-Hellman exchange
 DH_PRIME_1024_BYTES = (
@@ -48,7 +48,7 @@ class Session(object):
 		self.aes_key = None
 		self.encrypted = True
 		# 128-bytes-long strong random number
-		self.my_private_key = getrandbits(0x400)
+		self.my_private_key = bytes_to_long(os.urandom(0x80))
 		self.my_public_key = pow(2, self.my_private_key, DH_PRIME_1024)
 
 	def set_server_public_key(self, server_public_key):
