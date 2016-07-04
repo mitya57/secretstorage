@@ -14,7 +14,8 @@ from secretstorage.defines import SS_PREFIX
 from secretstorage.exceptions import LockedException
 from secretstorage.util import InterfaceWrapper, bus_get_object, \
  open_session, format_secret, to_unicode, unlock_objects
-from Crypto.Cipher.AES import AESCipher, MODE_CBC
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
 
 ITEM_IFACE = SS_PREFIX + 'Item'
 
@@ -96,10 +97,12 @@ class Item(object):
 			signature='o')
 		if not self.session.encrypted:
 			return bytes(bytearray(secret[2]))
-		aes_cipher = AESCipher(self.session.aes_key, mode=MODE_CBC,
-			IV=bytes(bytearray(secret[1])))
-		padded_secret = bytearray(aes_cipher.decrypt(
-			bytes(bytearray(secret[2]))))
+		aes = algorithms.AES(self.session.aes_key)
+		aes_iv = bytes(bytearray(secret[1]))
+		decryptor = Cipher(aes, modes.CBC(aes_iv), default_backend()).decryptor()
+		encrypted_secret = bytes(bytearray(secret[2]))
+		padded_secret = decryptor.update(encrypted_secret) + decryptor.finalize()
+		padded_secret = bytearray(padded_secret)
 		return bytes(padded_secret[:-padded_secret[-1]])
 
 	def get_secret_content_type(self):

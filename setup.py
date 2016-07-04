@@ -40,7 +40,7 @@ setup(name='SecretStorage',
 	platforms='Linux',
 	license='BSD',
 	classifiers=classifiers,
-	install_requires=['pycrypto'],
+	install_requires=['cryptography'],
 	extras_require={
 		'dbus-python': ['dbus-python'],
 	},

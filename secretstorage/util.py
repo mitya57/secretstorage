@@ -11,11 +11,11 @@ import os
 from secretstorage.defines import DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT, \
  DBUS_SERVICE_UNKNOWN, DBUS_NO_REPLY, DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED, \
  SS_PATH, SS_PREFIX, ALGORITHM_DH, ALGORITHM_PLAIN
-from secretstorage.dhcrypto import Session
+from secretstorage.dhcrypto import Session, long_to_bytes, bytes_to_long
 from secretstorage.exceptions import ItemNotFoundException, \
  SecretServiceNotAvailableException
-from Crypto.Cipher.AES import AESCipher, MODE_CBC, block_size
-from secretstorage.dhcrypto import long_to_bytes, bytes_to_long
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
 
 BUS_NAME = 'org.freedesktop.secrets'
 SERVICE_IFACE = SS_PREFIX + 'Service'
@@ -94,12 +94,14 @@ def format_secret(session, secret, content_type):
 	# PKCS-7 style padding
 	padding = 0x10 - (len(secret) & 0xf)
 	secret += bytes(bytearray((padding,)) * padding)
-	aes_iv = os.urandom(block_size)
-	aes_cipher = AESCipher(session.aes_key, mode=MODE_CBC, IV=aes_iv)
+	aes_iv = os.urandom(0x10)
+	aes = algorithms.AES(session.aes_key)
+	encryptor = Cipher(aes, modes.CBC(aes_iv), default_backend()).encryptor()
+	encrypted_secret = encryptor.update(secret) + encryptor.finalize()
 	return dbus.Struct((
 		session.object_path,
 		dbus.Array(aes_iv),
-		dbus.Array(bytearray(aes_cipher.encrypt(secret))),
+		dbus.Array(bytearray(encrypted_secret)),
 		content_type
 	))
 

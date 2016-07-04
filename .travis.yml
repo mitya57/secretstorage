@@ -10,7 +10,7 @@ python:
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y libdbus-glib-1-dev
-install: pip install dbus-python pycrypto
+install: pip install dbus-python cryptography
 before_script:
   - git clone git://git.gnome.org/libsecret.git
 script:

@@ -33,7 +33,7 @@ Building the module
 SecretStorage requires these packages to work:
 
 * `dbus-python`_;
-* PyCrypto_ (also `available on PyPI`_).
+* `python-cryptography_`.
 
 To build SecretStorage, use this command::
 
@@ -44,8 +44,7 @@ If you have Sphinx_ installed, you can also build the documentation::
    python3 setup.py build_sphinx
 
 .. _`dbus-python`: https://www.freedesktop.org/wiki/Software/DBusBindings/#dbus-python
-.. _PyCrypto: https://www.dlitz.net/software/pycrypto/
-.. _`available on PyPI`: https://pypi.python.org/pypi/pycrypto
+.. _`python-cryptography`: https://pypi.python.org/pypi/cryptography
 .. _Sphinx: http://sphinx-doc.org/
 
 Testing the module

@@ -12,6 +12,7 @@ import math
 import os
 
 from hashlib import sha256
+from cryptography.utils import int_from_bytes
 
 # A standard 1024 bits (128 bytes) prime number for use in Diffie-Hellman exchange
 DH_PRIME_1024_BYTES = (
@@ -25,19 +26,15 @@ DH_PRIME_1024_BYTES = (
 	0x49, 0x28, 0x66, 0x51, 0xEC, 0xE6, 0x53, 0x81, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
 )
 
-if hasattr(int, 'from_bytes'):
-	bytes_to_long = lambda bytes_array: int.from_bytes(bytes_array, 'big')
-else:
-	from Crypto.Util.number import bytes_to_long as _to_long
-	# We need to support both list and bytes input
-	bytes_to_long = lambda b: _to_long(bytes(bytearray(b)))
+# We need to support both list and bytes input
+bytes_to_long = lambda bytes_array: int_from_bytes(bytes(bytearray(bytes_array)), 'big')
 
 if hasattr(int, 'to_bytes'):
 	def long_to_bytes(number):
 		return int.to_bytes(number,
 			math.ceil(number.bit_length() / 8), 'big')
 else:
-	from Crypto.Util.number import long_to_bytes
+	from cryptography.utils import int_to_bytes as long_to_bytes
 
 DH_PRIME_1024 = bytes_to_long(DH_PRIME_1024_BYTES)
 
