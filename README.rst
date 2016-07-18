@@ -32,8 +32,8 @@ Building the module
 
 SecretStorage requires these packages to work:
 
-* `dbus-python`_;
-* `python-cryptography_`.
+* `dbus-python`_
+* `python-cryptography`_
 
 To build SecretStorage, use this command::
 
