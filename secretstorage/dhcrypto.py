@@ -26,9 +26,6 @@ DH_PRIME_1024_BYTES = (
 	0x49, 0x28, 0x66, 0x51, 0xEC, 0xE6, 0x53, 0x81, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
 )
 
-# We need to support both list and bytes input
-bytes_to_long = lambda bytes_array: int_from_bytes(bytes(bytearray(bytes_array)), 'big')
-
 if hasattr(int, 'to_bytes'):
 	def long_to_bytes(number):
 		return int.to_bytes(number,
@@ -36,7 +33,7 @@ if hasattr(int, 'to_bytes'):
 else:
 	from cryptography.utils import int_to_bytes as long_to_bytes
 
-DH_PRIME_1024 = bytes_to_long(DH_PRIME_1024_BYTES)
+DH_PRIME_1024 = int_from_bytes(bytearray(DH_PRIME_1024_BYTES), 'big')
 
 class Session(object):
 	def __init__(self):
@@ -45,7 +42,7 @@ class Session(object):
 		self.aes_key = None
 		self.encrypted = True
 		# 128-bytes-long strong random number
-		self.my_private_key = bytes_to_long(os.urandom(0x80))
+		self.my_private_key = int_from_bytes(os.urandom(0x80), 'big')
 		self.my_public_key = pow(2, self.my_private_key, DH_PRIME_1024)
 
 	def set_server_public_key(self, server_public_key):

@@ -11,11 +11,12 @@ import os
 from secretstorage.defines import DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT, \
  DBUS_SERVICE_UNKNOWN, DBUS_NO_REPLY, DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED, \
  SS_PATH, SS_PREFIX, ALGORITHM_DH, ALGORITHM_PLAIN
-from secretstorage.dhcrypto import Session, long_to_bytes, bytes_to_long
+from secretstorage.dhcrypto import Session, long_to_bytes
 from secretstorage.exceptions import ItemNotFoundException, \
  SecretServiceNotAvailableException
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
+from cryptography.utils import int_from_bytes
 
 BUS_NAME = 'org.freedesktop.secrets'
 SERVICE_IFACE = SS_PREFIX + 'Service'
@@ -79,7 +80,8 @@ def open_session(bus):
 		)
 		session.encrypted = False
 	else:
-		session.set_server_public_key(bytes_to_long(output))
+		output = int_from_bytes(bytearray(output), 'big')
+		session.set_server_public_key(output)
 	session.object_path = result
 	return session
 
