@@ -11,7 +11,7 @@ import os
 from secretstorage.defines import DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT, \
  DBUS_SERVICE_UNKNOWN, DBUS_NO_REPLY, DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED, \
  SS_PATH, SS_PREFIX, ALGORITHM_DH, ALGORITHM_PLAIN
-from secretstorage.dhcrypto import Session, long_to_bytes
+from secretstorage.dhcrypto import Session, int_to_bytes
 from secretstorage.exceptions import ItemNotFoundException, \
  SecretServiceNotAvailableException
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
@@ -67,7 +67,7 @@ def open_session(bus):
 	try:
 		output, result = service_iface.OpenSession(
 			ALGORITHM_DH,
-			dbus.ByteArray(long_to_bytes(session.my_public_key)),
+			dbus.ByteArray(int_to_bytes(session.my_public_key)),
 			signature='sv'
 		)
 	except dbus.exceptions.DBusException as e:

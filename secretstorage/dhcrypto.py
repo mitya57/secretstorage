@@ -27,11 +27,11 @@ DH_PRIME_1024_BYTES = (
 )
 
 if hasattr(int, 'to_bytes'):
-	def long_to_bytes(number):
+	def int_to_bytes(number):
 		return int.to_bytes(number,
 			math.ceil(number.bit_length() / 8), 'big')
 else:
-	from cryptography.utils import int_to_bytes as long_to_bytes
+	from cryptography.utils import int_to_bytes
 
 DH_PRIME_1024 = int_from_bytes(bytearray(DH_PRIME_1024_BYTES), 'big')
 
@@ -48,7 +48,7 @@ class Session(object):
 	def set_server_public_key(self, server_public_key):
 		common_secret = pow(server_public_key, self.my_private_key,
 			DH_PRIME_1024)
-		common_secret = long_to_bytes(common_secret)
+		common_secret = int_to_bytes(common_secret)
 		# Prepend NULL bytes if needed
 		common_secret = b'\x00' * (0x80 - len(common_secret)) + common_secret
 		# HKDF with null salt, empty info and SHA-256 hash
