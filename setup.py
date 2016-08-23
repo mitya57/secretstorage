@@ -42,5 +42,5 @@ setup(name='SecretStorage',
 	extras_require={
 		'dbus-python': ['dbus-python'],
 	},
-	requires=['dbus', 'Crypto']
+	requires=['dbus', 'cryptography']
 )
