@@ -18,10 +18,10 @@ SecretStorage supports most of the functions provided by Secret Service,
 including creating and deleting items and collections, editing items,
 locking and unlocking collections (asynchronous unlocking is also supported).
 
-The documentation can be found on `pythonhosted.org`_.
+The documentation can be found on `secretstorage.readthedocs.io`_.
 
 .. _`Secret Service`: https://specifications.freedesktop.org/secret-service/
-.. _`pythonhosted.org`: https://pythonhosted.org/SecretStorage/
+.. _`secretstorage.readthedocs.io`: https://secretstorage.readthedocs.io/en/latest/
 
 Building the module
 ===================
