@@ -1,3 +1,9 @@
+SecretStorage 2.3.1, 2016-08-27
+===============================
+
+* Update requires line in setup.py for cryptography port.
+* Documentation is now hosted on ReadTheDocs.
+
 SecretStorage 2.3.0, 2016-08-17
 ===============================
 
