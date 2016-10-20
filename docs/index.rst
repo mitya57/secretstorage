@@ -58,7 +58,26 @@ Getting item's label, attributes and secret:
 >>> item.get_secret()
 b'pa$$word'
 
-Locking and unlocking collections:
+Locking and unlocking collections
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. note::
+   You will need to install PyGObject_ (aka PyGI) bindings to make
+   the code below working. The only exception is when you want to use
+   :func:`~secretstorage.util.exec_prompt_qt`, in that case you will
+   need to install PyQt5_.
+
+   The PyGObject bindings can not be installed from PyPI, but most
+   distributions have them packaged (for example, you can use the
+   ``python3-gi`` package on Debian).
+
+   .. _PyGObject: https://wiki.gnome.org/Projects/PyGObject
+   .. _PyQt5: https://riverbankcomputing.com/software/pyqt/download5
+
+The easiest way is using the synchronous API provided by SecretStorage.
+This means that if prompting the user for a password is needed, then
+:meth:`~secretstorage.collection.Collection.unlock` call will block until
+the password is entered.
 
 >>> collection.lock()
 >>> collection.is_locked()
