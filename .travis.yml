@@ -12,6 +12,7 @@ before_install:
   - sudo apt-get install -y libdbus-glib-1-dev
 install:
   - which python3.3-config && sed -i "s|not getvar('Py_ENABLE_SHARED')|True|" $(which python3.3-config) || true
+  - sed -i "s|not getvar('Py_ENABLE_SHARED')|True|" $(which python)-config || true
   - pip install dbus-python cryptography
 before_script:
   - git clone git://git.gnome.org/libsecret.git
