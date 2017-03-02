@@ -76,6 +76,6 @@ if os.environ.get('READTHEDOCS') == 'True':
     class Mock(MagicMock):
         @classmethod
         def __getattr__(cls, name):
-            return Mock()
+            return MagicMock()
 
     sys.modules['dbus'] = Mock()
