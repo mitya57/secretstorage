@@ -43,7 +43,7 @@ If you have Sphinx_ installed, you can also build the documentation::
 
    python3 setup.py build_sphinx
 
-.. _`dbus-python`: https://www.freedesktop.org/wiki/Software/DBusBindings/#dbus-python
+.. _`dbus-python`: https://www.freedesktop.org/wiki/Software/DBusBindings/#dbus-pythonbasedondbus-glib
 .. _`python-cryptography`: https://pypi.python.org/pypi/cryptography
 .. _Sphinx: http://sphinx-doc.org/
 
