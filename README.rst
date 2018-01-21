@@ -27,8 +27,10 @@ Building the module
 ===================
 
 .. note::
-   SecretStorage supports Python 2.7 and all versions of Python since 3.3.
-   Here we assume that your Python version is 3.x.
+   SecretStorage 3.x supports Python 3.5 and newer versions.
+   If you have an older version of Python, install SecretStorage 2.x::
+
+      pip install "SecretStorage < 3"
 
 SecretStorage requires these packages to work:
 

@@ -2,9 +2,6 @@ sudo: false
 dist: trusty
 language: python
 python:
-  - "2.7"
-  - "3.3"
-  - "3.4"
   - "3.5"
   - "3.6"
 addons:
@@ -13,12 +10,10 @@ addons:
     - dbus-x11
     - libdbus-glib-1-dev
 install:
-  - sed -i "s|not getvar('Py_ENABLE_SHARED')|True|" /opt/python/3.3.6/bin/python3.3-config || true
   - sed -i "s|not getvar('Py_ENABLE_SHARED')|True|" $(which python)-config || true
-  - PATH=/opt/python/3.3.6/bin/:$PATH pip install cryptography dbus-python
+  - pip install cryptography dbus-python
 before_script:
   - git clone git://git.gnome.org/libsecret.git
 script:
-  - export PYTHONPATH=/opt/python/3.3.6/lib/python3.3/site-packages/
   - dbus-launch --exit-with-session python tests/run_tests.py libsecret/libsecret/mock-service-normal.py
   - dbus-launch --exit-with-session python tests/run_tests.py libsecret/libsecret/mock-service-only-plain.py
