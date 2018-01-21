@@ -26,12 +26,8 @@ DH_PRIME_1024_BYTES = (
 	0x49, 0x28, 0x66, 0x51, 0xEC, 0xE6, 0x53, 0x81, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
 )
 
-if hasattr(int, 'to_bytes'):
-	def int_to_bytes(number):
-		return int.to_bytes(number,
-			math.ceil(number.bit_length() / 8), 'big')
-else:
-	from cryptography.utils import int_to_bytes
+def int_to_bytes(number):
+	return int(number).to_bytes(math.ceil(number.bit_length() / 8), 'big')
 
 DH_PRIME_1024 = int_from_bytes(bytearray(DH_PRIME_1024_BYTES), 'big')
 
