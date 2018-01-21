@@ -29,7 +29,7 @@ DH_PRIME_1024_BYTES = (
 def int_to_bytes(number):
 	return int(number).to_bytes(math.ceil(number.bit_length() / 8), 'big')
 
-DH_PRIME_1024 = int_from_bytes(bytearray(DH_PRIME_1024_BYTES), 'big')
+DH_PRIME_1024 = int_from_bytes(DH_PRIME_1024_BYTES, 'big')
 
 class Session(object):
 	def __init__(self):

@@ -80,7 +80,7 @@ def open_session(bus):
 		)
 		session.encrypted = False
 	else:
-		output = int_from_bytes(bytearray(output), 'big')
+		output = int_from_bytes(output, 'big')
 		session.set_server_public_key(output)
 	session.object_path = result
 	return session
@@ -95,7 +95,7 @@ def format_secret(session, secret, content_type):
 			dbus.ByteArray(secret), content_type))
 	# PKCS-7 style padding
 	padding = 0x10 - (len(secret) & 0xf)
-	secret += bytes(bytearray((padding,)) * padding)
+	secret += bytes((padding,) * padding)
 	aes_iv = os.urandom(0x10)
 	aes = algorithms.AES(session.aes_key)
 	encryptor = Cipher(aes, modes.CBC(aes_iv), default_backend()).encryptor()
@@ -103,7 +103,7 @@ def format_secret(session, secret, content_type):
 	return dbus.Struct((
 		session.object_path,
 		dbus.Array(aes_iv),
-		dbus.Array(bytearray(encrypted_secret)),
+		dbus.Array(encrypted_secret),
 		content_type
 	))
 

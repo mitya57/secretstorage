@@ -96,13 +96,12 @@ class Item(object):
 		secret = self.item_iface.GetSecret(self.session.object_path,
 			signature='o')
 		if not self.session.encrypted:
-			return bytes(bytearray(secret[2]))
+			return bytes(secret[2])
 		aes = algorithms.AES(self.session.aes_key)
-		aes_iv = bytes(bytearray(secret[1]))
+		aes_iv = bytes(secret[1])
 		decryptor = Cipher(aes, modes.CBC(aes_iv), default_backend()).decryptor()
-		encrypted_secret = bytes(bytearray(secret[2]))
+		encrypted_secret = bytes(secret[2])
 		padded_secret = decryptor.update(encrypted_secret) + decryptor.finalize()
-		padded_secret = bytearray(padded_secret)
 		return bytes(padded_secret[:-padded_secret[-1]])
 
 	def get_secret_content_type(self):
