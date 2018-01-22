@@ -30,9 +30,9 @@ SESSION_COLLECTION = '/org/freedesktop/secrets/collection/session'
 class Collection(object):
 	"""Represents a collection."""
 
-	def __init__(self, bus, collection_path=DEFAULT_COLLECTION, session=None):
-		collection_obj = bus_get_object(bus, collection_path)
-		self.bus = bus
+	def __init__(self, connection, collection_path=DEFAULT_COLLECTION, session=None):
+		collection_obj = bus_get_object(connection, collection_path)
+		self.connection = connection
 		self.session = session
 		self.collection_path = collection_path
 		self.collection_iface = InterfaceWrapper(collection_obj,
@@ -60,11 +60,11 @@ class Collection(object):
 		:func:`~secretstorage.util.exec_prompt` description for details).
 		Otherwise, uses loop from GLib API and returns a boolean
 		representing whether the operation was dismissed."""
-		return unlock_objects(self.bus, [self.collection_path], callback)
+		return unlock_objects(self.connection, [self.collection_path], callback)
 
 	def lock(self):
 		"""Locks the collection."""
-		service_obj = bus_get_object(self.bus, SS_PATH)
+		service_obj = bus_get_object(self.connection, SS_PATH)
 		service_iface = InterfaceWrapper(service_obj, SERVICE_IFACE)
 		service_iface.Lock([self.collection_path], signature='ao')
 
@@ -77,7 +77,7 @@ class Collection(object):
 		"""Returns a generator of all items in the collection."""
 		for item_path in self.collection_props_iface.Get(
 		COLLECTION_IFACE, 'Items', signature='ss'):
-			yield Item(self.bus, item_path, self.session)
+			yield Item(self.connection, item_path, self.session)
 
 	def search_items(self, attributes):
 		"""Returns a generator of items with the given attributes.
@@ -85,7 +85,7 @@ class Collection(object):
 		result = self.collection_iface.SearchItems(attributes,
 			signature='a{ss}')
 		for item_path in result:
-			yield Item(self.bus, item_path, self.session)
+			yield Item(self.connection, item_path, self.session)
 
 	def get_label(self):
 		"""Returns the collection label."""
@@ -109,7 +109,7 @@ class Collection(object):
 		Returns the created item."""
 		self.ensure_not_locked()
 		if not self.session:
-			self.session = open_session(self.bus)
+			self.session = open_session(self.connection)
 		secret = format_secret(self.session, secret, content_type)
 		attributes = dbus.Dictionary(attributes, signature='ss')
 		properties = {
@@ -118,84 +118,84 @@ class Collection(object):
 		}
 		new_item, prompt = self.collection_iface.CreateItem(properties,
 			secret, replace, signature='a{sv}(oayays)b')
-		return Item(self.bus, new_item, self.session)
+		return Item(self.connection, new_item, self.session)
 
-def create_collection(bus, label, alias='', session=None):
+def create_collection(connection, label, alias='', session=None):
 	"""Creates a new :class:`Collection` with the given `label` and `alias`
 	and returns it. This action requires prompting. If prompt is dismissed,
 	raises :exc:`~secretstorage.exceptions.ItemNotFoundException`. This is
 	synchronous function, uses loop from GLib API."""
 	if not session:
-		session = open_session(bus)
+		session = open_session(connection)
 	properties = {SS_PREFIX+'Collection.Label': label}
-	service_obj = bus_get_object(bus, SS_PATH)
+	service_obj = bus_get_object(connection, SS_PATH)
 	service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
 	collection_path, prompt = service_iface.CreateCollection(properties,
 		alias, signature='a{sv}s')
 	if len(collection_path) > 1:
-		return Collection(bus, collection_path, session=session)
-	dismissed, unlocked = exec_prompt_glib(bus, prompt)
+		return Collection(connection, collection_path, session=session)
+	dismissed, unlocked = exec_prompt_glib(connection, prompt)
 	if dismissed:
 		raise ItemNotFoundException('Prompt dismissed.')
-	return Collection(bus, unlocked, session=session)
+	return Collection(connection, unlocked, session=session)
 
-def get_all_collections(bus):
+def get_all_collections(connection):
 	"""Returns a generator of all available collections."""
-	service_obj = bus_get_object(bus, SS_PATH)
+	service_obj = bus_get_object(connection, SS_PATH)
 	service_props_iface = dbus.Interface(service_obj,
 		dbus.PROPERTIES_IFACE)
 	for collection_path in service_props_iface.Get(SERVICE_IFACE,
 	'Collections', signature='ss'):
-		yield Collection(bus, collection_path)
+		yield Collection(connection, collection_path)
 
-def get_default_collection(bus, session=None):
+def get_default_collection(connection, session=None):
 	"""Returns the default collection. If it doesn't exist,
 	creates it."""
 	try:
-		return Collection(bus)
+		return Collection(connection)
 	except ItemNotFoundException:
-		return create_collection(bus, 'Default',
+		return create_collection(connection, 'Default',
 		'default', session)
 
-def get_any_collection(bus):
+def get_any_collection(connection):
 	"""Returns any collection, in the following order of preference:
 
 	- The default collection;
 	- The "session" collection (usually temporary);
 	- The first collection in the collections list."""
 	try:
-		return Collection(bus)
+		return Collection(connection)
 	except ItemNotFoundException:
 		pass
 	try:
 		# GNOME Keyring provides session collection where items
 		# are stored in process memory.
-		return Collection(bus, SESSION_COLLECTION)
+		return Collection(connection, SESSION_COLLECTION)
 	except ItemNotFoundException:
 		pass
-	collections = list(get_all_collections(bus))
+	collections = list(get_all_collections(connection))
 	if collections:
 		return collections[0]
 	else:
 		raise ItemNotFoundException('No collections found.')
 
-def get_collection_by_alias(bus, alias):
+def get_collection_by_alias(connection, alias):
 	"""Returns the collection with the given `alias`. If there is no
 	such collection, raises
 	:exc:`~secretstorage.exceptions.ItemNotFoundException`."""
-	service_obj = bus_get_object(bus, SS_PATH)
+	service_obj = bus_get_object(connection, SS_PATH)
 	service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
 	collection_path = service_iface.ReadAlias(alias, signature='s')
 	if len(collection_path) <= 1:
 		raise ItemNotFoundException('No collection with such alias.')
-	return Collection(bus, collection_path)
+	return Collection(connection, collection_path)
 
-def search_items(bus, attributes):
+def search_items(connection, attributes):
 	"""Returns a generator of items in all collections with the given
 	attributes. `attributes` should be a dictionary."""
-	service_obj = bus_get_object(bus, SS_PATH)
+	service_obj = bus_get_object(connection, SS_PATH)
 	service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
 	locked, unlocked = service_iface.SearchItems(attributes,
 		signature='a{ss}')
 	for item_path in locked + unlocked:
-		yield Item(bus, item_path)
+		yield Item(connection, item_path)

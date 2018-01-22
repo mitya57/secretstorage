@@ -28,10 +28,10 @@ class ItemNotFoundException(SecretStorageException):
 	handling:
 
 	>>> import secretstorage
-	>>> bus = secretstorage.dbus_init()
+	>>> connection = secretstorage.dbus_init()
 	>>> item_path = '/not/existing/path'
 	>>> try:
-	...     item = secretstorage.Item(bus, item_path)
+	...     item = secretstorage.Item(connection, item_path)
 	... except secretstorage.ItemNotFoundException:
 	...     print('Item not found!')
 	... 

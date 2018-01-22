@@ -22,11 +22,11 @@ ITEM_IFACE = SS_PREFIX + 'Item'
 class Item(object):
 	"""Represents a secret item."""
 
-	def __init__(self, bus, item_path, session=None):
+	def __init__(self, connection, item_path, session=None):
 		self.item_path = item_path
-		item_obj = bus_get_object(bus, item_path)
+		item_obj = bus_get_object(connection, item_path)
 		self.session = session
-		self.bus = bus
+		self.connection = connection
 		self.item_iface = InterfaceWrapper(item_obj, ITEM_IFACE)
 		self.item_props_iface = InterfaceWrapper(item_obj,
 			dbus.PROPERTIES_IFACE)
@@ -57,7 +57,7 @@ class Item(object):
 		boolean representing whether the operation was dismissed.
 
 		.. versionadded:: 2.1.2"""
-		return unlock_objects(self.bus, [self.item_path], callback)
+		return unlock_objects(self.connection, [self.item_path], callback)
 
 	def get_attributes(self):
 		"""Returns item attributes (dictionary)."""
@@ -92,7 +92,7 @@ class Item(object):
 		"""Returns item secret (bytestring)."""
 		self.ensure_not_locked()
 		if not self.session:
-			self.session = open_session(self.bus)
+			self.session = open_session(self.connection)
 		secret = self.item_iface.GetSecret(self.session.object_path,
 			signature='o')
 		if not self.session.encrypted:
@@ -108,7 +108,7 @@ class Item(object):
 		"""Returns content type of item secret (string)."""
 		self.ensure_not_locked()
 		if not self.session:
-			self.session = open_session(self.bus)
+			self.session = open_session(self.connection)
 		secret = self.item_iface.GetSecret(self.session.object_path,
 			signature='o')
 		return str(secret[3])
@@ -119,7 +119,7 @@ class Item(object):
 		default)."""
 		self.ensure_not_locked()
 		if not self.session:
-			self.session = open_session(self.bus)
+			self.session = open_session(self.connection)
 		secret = format_secret(self.session, secret, content_type)
 		self.item_iface.SetSecret(secret, signature='(oayays)')
 

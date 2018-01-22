@@ -46,22 +46,22 @@ class InterfaceWrapper(dbus.Interface):
 			result = self.catch_errors(result)
 		return result
 
-def bus_get_object(bus, object_path, service_name=None):
+def bus_get_object(connection, object_path, service_name=None):
 	"""A wrapper around :meth:`SessionBus.get_object` that raises
 	:exc:`~secretstorage.exceptions.SecretServiceNotAvailableException`
 	when appropriate."""
 	name = service_name or BUS_NAME
 	try:
-		return bus.get_object(name, object_path, introspect=False)
+		return connection.get_object(name, object_path, introspect=False)
 	except dbus.exceptions.DBusException as e:
 		if e.get_dbus_name() in (DBUS_SERVICE_UNKNOWN, DBUS_EXEC_FAILED,
 		                         DBUS_NO_REPLY):
 			raise SecretServiceNotAvailableException(e.get_dbus_message())
 		raise
 
-def open_session(bus):
+def open_session(connection):
 	"""Returns a new Secret Service session."""
-	service_obj = bus_get_object(bus, SS_PATH)
+	service_obj = bus_get_object(connection, SS_PATH)
 	service_iface = dbus.Interface(service_obj, SS_PREFIX+'Service')
 	session = Session()
 	try:
@@ -107,12 +107,12 @@ def format_secret(session, secret, content_type):
 		content_type
 	))
 
-def exec_prompt(bus, prompt, callback):
+def exec_prompt(connection, prompt, callback):
 	"""Executes the given `prompt`, when complete calls `callback`
 	function with two arguments: a boolean representing whether the
 	operation was dismissed and a list of unlocked item paths. A main
 	loop should be running and registered for this function to work."""
-	prompt_obj = bus_get_object(bus, prompt)
+	prompt_obj = bus_get_object(connection, prompt)
 	prompt_iface = dbus.Interface(prompt_obj, SS_PREFIX+'Prompt')
 	prompt_iface.Prompt('', signature='s')
 	def new_callback(dismissed, unlocked):
@@ -121,7 +121,7 @@ def exec_prompt(bus, prompt, callback):
 		callback(bool(dismissed), unlocked)
 	prompt_iface.connect_to_signal('Completed', new_callback)
 
-def exec_prompt_glib(bus, prompt):
+def exec_prompt_glib(connection, prompt):
 	"""Like :func:`exec_prompt`, but synchronous (uses loop from GLib
 	API). Returns (*dismissed*, *unlocked*) tuple."""
 	from gi.repository import GLib
@@ -131,11 +131,11 @@ def exec_prompt_glib(bus, prompt):
 		result.append(dismissed)
 		result.append(unlocked)
 		loop.quit()
-	exec_prompt(bus, prompt, callback)
+	exec_prompt(connection, prompt, callback)
 	loop.run()
 	return result[0], result[1]
 
-def exec_prompt_qt(bus, prompt):
+def exec_prompt_qt(connection, prompt):
 	"""Like :func:`exec_prompt`, but synchronous (uses loop from PyQt5
 	API). Returns (*dismissed*, *unlocked*) tuple."""
 	from PyQt5.QtCore import QCoreApplication
@@ -145,11 +145,11 @@ def exec_prompt_qt(bus, prompt):
 		result.append(dismissed)
 		result.append(unlocked)
 		app.quit()
-	exec_prompt(bus, prompt, callback)
+	exec_prompt(connection, prompt, callback)
 	app.exec_()
 	return result[0], result[1]
 
-def unlock_objects(bus, paths, callback=None):
+def unlock_objects(connection, paths, callback=None):
 	"""Requests unlocking objects specified in `paths`. If `callback`
 	is specified, calls it when unlocking is complete (see
 	:func:`exec_prompt` description for details).
@@ -157,15 +157,15 @@ def unlock_objects(bus, paths, callback=None):
 	representing whether the operation was dismissed.
 
 	.. versionadded:: 2.1.2"""
-	service_obj = bus_get_object(bus, SS_PATH)
+	service_obj = bus_get_object(connection, SS_PATH)
 	service_iface = InterfaceWrapper(service_obj, SERVICE_IFACE)
 	unlocked_paths, prompt = service_iface.Unlock(paths, signature='ao')
 	unlocked_paths = list(unlocked_paths)  # Convert from dbus.Array
 	if len(prompt) > 1:
 		if callback:
-			exec_prompt(bus, prompt, callback)
+			exec_prompt(connection, prompt, callback)
 		else:
-			return exec_prompt_glib(bus, prompt)[0]
+			return exec_prompt_glib(connection, prompt)[0]
 	elif callback:
 		# We still need to call it.
 		callback(False, unlocked_paths)
