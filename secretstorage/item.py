@@ -9,11 +9,10 @@ secret is possible only when the :doc:`collection <collection>` storing
 the item is unlocked. The collection can be unlocked using collection's
 :meth:`~secretstorage.collection.Collection.unlock` method."""
 
-import dbus
 from secretstorage.defines import SS_PREFIX
 from secretstorage.exceptions import LockedException
-from secretstorage.util import InterfaceWrapper, bus_get_object, \
- open_session, format_secret, to_unicode, unlock_objects
+from secretstorage.util import DBusAddressWrapper, \
+ open_session, format_secret, unlock_objects
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 
@@ -24,13 +23,10 @@ class Item(object):
 
 	def __init__(self, connection, item_path, session=None):
 		self.item_path = item_path
-		item_obj = bus_get_object(connection, item_path)
+		self._item = DBusAddressWrapper(item_path, ITEM_IFACE, connection)
+		self._item.get_property('Label')
 		self.session = session
 		self.connection = connection
-		self.item_iface = InterfaceWrapper(item_obj, ITEM_IFACE)
-		self.item_props_iface = InterfaceWrapper(item_obj,
-			dbus.PROPERTIES_IFACE)
-		self.item_props_iface.Get(ITEM_IFACE, 'Label', signature='ss')
 
 	def __eq__(self, other):
 		return self.item_path == other.item_path
@@ -38,8 +34,7 @@ class Item(object):
 	def is_locked(self):
 		"""Returns :const:`True` if item is locked, otherwise
 		:const:`False`."""
-		return bool(self.item_props_iface.Get(ITEM_IFACE, 'Locked',
-			signature='ss'))
+		return bool(self._item.get_property('Locked'))
 
 	def ensure_not_locked(self):
 		"""If collection is locked, raises
@@ -57,44 +52,37 @@ class Item(object):
 		boolean representing whether the operation was dismissed.
 
 		.. versionadded:: 2.1.2"""
-		return unlock_objects(self.connection, [self.item_path], callback)
+		return unlock_objects(self.connection, [self.item_path])
 
 	def get_attributes(self):
 		"""Returns item attributes (dictionary)."""
-		attrs = self.item_props_iface.Get(ITEM_IFACE, 'Attributes',
-			signature='ss')
-		return {to_unicode(key): to_unicode(value)
-			for key, value in attrs.items()}
+		attrs = self._item.get_property('Attributes')
+		return dict(attrs)
 
 	def set_attributes(self, attributes):
 		"""Sets item attributes to `attributes` (dictionary)."""
-		self.item_props_iface.Set(ITEM_IFACE, 'Attributes', attributes,
-			signature='ssv')
+		self._item.set_property('Attributes', 'a{ss}', attributes)
 
 	def get_label(self):
 		"""Returns item label (unicode string)."""
-		label = self.item_props_iface.Get(ITEM_IFACE, 'Label',
-			signature='ss')
-		return to_unicode(label)
+		return self._item.get_property('Label')
 
 	def set_label(self, label):
 		"""Sets item label to `label`."""
 		self.ensure_not_locked()
-		self.item_props_iface.Set(ITEM_IFACE, 'Label', label,
-			signature='ssv')
+		self._item.set_property('Label', 's', label)
 
 	def delete(self):
 		"""Deletes the item."""
 		self.ensure_not_locked()
-		return self.item_iface.Delete(signature='')
+		return self._item.call('Delete')
 
 	def get_secret(self):
 		"""Returns item secret (bytestring)."""
 		self.ensure_not_locked()
 		if not self.session:
 			self.session = open_session(self.connection)
-		secret = self.item_iface.GetSecret(self.session.object_path,
-			signature='o')
+		secret, = self._item.call('GetSecret', 'o', self.session.object_path)
 		if not self.session.encrypted:
 			return bytes(secret[2])
 		aes = algorithms.AES(self.session.aes_key)
@@ -109,8 +97,7 @@ class Item(object):
 		self.ensure_not_locked()
 		if not self.session:
 			self.session = open_session(self.connection)
-		secret = self.item_iface.GetSecret(self.session.object_path,
-			signature='o')
+		secret, = self._item.call('GetSecret', 'o', self.session.object_path)
 		return str(secret[3])
 
 	def set_secret(self, secret, content_type='text/plain'):
@@ -121,21 +108,19 @@ class Item(object):
 		if not self.session:
 			self.session = open_session(self.connection)
 		secret = format_secret(self.session, secret, content_type)
-		self.item_iface.SetSecret(secret, signature='(oayays)')
+		self._item.call('SetSecret', '(oayays)', secret)
 
 	def get_created(self):
 		"""Returns UNIX timestamp (integer) representing the time
 		when the item was created.
 
 		.. versionadded:: 1.1"""
-		return int(self.item_props_iface.Get(ITEM_IFACE, 'Created',
-			signature='ss'))
+		return self._item.get_property('Created')
 
 	def get_modified(self):
 		"""Returns UNIX timestamp (integer) representing the time
 		when the item was last modified."""
-		return int(self.item_props_iface.Get(ITEM_IFACE, 'Modified',
-			signature='ss'))
+		return self._item.get_property('Modified')
 
 	def to_tuple(self):
 		"""Returns (*attributes*, *secret*) tuple representing the

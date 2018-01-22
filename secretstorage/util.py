@@ -6,7 +6,8 @@
 """This module provides some utility functions, but these shouldn't
 normally be used by external applications."""
 
-import dbus
+from jeepney import DBusAddress
+from jeepney.wrappers import new_method_call, Properties, DBusErrorResponse
 import os
 from secretstorage.defines import DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT, \
  DBUS_SERVICE_UNKNOWN, DBUS_NO_REPLY, DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED, \
@@ -20,68 +21,63 @@ from cryptography.utils import int_from_bytes
 
 BUS_NAME = 'org.freedesktop.secrets'
 SERVICE_IFACE = SS_PREFIX + 'Service'
+PROMPT_IFACE = SS_PREFIX + 'Prompt'
 
-class InterfaceWrapper(dbus.Interface):
-	"""Wraps :cls:`dbus.Interface` class and replaces some D-Bus exceptions
-	with :doc:`SecretStorage exceptions <exceptions>`."""
 
-	def catch_errors(self, function_in):
-		def function_out(*args, **kwargs):
-			try:
-				return function_in(*args, **kwargs)
-			except dbus.exceptions.DBusException as e:
-				if e.get_dbus_name() == DBUS_UNKNOWN_METHOD:
-					raise ItemNotFoundException('Item does not exist!')
-				if e.get_dbus_name() == DBUS_NO_SUCH_OBJECT:
-					raise ItemNotFoundException(e.get_dbus_message())
-				if e.get_dbus_name() in (DBUS_NO_REPLY, DBUS_NOT_SUPPORTED):
-					raise SecretServiceNotAvailableException(
-						e.get_dbus_message())
-				raise
-		return function_out
+class DBusAddressWrapper(DBusAddress):
+	"""A wrapper class around :class:`jeepney.wrappers.DBusAddress`
+	that adds some additional methods for calling and working with
+	properties, and converts error responses to SecretStorage
+	exceptions.
 
-	def __getattr__(self, attribute):
-		result = dbus.Interface.__getattr__(self, attribute)
-		if callable(result):
-			result = self.catch_errors(result)
-		return result
+	.. versionadded:: 3.0
+	"""
+	def __init__(self, path, interface, connection):
+		DBusAddress.__init__(self, path, BUS_NAME, interface)
+		self._connection = connection
 
-def bus_get_object(connection, object_path, service_name=None):
-	"""A wrapper around :meth:`SessionBus.get_object` that raises
-	:exc:`~secretstorage.exceptions.SecretServiceNotAvailableException`
-	when appropriate."""
-	name = service_name or BUS_NAME
-	try:
-		return connection.get_object(name, object_path, introspect=False)
-	except dbus.exceptions.DBusException as e:
-		if e.get_dbus_name() in (DBUS_SERVICE_UNKNOWN, DBUS_EXEC_FAILED,
-		                         DBUS_NO_REPLY):
-			raise SecretServiceNotAvailableException(e.get_dbus_message())
-		raise
+	def send_and_get_reply(self, msg):
+		try:
+			return self._connection.send_and_get_reply(msg)
+		except DBusErrorResponse as resp:
+			if resp.name == DBUS_UNKNOWN_METHOD:
+				raise ItemNotFoundException('Item does not exist!')
+			raise
+
+	def call(self, method, signature=None, *body):
+		msg = new_method_call(self, method, signature, body)
+		return self.send_and_get_reply(msg)
+
+	def get_property(self, name):
+		msg = Properties(self).get(name)
+		(signature, value), = self.send_and_get_reply(msg)
+		return value
+
+	def set_property(self, name, signature, value):
+		msg = Properties(self).set(name, signature, value)
+		return self.send_and_get_reply(msg)
+
 
 def open_session(connection):
 	"""Returns a new Secret Service session."""
-	service_obj = bus_get_object(connection, SS_PATH)
-	service_iface = dbus.Interface(service_obj, SS_PREFIX+'Service')
+	service = DBusAddressWrapper(SS_PATH, SERVICE_IFACE, connection)
 	session = Session()
 	try:
-		output, result = service_iface.OpenSession(
+		output, result = service.call('OpenSession', 'sv',
 			ALGORITHM_DH,
-			dbus.ByteArray(int_to_bytes(session.my_public_key)),
-			signature='sv'
-		)
-	except dbus.exceptions.DBusException as e:
-		if e.get_dbus_name() != DBUS_NOT_SUPPORTED:
+			('ay', int_to_bytes(session.my_public_key)))
+	except DBusErrorResponse as resp:
+		if resp.name != DBUS_NOT_SUPPORTED:
 			raise
-		output, result = service_iface.OpenSession(
+		output, result = service.call('OpenSession', 'sv',
 			ALGORITHM_PLAIN,
-			'',
-			signature='sv'
-		)
+			('s', ''))
 		session.encrypted = False
 	else:
-		output = int_from_bytes(output, 'big')
-		session.set_server_public_key(output)
+		signature, value = output
+		assert signature == 'ay'
+		key = int_from_bytes(value, 'big')
+		session.set_server_public_key(key)
 	session.object_path = result
 	return session
 
@@ -91,8 +87,7 @@ def format_secret(session, secret, content_type):
 	if not isinstance(secret, bytes):
 		secret = secret.encode('utf-8')
 	if not session.encrypted:
-		return dbus.Struct((session.object_path, '',
-			dbus.ByteArray(secret), content_type))
+		return (session.object_path, b'', secret, content_type)
 	# PKCS-7 style padding
 	padding = 0x10 - (len(secret) & 0xf)
 	secret += bytes((padding,) * padding)
@@ -100,81 +95,42 @@ def format_secret(session, secret, content_type):
 	aes = algorithms.AES(session.aes_key)
 	encryptor = Cipher(aes, modes.CBC(aes_iv), default_backend()).encryptor()
 	encrypted_secret = encryptor.update(secret) + encryptor.finalize()
-	return dbus.Struct((
+	return (
 		session.object_path,
-		dbus.Array(aes_iv),
-		dbus.Array(encrypted_secret),
+		aes_iv,
+		encrypted_secret,
 		content_type
-	))
+	)
 
-def exec_prompt(connection, prompt, callback):
-	"""Executes the given `prompt`, when complete calls `callback`
-	function with two arguments: a boolean representing whether the
-	operation was dismissed and a list of unlocked item paths. A main
-	loop should be running and registered for this function to work."""
-	prompt_obj = bus_get_object(connection, prompt)
-	prompt_iface = dbus.Interface(prompt_obj, SS_PREFIX+'Prompt')
-	prompt_iface.Prompt('', signature='s')
-	def new_callback(dismissed, unlocked):
-		if isinstance(unlocked, dbus.Array):
-			unlocked = list(unlocked)
-		callback(bool(dismissed), unlocked)
-	prompt_iface.connect_to_signal('Completed', new_callback)
 
-def exec_prompt_glib(connection, prompt):
-	"""Like :func:`exec_prompt`, but synchronous (uses loop from GLib
-	API). Returns (*dismissed*, *unlocked*) tuple."""
-	from gi.repository import GLib
-	loop = GLib.MainLoop()
-	result = []
-	def callback(dismissed, unlocked):
-		result.append(dismissed)
-		result.append(unlocked)
-		loop.quit()
-	exec_prompt(connection, prompt, callback)
-	loop.run()
-	return result[0], result[1]
+def exec_prompt(connection, prompt_path):
+	"""Executes the prompt in a blocking mode.
 
-def exec_prompt_qt(connection, prompt):
-	"""Like :func:`exec_prompt`, but synchronous (uses loop from PyQt5
-	API). Returns (*dismissed*, *unlocked*) tuple."""
-	from PyQt5.QtCore import QCoreApplication
-	app = QCoreApplication([])
-	result = []
-	def callback(dismissed, unlocked):
-		result.append(dismissed)
-		result.append(unlocked)
-		app.quit()
-	exec_prompt(connection, prompt, callback)
-	app.exec_()
-	return result[0], result[1]
+	:returns: a tuple; the first element is a boolean value showing
+	          whether the operation was dismissed, the second element
+	          is a list of unlocked object paths
+	"""
+	prompt = DBusAddressWrapper(prompt_path, PROMPT_IFACE, connection)
+	dismissed = result = None
+	def callback(*args, **kwargs):
+		(_dismissed, _result), = args
+		nonlocal dismissed, result
+		dismissed, result = bool(_dismissed), _result
+	connection.router.subscribe_signal(callback, prompt_path, PROMPT_IFACE, 'Completed')
+	prompt.call('Prompt', 's', '')
+	connection.recv_messages()
+	return dismissed, result
 
-def unlock_objects(connection, paths, callback=None):
-	"""Requests unlocking objects specified in `paths`. If `callback`
-	is specified, calls it when unlocking is complete (see
-	:func:`exec_prompt` description for details).
-	Otherwise, uses the loop from GLib API and returns a boolean
-	representing whether the operation was dismissed.
+
+def unlock_objects(connection, paths):
+	"""Requests unlocking objects specified in `paths`.
+	Returns a boolean representing whether the operation was dismissed.
 
 	.. versionadded:: 2.1.2"""
-	service_obj = bus_get_object(connection, SS_PATH)
-	service_iface = InterfaceWrapper(service_obj, SERVICE_IFACE)
-	unlocked_paths, prompt = service_iface.Unlock(paths, signature='ao')
-	unlocked_paths = list(unlocked_paths)  # Convert from dbus.Array
+	service = DBusAddressWrapper(SS_PATH, SERVICE_IFACE, connection)
+	unlocked_paths, prompt = service.call('Unlock', 'ao', paths)
 	if len(prompt) > 1:
-		if callback:
-			exec_prompt(connection, prompt, callback)
-		else:
-			return exec_prompt_glib(connection, prompt)[0]
-	elif callback:
-		# We still need to call it.
-		callback(False, unlocked_paths)
-
-def to_unicode(string):
-	"""Converts D-Bus string to unicode string."""
-	try:
-		# For Python 2
-		return unicode(string)
-	except NameError:
-		# For Python 3
-		return str(string)
+		dismissed, (signature, unlocked) = exec_prompt(connection, prompt)
+		assert signature == 'ao'
+		return dismissed
+	return False

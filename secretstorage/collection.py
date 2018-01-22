@@ -15,12 +15,11 @@ requires showing the unlocking prompt to user and can be synchronous or
 asynchronous). Creating new items and editing existing ones is possible
 only in unlocked collection."""
 
-import dbus
 from secretstorage.defines import SS_PREFIX, SS_PATH
 from secretstorage.exceptions import LockedException, ItemNotFoundException
 from secretstorage.item import Item
-from secretstorage.util import bus_get_object, InterfaceWrapper, \
- exec_prompt_glib, format_secret, open_session, to_unicode, unlock_objects
+from secretstorage.util import DBusAddressWrapper, exec_prompt, \
+ format_secret, open_session, unlock_objects
 
 COLLECTION_IFACE = SS_PREFIX + 'Collection'
 SERVICE_IFACE    = SS_PREFIX + 'Service'
@@ -31,22 +30,16 @@ class Collection(object):
 	"""Represents a collection."""
 
 	def __init__(self, connection, collection_path=DEFAULT_COLLECTION, session=None):
-		collection_obj = bus_get_object(connection, collection_path)
 		self.connection = connection
 		self.session = session
 		self.collection_path = collection_path
-		self.collection_iface = InterfaceWrapper(collection_obj,
-			COLLECTION_IFACE)
-		self.collection_props_iface = InterfaceWrapper(collection_obj,
-			dbus.PROPERTIES_IFACE)
-		self.collection_props_iface.Get(COLLECTION_IFACE, 'Label',
-			signature='ss')
+		self._collection = DBusAddressWrapper(
+			collection_path, COLLECTION_IFACE, connection)
 
 	def is_locked(self):
 		"""Returns :const:`True` if item is locked, otherwise
 		:const:`False`."""
-		return bool(self.collection_props_iface.Get(
-			COLLECTION_IFACE, 'Locked', signature='ss'))
+		return bool(self._collection.get_property('Locked'))
 
 	def ensure_not_locked(self):
 		"""If collection is locked, raises
@@ -60,44 +53,39 @@ class Collection(object):
 		:func:`~secretstorage.util.exec_prompt` description for details).
 		Otherwise, uses loop from GLib API and returns a boolean
 		representing whether the operation was dismissed."""
-		return unlock_objects(self.connection, [self.collection_path], callback)
+		return unlock_objects(self.connection, [self.collection_path])
 
 	def lock(self):
 		"""Locks the collection."""
-		service_obj = bus_get_object(self.connection, SS_PATH)
-		service_iface = InterfaceWrapper(service_obj, SERVICE_IFACE)
-		service_iface.Lock([self.collection_path], signature='ao')
+		service = DBusAddressWrapper(SS_PATH, SERVICE_IFACE, self.connection)
+		service.call('Lock', 'ao', [self.collection_path])
 
 	def delete(self):
 		"""Deletes the collection and all items inside it."""
 		self.ensure_not_locked()
-		self.collection_iface.Delete(signature='')
+		self._collection.call('Delete')
 
 	def get_all_items(self):
 		"""Returns a generator of all items in the collection."""
-		for item_path in self.collection_props_iface.Get(
-		COLLECTION_IFACE, 'Items', signature='ss'):
+		for item_path in self._collection.get_property('Items'):
 			yield Item(self.connection, item_path, self.session)
 
 	def search_items(self, attributes):
 		"""Returns a generator of items with the given attributes.
 		`attributes` should be a dictionary."""
-		result = self.collection_iface.SearchItems(attributes,
-			signature='a{ss}')
+		result, = self._collection.call('SearchItems', 'a{ss}', attributes)
 		for item_path in result:
 			yield Item(self.connection, item_path, self.session)
 
 	def get_label(self):
 		"""Returns the collection label."""
-		label = self.collection_props_iface.Get(COLLECTION_IFACE,
-			'Label', signature='ss')
-		return to_unicode(label)
+		label = self._collection.get_property('Label')
+		return label
 
 	def set_label(self, label):
 		"""Sets collection label to `label`."""
 		self.ensure_not_locked()
-		self.collection_props_iface.Set(COLLECTION_IFACE, 'Label',
-			label, signature='ssv')
+		self._collection.set_property('Label', 's', label)
 
 	def create_item(self, label, attributes, secret, replace=False,
 	content_type='text/plain'):
@@ -111,13 +99,12 @@ class Collection(object):
 		if not self.session:
 			self.session = open_session(self.connection)
 		secret = format_secret(self.session, secret, content_type)
-		attributes = dbus.Dictionary(attributes, signature='ss')
 		properties = {
-			SS_PREFIX+'Item.Label': label,
-			SS_PREFIX+'Item.Attributes': attributes
+			SS_PREFIX + 'Item.Label': ('s', label),
+			SS_PREFIX + 'Item.Attributes': ('a{ss}', attributes),
 		}
-		new_item, prompt = self.collection_iface.CreateItem(properties,
-			secret, replace, signature='a{sv}(oayays)b')
+		new_item, prompt = self._collection.call('CreateItem', 'a{sv}(oayays)b',
+		                                         properties, secret, replace)
 		return Item(self.connection, new_item, self.session)
 
 def create_collection(connection, label, alias='', session=None):
@@ -127,25 +114,23 @@ def create_collection(connection, label, alias='', session=None):
 	synchronous function, uses loop from GLib API."""
 	if not session:
 		session = open_session(connection)
-	properties = {SS_PREFIX+'Collection.Label': label}
-	service_obj = bus_get_object(connection, SS_PATH)
-	service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
-	collection_path, prompt = service_iface.CreateCollection(properties,
-		alias, signature='a{sv}s')
+	properties = {SS_PREFIX + 'Collection.Label': ('s', label)}
+	service = DBusAddressWrapper(SS_PATH, SERVICE_IFACE, connection)
+	collection_path, prompt = service.call('CreateCollection', 'a{sv}s',
+	                                       properties, alias)
 	if len(collection_path) > 1:
 		return Collection(connection, collection_path, session=session)
-	dismissed, unlocked = exec_prompt_glib(connection, prompt)
+	dismissed, result = exec_prompt(connection, prompt)
 	if dismissed:
 		raise ItemNotFoundException('Prompt dismissed.')
-	return Collection(connection, unlocked, session=session)
+	signature, collection_path = result
+	assert signature == 'o'
+	return Collection(connection, collection_path, session=session)
 
 def get_all_collections(connection):
 	"""Returns a generator of all available collections."""
-	service_obj = bus_get_object(connection, SS_PATH)
-	service_props_iface = dbus.Interface(service_obj,
-		dbus.PROPERTIES_IFACE)
-	for collection_path in service_props_iface.Get(SERVICE_IFACE,
-	'Collections', signature='ss'):
+	service = DBusAddressWrapper(SS_PATH, SERVICE_IFACE, connection)
+	for collection_path in service.get_property('Collections'):
 		yield Collection(connection, collection_path)
 
 def get_default_collection(connection, session=None):
@@ -183,9 +168,8 @@ def get_collection_by_alias(connection, alias):
 	"""Returns the collection with the given `alias`. If there is no
 	such collection, raises
 	:exc:`~secretstorage.exceptions.ItemNotFoundException`."""
-	service_obj = bus_get_object(connection, SS_PATH)
-	service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
-	collection_path = service_iface.ReadAlias(alias, signature='s')
+	service = DBusAddressWrapper(SS_PATH, SERVICE_IFACE, connection)
+	collection_path, = service.call('ReadAlias', 's', alias)
 	if len(collection_path) <= 1:
 		raise ItemNotFoundException('No collection with such alias.')
 	return Collection(connection, collection_path)
@@ -193,9 +177,7 @@ def get_collection_by_alias(connection, alias):
 def search_items(connection, attributes):
 	"""Returns a generator of items in all collections with the given
 	attributes. `attributes` should be a dictionary."""
-	service_obj = bus_get_object(connection, SS_PATH)
-	service_iface = dbus.Interface(service_obj, SERVICE_IFACE)
-	locked, unlocked = service_iface.SearchItems(attributes,
-		signature='a{ss}')
+	service = DBusAddressWrapper(SS_PATH, SERVICE_IFACE, connection)
+	locked, unlocked = service.call('SearchItems', 'a{ss}', attributes)
 	for item_path in locked + unlocked:
 		yield Item(connection, item_path)
