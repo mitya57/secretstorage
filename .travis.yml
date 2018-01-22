@@ -15,7 +15,8 @@ addons:
 install:
   - sed -i "s|not getvar('Py_ENABLE_SHARED')|True|" /opt/python/3.3.6/bin/python3.3-config || true
   - sed -i "s|not getvar('Py_ENABLE_SHARED')|True|" $(which python)-config || true
-  - PATH=/opt/python/3.3.6/bin/:$PATH pip install cryptography dbus-python
+  - PATH=/opt/python/3.3.6/bin/:$PATH pip install --upgrade setuptools
+  - PATH=/opt/python/3.3.6/bin/:$PATH pip install cryptography dbus-python enum34
 before_script:
   - git clone git://git.gnome.org/libsecret.git
 script:
