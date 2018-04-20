@@ -34,7 +34,7 @@ Building the module
 
 SecretStorage requires these packages to work:
 
-* `dbus-python`_
+* Jeepney_
 * `python-cryptography`_
 
 To build SecretStorage, use this command::
@@ -45,7 +45,7 @@ If you have Sphinx_ installed, you can also build the documentation::
 
    python3 setup.py build_sphinx
 
-.. _`dbus-python`: https://www.freedesktop.org/wiki/Software/DBusBindings/#dbus-pythonbasedondbus-glib
+.. _Jeepney: https://pypi.org/project/jeepney/
 .. _`python-cryptography`: https://pypi.org/project/cryptography/
 .. _Sphinx: http://sphinx-doc.org/
 
