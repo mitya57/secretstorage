@@ -1,6 +1,9 @@
 .. image:: https://api.travis-ci.org/mitya57/secretstorage.svg
    :target: https://travis-ci.org/mitya57/secretstorage
    :alt: Travis CI status
+.. image:: https://codecov.io/gh/mitya57/secretstorage/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/mitya57/secretstorage
+   :alt: Coverage status
 
 Module description
 ==================
