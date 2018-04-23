@@ -1,7 +1,7 @@
 # SecretStorage module for Python
 # Access passwords using the SecretService DBus API
-# Author: Dmitry Shachnev, 2013
-# License: BSD
+# Author: Dmitry Shachnev, 2013-2016
+# License: 3-clause BSD, see LICENSE file
 
 # This file contains some common defines.
 

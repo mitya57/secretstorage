@@ -1,6 +1,6 @@
 # Tests for SecretStorage
-# Author: Dmitry Shachnev, 2013
-# License: BSD
+# Author: Dmitry Shachnev, 2013-2018
+# License: 3-clause BSD, see LICENSE file
 
 # Various exception tests
 

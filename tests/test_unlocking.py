@@ -1,6 +1,6 @@
 # Tests for SecretStorage
 # Author: Dmitry Shachnev, 2018
-# License: BSD
+# License: 3-clause BSD, see LICENSE file
 
 import unittest
 

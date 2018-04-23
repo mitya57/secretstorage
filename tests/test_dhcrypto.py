@@ -1,6 +1,6 @@
 # Tests for SecretStorage
-# Author: Dmitry Shachnev, 2014
-# License: BSD
+# Author: Dmitry Shachnev, 2014-2016
+# License: 3-clause BSD, see LICENSE file
 
 # This file tests the dhcrypto module.
 

@@ -1,7 +1,7 @@
 # SecretStorage module for Python
 # Access passwords using the SecretService DBus API
-# Author: Dmitry Shachnev, 2013
-# License: BSD
+# Author: Dmitry Shachnev, 2013-2018
+# License: 3-clause BSD, see LICENSE file
 
 """Collection is a place where secret items are stored. Normally, only
 the default collection should be used, but this module allows to use any
