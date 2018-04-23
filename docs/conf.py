@@ -67,15 +67,3 @@ latex_documents = [
   ('index', 'SecretStorage.tex', 'SecretStorage Documentation',
    'Dmitry Shachnev', 'manual'),
 ]
-
-# -- Custom configuration for ReadTheDocs --------------------------------------
-
-if os.environ.get('READTHEDOCS') == 'True':
-    from unittest.mock import MagicMock
-
-    class Mock(MagicMock):
-        @classmethod
-        def __getattr__(cls, name):
-            return MagicMock()
-
-    sys.modules['dbus'] = Mock()
