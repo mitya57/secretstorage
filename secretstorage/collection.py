@@ -51,6 +51,10 @@ class Collection(object):
 	def unlock(self):
 		"""Requests unlocking the collection.
 
+		Returns a boolean representing whether the prompt has been
+		dismissed; that means :const:`False` on successful unlocking
+		and :const:`True` if it has been dismissed.
+
 		.. versionchanged:: 3.0
 		   No longer accepts the ``callback`` argument.
 		"""

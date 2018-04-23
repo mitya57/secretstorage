@@ -19,6 +19,8 @@ class LockingUnlockingTest(unittest.TestCase):
 
 	def test_lock_unlock(self):
 		self.collection.lock()
+		self.assertTrue(self.collection.is_locked())
 		self.assertRaises(LockedException, self.collection.ensure_not_locked)
-		self.collection.unlock()
+		self.assertIs(self.collection.unlock(), False)
+		self.assertFalse(self.collection.is_locked())
 		self.collection.ensure_not_locked()

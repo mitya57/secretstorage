@@ -44,8 +44,12 @@ class Item(object):
 			raise LockedException('Item is locked!')
 
 	def unlock(self):
-		"""Requests unlocking the item. Usually, this will mean that the
+		"""Requests unlocking the item. Usually, this means that the
 		whole collection containing this item will be unlocked.
+
+		Returns a boolean representing whether the prompt has been
+		dismissed; that means :const:`False` on successful unlocking
+		and :const:`True` if it has been dismissed.
 
 		.. versionadded:: 2.1.2
 
