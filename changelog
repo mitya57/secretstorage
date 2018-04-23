@@ -1,3 +1,19 @@
+SecretStorage 3.0.0, 2018-04-23
+===============================
+
+.. warning::
+   This release is backwards incompatible with the previous versions.
+
+* Python 3.5 or newer is now required.
+* SecretStorage has been ported from dbus-python to Jeepney_, a
+  pure Python D-Bus client.
+* The asynchronous API has been removed. If you need it, please
+  file a bug and describe your use case.
+* The ``bus`` argument is now called ``connection`` in all functions
+  that accept it.
+
+.. _Jeepney: https://pypi.org/project/jeepney/
+
 SecretStorage 2.3.1, 2016-08-27
 ===============================
 
