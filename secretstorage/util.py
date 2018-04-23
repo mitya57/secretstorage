@@ -40,8 +40,14 @@ class DBusAddressWrapper(DBusAddress):
 		try:
 			return self._connection.send_and_get_reply(msg)
 		except DBusErrorResponse as resp:
-			if resp.name == DBUS_UNKNOWN_METHOD:
-				raise ItemNotFoundException('Item does not exist!')
+			if resp.name in (DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT):
+				raise ItemNotFoundException('Item does not exist!') from resp
+			elif resp.name in (DBUS_SERVICE_UNKNOWN, DBUS_EXEC_FAILED,
+			                   DBUS_NO_REPLY):
+				data = resp.data
+				if isinstance(data, tuple):
+					data = data[0]
+				raise SecretServiceNotAvailableException(data) from resp
 			raise
 
 	def call(self, method, signature=None, *body):
