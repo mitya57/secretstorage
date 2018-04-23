@@ -89,6 +89,7 @@ Contents
    item
    util
    exceptions
+   changelog
 
 Indices and tables
 ==================
