@@ -10,6 +10,7 @@ It also provides some functions for compatibility with older
 SecretStorage releases. Those functions are not recommended for use
 in new software."""
 
+import warnings
 from jeepney.integrate.blocking import connect_and_authenticate
 from secretstorage.collection import Collection, create_collection, \
  get_all_collections, get_default_collection, get_any_collection, \
@@ -33,5 +34,9 @@ def dbus_init(*args, **kwargs):
 	.. versionchanged:: 3.0
 	   Before the port to Jeepney, this function returned an
 	   instance of :class:`dbus.SessionBus` class.
+	   Also, passing any arguments to this function is now deprecated.
 	"""
+	if args or kwargs:
+		warnings.warn("Passing any arguments to dbus_init() is"
+		              " deprecated.", DeprecationWarning)
 	return connect_and_authenticate()
