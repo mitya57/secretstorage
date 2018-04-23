@@ -18,8 +18,8 @@ class ItemTest(unittest.TestCase):
 
 	@classmethod
 	def setUpClass(cls):
-		cls.bus = dbus_init(main_loop=False)
-		cls.collection = get_any_collection(cls.bus)
+		cls.connection = dbus_init()
+		cls.collection = get_any_collection(cls.connection)
 		cls.created_timestamp = time.time()
 		cls.item = cls.collection.create_item('My item', ATTRIBUTES,
 			b'pa$$word')
@@ -34,7 +34,7 @@ class ItemTest(unittest.TestCase):
 	def test_searchable(self):
 		search_results = self.collection.search_items(ATTRIBUTES)
 		self.assertIn(self.item, search_results)
-		search_results = search_items(self.bus, ATTRIBUTES)
+		search_results = search_items(self.connection, ATTRIBUTES)
 		self.assertIn(self.item, search_results)
 
 	def test_item_in_all_items(self):

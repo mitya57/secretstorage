@@ -42,8 +42,8 @@ Examples of using SecretStorage
 Creating a new item in the default collection:
 
 >>> import secretstorage
->>> bus = secretstorage.dbus_init()
->>> collection = secretstorage.get_default_collection(bus)
+>>> connection = secretstorage.dbus_init()
+>>> collection = secretstorage.get_default_collection(connection)
 >>> attributes = {'application': 'myapp', 'another attribute':
 ...     'another value'}
 >>> item = collection.create_item('My first item', attributes,

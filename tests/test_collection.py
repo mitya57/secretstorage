@@ -13,11 +13,11 @@ class CollectionTest(unittest.TestCase):
 
 	@classmethod
 	def setUpClass(cls):
-		cls.bus = dbus_init(main_loop=False)
-		cls.collection = get_any_collection(cls.bus)
+		cls.connection = dbus_init()
+		cls.collection = get_any_collection(cls.connection)
 
 	def test_all_collections(self):
-		labels = map(Collection.get_label, get_all_collections(self.bus))
+		labels = map(Collection.get_label, get_all_collections(self.connection))
 		self.assertIn(self.collection.get_label(), labels)
 
 	def test_all_items(self):

@@ -14,8 +14,8 @@ class ExceptionsTest(unittest.TestCase):
 
 	@classmethod
 	def setUpClass(cls):
-		cls.bus = secretstorage.dbus_init(main_loop=False)
-		cls.collection = secretstorage.get_any_collection(cls.bus)
+		cls.connection = secretstorage.dbus_init()
+		cls.collection = secretstorage.get_any_collection(cls.connection)
 
 	def test_double_deleting(self):
 		item = self.collection.create_item('MyItem',
@@ -25,12 +25,12 @@ class ExceptionsTest(unittest.TestCase):
 
 	def test_non_existing_item(self):
 		self.assertRaises(ItemNotFoundException, secretstorage.Item,
-			self.bus, '/not/existing/path')
+			self.connection, '/not/existing/path')
 
 	def test_non_existing_collection(self):
 		self.assertRaises(ItemNotFoundException,
 			secretstorage.get_collection_by_alias,
-			self.bus, 'non-existing-alias')
+			self.connection, 'non-existing-alias')
 
 if __name__ == '__main__':
 	unittest.main()
