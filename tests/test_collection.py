@@ -6,6 +6,7 @@
 
 import unittest
 from secretstorage import dbus_init, get_any_collection, get_all_collections, Collection
+from secretstorage.util import BUS_NAME
 
 class CollectionTest(unittest.TestCase):
 	"""A test case that tests that all common methods of Collection
@@ -34,6 +35,15 @@ class CollectionTest(unittest.TestCase):
 		self.assertEqual(self.collection.get_label(), 'Hello!')
 		self.collection.set_label(old_label)
 		self.assertEqual(self.collection.get_label(), old_label)
+
+	@unittest.skipIf(BUS_NAME == "org.freedesktop.secrets",
+	                 "This test should only be run with the mocked server.")
+	def test_deleting(self):
+		collection_path = "/org/freedesktop/secrets/collection/spanish"
+		collection = Collection(self.connection, collection_path)
+		collection.unlock()
+		collection.delete()
+
 
 if __name__ == '__main__':
 	unittest.main()
