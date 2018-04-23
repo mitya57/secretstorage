@@ -48,12 +48,12 @@ class Collection(object):
 		if self.is_locked():
 			raise LockedException('Collection is locked!')
 
-	def unlock(self, callback=None):
-		"""Requests unlocking the collection. If `callback` is specified,
-		calls it when unlocking is complete (see
-		:func:`~secretstorage.util.exec_prompt` description for details).
-		Otherwise, uses loop from GLib API and returns a boolean
-		representing whether the operation was dismissed."""
+	def unlock(self):
+		"""Requests unlocking the collection.
+
+		.. versionchanged:: 3.0
+		   No longer accepts the ``callback`` argument.
+		"""
 		return unlock_objects(self.connection, [self.collection_path])
 
 	def lock(self):
@@ -111,8 +111,8 @@ class Collection(object):
 def create_collection(connection, label, alias='', session=None):
 	"""Creates a new :class:`Collection` with the given `label` and `alias`
 	and returns it. This action requires prompting. If prompt is dismissed,
-	raises :exc:`~secretstorage.exceptions.ItemNotFoundException`. This is
-	synchronous function, uses loop from GLib API."""
+	raises :exc:`~secretstorage.exceptions.ItemNotFoundException`.
+	"""
 	if not session:
 		session = open_session(connection)
 	properties = {SS_PREFIX + 'Collection.Label': ('s', label)}

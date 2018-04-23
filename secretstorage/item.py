@@ -43,16 +43,15 @@ class Item(object):
 		if self.is_locked():
 			raise LockedException('Item is locked!')
 
-	def unlock(self, callback=None):
+	def unlock(self):
 		"""Requests unlocking the item. Usually, this will mean that the
 		whole collection containing this item will be unlocked.
 
-		If `callback` is specified, calls it when unlocking is complete
-		(see :func:`~secretstorage.util.exec_prompt` description for
-		details). Otherwise, uses the loop from GLib API and returns a
-		boolean representing whether the operation was dismissed.
+		.. versionadded:: 2.1.2
 
-		.. versionadded:: 2.1.2"""
+		.. versionchanged:: 3.0
+		   No longer accepts the ``callback`` argument.
+		"""
 		return unlock_objects(self.connection, [self.item_path])
 
 	def get_attributes(self):
