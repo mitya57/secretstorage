@@ -35,6 +35,7 @@ class Collection(object):
 		self.collection_path = collection_path
 		self._collection = DBusAddressWrapper(
 			collection_path, COLLECTION_IFACE, connection)
+		self._collection.get_property('Label')
 
 	def is_locked(self):
 		"""Returns :const:`True` if item is locked, otherwise
