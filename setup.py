@@ -1,10 +1,7 @@
 #!/usr/bin/python
 
 import os.path
-try:
-	from setuptools import setup
-except ImportError:
-	from distutils.core import setup
+from setuptools import setup
 
 version = '3.0.0'
 
