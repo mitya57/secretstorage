@@ -5,9 +5,8 @@ from setuptools import setup
 
 version = '3.0.0'
 
-readme_file = open(os.path.join(os.path.dirname(__file__), 'README.rst'))
-long_description = '\n' + readme_file.read()
-readme_file.close()
+with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme_file:
+	long_description = readme_file.read()
 
 classifiers = [
 	'Development Status :: 5 - Production/Stable',
@@ -25,6 +24,7 @@ setup(name='SecretStorage',
 	version=version,
 	description='Python bindings to FreeDesktop.org Secret Service API',
 	long_description=long_description,
+	long_description_content_type='text/x-rst',
 	author='Dmitry Shachnev',
 	author_email='mitya57@gmail.com',
 	url='https://github.com/mitya57/secretstorage',
