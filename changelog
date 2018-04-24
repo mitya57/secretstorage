@@ -1,3 +1,11 @@
+SecretStorage 3.0.1, 2018-04-24
+===============================
+
+* When ``DBUS_SESSION_BUS_ADDRESS`` environment variable is unset, and
+  Jeepney raises a ``KeyError`` because of that, SecretStorage now intercepts
+  that error and re-raises it as ``SecretServiceNotAvailableException``.
+* Uploaded to PyPI with fixed meta-data.
+
 SecretStorage 3.0.0, 2018-04-23
 ===============================
 

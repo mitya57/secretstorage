@@ -20,7 +20,7 @@ from secretstorage.exceptions import SecretStorageException, \
  SecretServiceNotAvailableException, LockedException, \
  ItemNotFoundException
 
-__version_tuple__ = (3, 0, 0)
+__version_tuple__ = (3, 0, 1)
 __version__ = '.'.join(map(str, __version_tuple__))
 
 def dbus_init(*args, **kwargs):
