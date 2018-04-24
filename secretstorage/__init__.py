@@ -37,4 +37,9 @@ def dbus_init(*args, **kwargs):
 	if args or kwargs:
 		warnings.warn("Passing any arguments to dbus_init() is"
 		              " deprecated.", DeprecationWarning)
-	return connect_and_authenticate()
+	try:
+		return connect_and_authenticate()
+	except KeyError as ex:
+		# os.environ['DBUS_SESSION_BUS_ADDRESS'] may raise it
+		reason = "Environment variable {} is unset".format(ex.args[0])
+		raise SecretServiceNotAvailableException(reason) from ex
