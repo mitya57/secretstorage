@@ -5,10 +5,7 @@
 
 """This file provides quick access to all SecretStorage API. Please
 refer to documentation of individual modules for API details.
-
-It also provides some functions for compatibility with older
-SecretStorage releases. Those functions are not recommended for use
-in new software."""
+"""
 
 import warnings
 from jeepney.integrate.blocking import connect_and_authenticate
