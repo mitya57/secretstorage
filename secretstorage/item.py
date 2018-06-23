@@ -9,7 +9,6 @@ secret is possible only when the :doc:`collection <collection>` storing
 the item is unlocked. The collection can be unlocked using collection's
 :meth:`~secretstorage.collection.Collection.unlock` method."""
 
-import warnings
 from secretstorage.defines import SS_PREFIX
 from secretstorage.exceptions import LockedException
 from secretstorage.util import DBusAddressWrapper, \
@@ -125,16 +124,3 @@ class Item(object):
 		"""Returns UNIX timestamp (integer) representing the time
 		when the item was last modified."""
 		return self._item.get_property('Modified')
-
-	def to_tuple(self):
-		"""Returns (*attributes*, *secret*) tuple representing the
-		item.
-
-		.. deprecated:: 3.0
-		   Use ``get_attributes()`` and ``get_secret()`` instead.
-		"""
-		warnings.warn("Item.to_tuple() is deprecated. Use"
-		              " Item.get_attributes() and Item.get_secret()"
-		              " instead.", DeprecationWarning)
-		self.ensure_not_locked()
-		return self.get_attributes(), self.get_secret()

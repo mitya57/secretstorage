@@ -7,7 +7,6 @@
 refer to documentation of individual modules for API details.
 """
 
-import warnings
 from jeepney.integrate.blocking import connect_and_authenticate
 from secretstorage.collection import Collection, create_collection, \
  get_all_collections, get_default_collection, get_any_collection, \
@@ -20,7 +19,7 @@ from secretstorage.exceptions import SecretStorageException, \
 __version_tuple__ = (3, 0, 1)
 __version__ = '.'.join(map(str, __version_tuple__))
 
-def dbus_init(*args, **kwargs):
+def dbus_init():
 	"""Returns a new connection to the session bus, instance of
 	:class:`jeepney.DBusConnection` instance. This connection can
 	then be passed to various SecretStorage functions, such as
@@ -29,11 +28,10 @@ def dbus_init(*args, **kwargs):
 	.. versionchanged:: 3.0
 	   Before the port to Jeepney, this function returned an
 	   instance of :class:`dbus.SessionBus` class.
-	   Also, passing any arguments to this function is now deprecated.
+
+	.. versionchanged:: 3.1
+	   This function no longer accepts any arguments.
 	"""
-	if args or kwargs:
-		warnings.warn("Passing any arguments to dbus_init() is"
-		              " deprecated.", DeprecationWarning)
 	try:
 		return connect_and_authenticate()
 	except KeyError as ex:
