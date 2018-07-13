@@ -15,6 +15,7 @@ from secretstorage.item import Item
 from secretstorage.exceptions import SecretStorageException, \
  SecretServiceNotAvailableException, LockedException, \
  ItemNotFoundException
+from secretstorage.util import add_match_rules
 
 __version_tuple__ = (3, 0, 1)
 __version__ = '.'.join(map(str, __version_tuple__))
@@ -33,7 +34,9 @@ def dbus_init() -> DBusConnection:
 	   This function no longer accepts any arguments.
 	"""
 	try:
-		return connect_and_authenticate()
+		connection = connect_and_authenticate()
+		add_match_rules(connection)
+		return connection
 	except KeyError as ex:
 		# os.environ['DBUS_SESSION_BUS_ADDRESS'] may raise it
 		reason = "Environment variable {} is unset".format(ex.args[0])
