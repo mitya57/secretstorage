@@ -12,12 +12,11 @@ from secretstorage.exceptions import LockedException
 @unittest.skipIf(BUS_NAME == "org.freedesktop.secrets",
                  "This test should only be run with the mocked server.")
 class LockingUnlockingTest(unittest.TestCase):
-	@classmethod
-	def setUpClass(cls):
-		cls.connection = dbus_init()
-		cls.collection = get_any_collection(cls.connection)
+	def setUp(self) -> None:
+		self.connection = dbus_init()
+		self.collection = get_any_collection(self.connection)
 
-	def test_lock_unlock(self):
+	def test_lock_unlock(self) -> None:
 		self.collection.lock()
 		self.assertTrue(self.collection.is_locked())
 		self.assertRaises(LockedException, self.collection.ensure_not_locked)

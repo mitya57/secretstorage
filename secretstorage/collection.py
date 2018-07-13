@@ -15,7 +15,10 @@ requires showing the unlocking prompt to user and can be synchronous or
 asynchronous). Creating new items and editing existing ones is possible
 only in unlocked collection."""
 
+from typing import Dict, Iterator, Optional
+from jeepney.integrate.blocking import DBusConnection
 from secretstorage.defines import SS_PREFIX, SS_PATH
+from secretstorage.dhcrypto import Session
 from secretstorage.exceptions import LockedException, ItemNotFoundException
 from secretstorage.item import Item
 from secretstorage.util import DBusAddressWrapper, exec_prompt, \
@@ -29,7 +32,9 @@ SESSION_COLLECTION = '/org/freedesktop/secrets/collection/session'
 class Collection(object):
 	"""Represents a collection."""
 
-	def __init__(self, connection, collection_path=DEFAULT_COLLECTION, session=None):
+	def __init__(self, connection: DBusConnection,
+	             collection_path: str = DEFAULT_COLLECTION,
+	             session: Optional[Session] = None) -> None:
 		self.connection = connection
 		self.session = session
 		self.collection_path = collection_path
@@ -37,18 +42,18 @@ class Collection(object):
 			collection_path, COLLECTION_IFACE, connection)
 		self._collection.get_property('Label')
 
-	def is_locked(self):
+	def is_locked(self) -> bool:
 		"""Returns :const:`True` if item is locked, otherwise
 		:const:`False`."""
 		return bool(self._collection.get_property('Locked'))
 
-	def ensure_not_locked(self):
+	def ensure_not_locked(self) -> None:
 		"""If collection is locked, raises
 		:exc:`~secretstorage.exceptions.LockedException`."""
 		if self.is_locked():
 			raise LockedException('Collection is locked!')
 
-	def unlock(self):
+	def unlock(self) -> bool:
 		"""Requests unlocking the collection.
 
 		Returns a boolean representing whether the prompt has been
@@ -60,40 +65,42 @@ class Collection(object):
 		"""
 		return unlock_objects(self.connection, [self.collection_path])
 
-	def lock(self):
+	def lock(self) -> None:
 		"""Locks the collection."""
 		service = DBusAddressWrapper(SS_PATH, SERVICE_IFACE, self.connection)
 		service.call('Lock', 'ao', [self.collection_path])
 
-	def delete(self):
+	def delete(self) -> None:
 		"""Deletes the collection and all items inside it."""
 		self.ensure_not_locked()
-		self._collection.call('Delete')
+		self._collection.call('Delete', '')
 
-	def get_all_items(self):
+	def get_all_items(self) -> Iterator[Item]:
 		"""Returns a generator of all items in the collection."""
 		for item_path in self._collection.get_property('Items'):
 			yield Item(self.connection, item_path, self.session)
 
-	def search_items(self, attributes):
+	def search_items(self, attributes: Dict[str, str]) -> Iterator[Item]:
 		"""Returns a generator of items with the given attributes.
 		`attributes` should be a dictionary."""
 		result, = self._collection.call('SearchItems', 'a{ss}', attributes)
 		for item_path in result:
 			yield Item(self.connection, item_path, self.session)
 
-	def get_label(self):
+	def get_label(self) -> str:
 		"""Returns the collection label."""
 		label = self._collection.get_property('Label')
+		assert isinstance(label, str)
 		return label
 
-	def set_label(self, label):
+	def set_label(self, label: str) -> None:
 		"""Sets collection label to `label`."""
 		self.ensure_not_locked()
 		self._collection.set_property('Label', 's', label)
 
-	def create_item(self, label, attributes, secret, replace=False,
-	content_type='text/plain'):
+	def create_item(self, label: str, attributes: Dict[str, str],
+	                secret: bytes, replace: bool = False,
+	                content_type: str = 'text/plain') -> Item:
 		"""Creates a new :class:`~secretstorage.item.Item` with given
 		`label` (unicode string), `attributes` (dictionary) and `secret`
 		(bytestring). If `replace` is :const:`True`, replaces the existing
@@ -103,16 +110,17 @@ class Collection(object):
 		self.ensure_not_locked()
 		if not self.session:
 			self.session = open_session(self.connection)
-		secret = format_secret(self.session, secret, content_type)
+		_secret = format_secret(self.session, secret, content_type)
 		properties = {
 			SS_PREFIX + 'Item.Label': ('s', label),
 			SS_PREFIX + 'Item.Attributes': ('a{ss}', attributes),
 		}
 		new_item, prompt = self._collection.call('CreateItem', 'a{sv}(oayays)b',
-		                                         properties, secret, replace)
+		                                         properties, _secret, replace)
 		return Item(self.connection, new_item, self.session)
 
-def create_collection(connection, label, alias='', session=None):
+def create_collection(connection: DBusConnection, label: str, alias: str = '',
+                      session: Optional[Session] = None) -> Collection:
 	"""Creates a new :class:`Collection` with the given `label` and `alias`
 	and returns it. This action requires prompting. If prompt is dismissed,
 	raises :exc:`~secretstorage.exceptions.ItemNotFoundException`.
@@ -132,13 +140,14 @@ def create_collection(connection, label, alias='', session=None):
 	assert signature == 'o'
 	return Collection(connection, collection_path, session=session)
 
-def get_all_collections(connection):
+def get_all_collections(connection: DBusConnection) -> Iterator[Collection]:
 	"""Returns a generator of all available collections."""
 	service = DBusAddressWrapper(SS_PATH, SERVICE_IFACE, connection)
 	for collection_path in service.get_property('Collections'):
 		yield Collection(connection, collection_path)
 
-def get_default_collection(connection, session=None):
+def get_default_collection(connection: DBusConnection,
+                           session: Optional[Session] = None) -> Collection:
 	"""Returns the default collection. If it doesn't exist,
 	creates it."""
 	try:
@@ -147,7 +156,7 @@ def get_default_collection(connection, session=None):
 		return create_collection(connection, 'Default',
 		'default', session)
 
-def get_any_collection(connection):
+def get_any_collection(connection: DBusConnection) -> Collection:
 	"""Returns any collection, in the following order of preference:
 
 	- The default collection;
@@ -169,7 +178,8 @@ def get_any_collection(connection):
 	else:
 		raise ItemNotFoundException('No collections found.')
 
-def get_collection_by_alias(connection, alias):
+def get_collection_by_alias(connection: DBusConnection,
+                            alias: str) -> Collection:
 	"""Returns the collection with the given `alias`. If there is no
 	such collection, raises
 	:exc:`~secretstorage.exceptions.ItemNotFoundException`."""
@@ -179,7 +189,8 @@ def get_collection_by_alias(connection, alias):
 		raise ItemNotFoundException('No collection with such alias.')
 	return Collection(connection, collection_path)
 
-def search_items(connection, attributes):
+def search_items(connection: DBusConnection,
+                 attributes: Dict[str, str]) -> Iterator[Item]:
 	"""Returns a generator of items in all collections with the given
 	attributes. `attributes` should be a dictionary."""
 	service = DBusAddressWrapper(SS_PATH, SERVICE_IFACE, connection)

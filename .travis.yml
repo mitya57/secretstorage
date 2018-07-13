@@ -9,11 +9,12 @@ addons:
     packages:
     - dbus-x11
 install:
-  - pip install jeepney cryptography codecov
+  - pip install jeepney cryptography codecov mypy
 before_script:
   - git clone git://git.gnome.org/libsecret.git
 script:
   - dbus-launch --exit-with-session coverage run tests/run_tests.py libsecret/libsecret/mock-service-normal.py
   - dbus-launch --exit-with-session coverage run -a tests/run_tests.py libsecret/libsecret/mock-service-only-plain.py
+  - mypy --strict --ignore-missing-imports secretstorage/ tests/
 after_success:
   - codecov

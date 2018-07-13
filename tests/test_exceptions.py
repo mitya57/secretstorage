@@ -12,22 +12,21 @@ class ExceptionsTest(unittest.TestCase):
 	"""A test case that ensures that all SecretStorage exceptions
 	are raised correctly."""
 
-	@classmethod
-	def setUpClass(cls):
-		cls.connection = secretstorage.dbus_init()
-		cls.collection = secretstorage.get_any_collection(cls.connection)
+	def setUp(self) -> None:
+		self.connection = secretstorage.dbus_init()
+		self.collection = secretstorage.get_any_collection(self.connection)
 
-	def test_double_deleting(self):
+	def test_double_deleting(self) -> None:
 		item = self.collection.create_item('MyItem',
 			{'application': 'secretstorage-test'}, b'pa$$word')
 		item.delete()
 		self.assertRaises(ItemNotFoundException, item.delete)
 
-	def test_non_existing_item(self):
+	def test_non_existing_item(self) -> None:
 		self.assertRaises(ItemNotFoundException, secretstorage.Item,
 			self.connection, '/not/existing/path')
 
-	def test_non_existing_collection(self):
+	def test_non_existing_collection(self) -> None:
 		self.assertRaises(ItemNotFoundException,
 			secretstorage.get_collection_by_alias,
 			self.connection, 'non-existing-alias')

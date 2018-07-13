@@ -9,7 +9,10 @@ secret is possible only when the :doc:`collection <collection>` storing
 the item is unlocked. The collection can be unlocked using collection's
 :meth:`~secretstorage.collection.Collection.unlock` method."""
 
+from typing import Dict, List, Optional, Tuple
+from jeepney.integrate.blocking import DBusConnection
 from secretstorage.defines import SS_PREFIX
+from secretstorage.dhcrypto import Session
 from secretstorage.exceptions import LockedException
 from secretstorage.util import DBusAddressWrapper, \
  open_session, format_secret, unlock_objects
@@ -21,28 +24,30 @@ ITEM_IFACE = SS_PREFIX + 'Item'
 class Item(object):
 	"""Represents a secret item."""
 
-	def __init__(self, connection, item_path, session=None):
+	def __init__(self, connection: DBusConnection,
+	             item_path: str, session: Optional[Session] = None) -> None:
 		self.item_path = item_path
 		self._item = DBusAddressWrapper(item_path, ITEM_IFACE, connection)
 		self._item.get_property('Label')
 		self.session = session
 		self.connection = connection
 
-	def __eq__(self, other):
+	def __eq__(self, other: "DBusConnection") -> bool:
+		assert isinstance(other.item_path, str)
 		return self.item_path == other.item_path
 
-	def is_locked(self):
+	def is_locked(self) -> bool:
 		"""Returns :const:`True` if item is locked, otherwise
 		:const:`False`."""
 		return bool(self._item.get_property('Locked'))
 
-	def ensure_not_locked(self):
+	def ensure_not_locked(self) -> None:
 		"""If collection is locked, raises
 		:exc:`~secretstorage.exceptions.LockedException`."""
 		if self.is_locked():
 			raise LockedException('Item is locked!')
 
-	def unlock(self):
+	def unlock(self) -> bool:
 		"""Requests unlocking the item. Usually, this means that the
 		whole collection containing this item will be unlocked.
 
@@ -57,30 +62,33 @@ class Item(object):
 		"""
 		return unlock_objects(self.connection, [self.item_path])
 
-	def get_attributes(self):
+	def get_attributes(self) -> Dict[str, str]:
 		"""Returns item attributes (dictionary)."""
 		attrs = self._item.get_property('Attributes')
 		return dict(attrs)
 
-	def set_attributes(self, attributes):
+	def set_attributes(self, attributes: Dict[str, str]) -> None:
 		"""Sets item attributes to `attributes` (dictionary)."""
 		self._item.set_property('Attributes', 'a{ss}', attributes)
 
-	def get_label(self):
+	def get_label(self) -> str:
 		"""Returns item label (unicode string)."""
-		return self._item.get_property('Label')
+		label = self._item.get_property('Label')
+		assert isinstance(label, str)
+		return label
 
-	def set_label(self, label):
+	def set_label(self, label: str) -> None:
 		"""Sets item label to `label`."""
 		self.ensure_not_locked()
 		self._item.set_property('Label', 's', label)
 
-	def delete(self):
+	def delete(self) -> None:
 		"""Deletes the item."""
+		# TODO: Support deleting prompts?
 		self.ensure_not_locked()
-		return self._item.call('Delete')
+		self._item.call('Delete', '')
 
-	def get_secret(self):
+	def get_secret(self) -> bytes:
 		"""Returns item secret (bytestring)."""
 		self.ensure_not_locked()
 		if not self.session:
@@ -91,11 +99,12 @@ class Item(object):
 		aes = algorithms.AES(self.session.aes_key)
 		aes_iv = bytes(secret[1])
 		decryptor = Cipher(aes, modes.CBC(aes_iv), default_backend()).decryptor()
-		encrypted_secret = bytes(secret[2])
+		encrypted_secret = secret[2]
 		padded_secret = decryptor.update(encrypted_secret) + decryptor.finalize()
-		return bytes(padded_secret[:-padded_secret[-1]])
+		assert isinstance(padded_secret, bytes)
+		return padded_secret[:-padded_secret[-1]]
 
-	def get_secret_content_type(self):
+	def get_secret_content_type(self) -> str:
 		"""Returns content type of item secret (string)."""
 		self.ensure_not_locked()
 		if not self.session:
@@ -103,24 +112,29 @@ class Item(object):
 		secret, = self._item.call('GetSecret', 'o', self.session.object_path)
 		return str(secret[3])
 
-	def set_secret(self, secret, content_type='text/plain'):
+	def set_secret(self, secret: bytes,
+	               content_type: str = 'text/plain') -> None:
 		"""Sets item secret to `secret`. If `content_type` is given,
 		also sets the content type of the secret (``text/plain`` by
 		default)."""
 		self.ensure_not_locked()
 		if not self.session:
 			self.session = open_session(self.connection)
-		secret = format_secret(self.session, secret, content_type)
-		self._item.call('SetSecret', '(oayays)', secret)
+		_secret = format_secret(self.session, secret, content_type)
+		self._item.call('SetSecret', '(oayays)', _secret)
 
-	def get_created(self):
+	def get_created(self) -> int:
 		"""Returns UNIX timestamp (integer) representing the time
 		when the item was created.
 
 		.. versionadded:: 1.1"""
-		return self._item.get_property('Created')
+		created = self._item.get_property('Created')
+		assert isinstance(created, int)
+		return created
 
-	def get_modified(self):
+	def get_modified(self) -> int:
 		"""Returns UNIX timestamp (integer) representing the time
 		when the item was last modified."""
-		return self._item.get_property('Modified')
+		modified = self._item.get_property('Modified')
+		assert isinstance(modified, int)
+		return modified

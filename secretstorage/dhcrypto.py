@@ -12,6 +12,7 @@ import math
 import os
 
 from hashlib import sha256
+from typing import Optional
 from cryptography.utils import int_from_bytes
 
 # A standard 1024 bits (128 bytes) prime number for use in Diffie-Hellman exchange
@@ -26,22 +27,21 @@ DH_PRIME_1024_BYTES = (
 	0x49, 0x28, 0x66, 0x51, 0xEC, 0xE6, 0x53, 0x81, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
 )
 
-def int_to_bytes(number):
-	return int(number).to_bytes(math.ceil(number.bit_length() / 8), 'big')
+def int_to_bytes(number: int) -> bytes:
+	return number.to_bytes(math.ceil(number.bit_length() / 8), 'big')
 
 DH_PRIME_1024 = int_from_bytes(DH_PRIME_1024_BYTES, 'big')
 
 class Session(object):
-	def __init__(self):
-		self.object_path = None
-		self.server_public_key = None
-		self.aes_key = None
+	def __init__(self) -> None:
+		self.object_path = None  # type: Optional[str]
+		self.aes_key = None  # type: Optional[bytes]
 		self.encrypted = True
 		# 128-bytes-long strong random number
 		self.my_private_key = int_from_bytes(os.urandom(0x80), 'big')
 		self.my_public_key = pow(2, self.my_private_key, DH_PRIME_1024)
 
-	def set_server_public_key(self, server_public_key):
+	def set_server_public_key(self, server_public_key: int) -> None:
 		common_secret = pow(server_public_key, self.my_private_key,
 			DH_PRIME_1024)
 		common_secret = int_to_bytes(common_secret)

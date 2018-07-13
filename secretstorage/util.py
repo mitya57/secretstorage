@@ -6,9 +6,13 @@
 """This module provides some utility functions, but these shouldn't
 normally be used by external applications."""
 
-from jeepney import DBusAddress
-from jeepney.wrappers import new_method_call, Properties, DBusErrorResponse
 import os
+from typing import Any, List, Optional, Tuple
+
+from jeepney import DBusAddress
+from jeepney.integrate.blocking import DBusConnection
+from jeepney.low_level import Message
+from jeepney.wrappers import new_method_call, Properties, DBusErrorResponse
 from secretstorage.defines import DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT, \
  DBUS_SERVICE_UNKNOWN, DBUS_NO_REPLY, DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED, \
  SS_PATH, SS_PREFIX, ALGORITHM_DH, ALGORITHM_PLAIN
@@ -24,7 +28,7 @@ SERVICE_IFACE = SS_PREFIX + 'Service'
 PROMPT_IFACE = SS_PREFIX + 'Prompt'
 
 
-class DBusAddressWrapper(DBusAddress):
+class DBusAddressWrapper(DBusAddress):  # type: ignore
 	"""A wrapper class around :class:`jeepney.wrappers.DBusAddress`
 	that adds some additional methods for calling and working with
 	properties, and converts error responses to SecretStorage
@@ -32,11 +36,12 @@ class DBusAddressWrapper(DBusAddress):
 
 	.. versionadded:: 3.0
 	"""
-	def __init__(self, path, interface, connection):
+	def __init__(self, path: str, interface: str,
+	             connection: DBusConnection) -> None:
 		DBusAddress.__init__(self, path, BUS_NAME, interface)
 		self._connection = connection
 
-	def send_and_get_reply(self, msg):
+	def send_and_get_reply(self, msg: Message) -> Any:
 		try:
 			return self._connection.send_and_get_reply(msg)
 		except DBusErrorResponse as resp:
@@ -50,21 +55,21 @@ class DBusAddressWrapper(DBusAddress):
 				raise SecretServiceNotAvailableException(data) from resp
 			raise
 
-	def call(self, method, signature=None, *body):
+	def call(self, method: str, signature: str, *body: Any) -> Any:
 		msg = new_method_call(self, method, signature, body)
 		return self.send_and_get_reply(msg)
 
-	def get_property(self, name):
+	def get_property(self, name: str) -> Any:
 		msg = Properties(self).get(name)
 		(signature, value), = self.send_and_get_reply(msg)
 		return value
 
-	def set_property(self, name, signature, value):
+	def set_property(self, name: str, signature: str, value: Any) -> None:
 		msg = Properties(self).set(name, signature, value)
-		return self.send_and_get_reply(msg)
+		self.send_and_get_reply(msg)
 
 
-def open_session(connection):
+def open_session(connection: DBusConnection) -> Session:
 	"""Returns a new Secret Service session."""
 	service = DBusAddressWrapper(SS_PATH, SERVICE_IFACE, connection)
 	session = Session()
@@ -87,11 +92,13 @@ def open_session(connection):
 	session.object_path = result
 	return session
 
-def format_secret(session, secret, content_type):
+def format_secret(session: Session, secret: bytes,
+                  content_type: str) -> Tuple[str, bytes, bytes, str]:
 	"""Formats `secret` to make possible to pass it to the
 	Secret Service API."""
 	if not isinstance(secret, bytes):
 		secret = secret.encode('utf-8')
+	assert session.object_path is not None
 	if not session.encrypted:
 		return (session.object_path, b'', secret, content_type)
 	# PKCS-7 style padding
@@ -109,7 +116,8 @@ def format_secret(session, secret, content_type):
 	)
 
 
-def exec_prompt(connection, prompt_path):
+def exec_prompt(connection: DBusConnection,
+	        prompt_path: str) -> Tuple[bool, List[str]]:
 	"""Executes the prompt in a blocking mode.
 
 	:returns: a tuple; the first element is a boolean value showing
@@ -118,17 +126,19 @@ def exec_prompt(connection, prompt_path):
 	"""
 	prompt = DBusAddressWrapper(prompt_path, PROMPT_IFACE, connection)
 	dismissed = result = None
-	def callback(*args, **kwargs):
-		(_dismissed, _result), = args
+	def callback(msg_body: Tuple[bool, List[str]]) -> None:
+		_dismissed, _result = msg_body
 		nonlocal dismissed, result
 		dismissed, result = bool(_dismissed), _result
 	connection.router.subscribe_signal(callback, prompt_path, PROMPT_IFACE, 'Completed')
 	prompt.call('Prompt', 's', '')
 	connection.recv_messages()
+	assert dismissed is not None
+	assert result is not None
 	return dismissed, result
 
 
-def unlock_objects(connection, paths):
+def unlock_objects(connection: DBusConnection, paths: List[str]) -> bool:
 	"""Requests unlocking objects specified in `paths`.
 	Returns a boolean representing whether the operation was dismissed.
 
