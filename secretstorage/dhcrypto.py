@@ -12,7 +12,7 @@ import math
 import os
 
 from hashlib import sha256
-from typing import Optional
+from typing import Optional  # Needed for mypy
 from cryptography.utils import int_from_bytes
 
 # A standard 1024 bits (128 bytes) prime number for use in Diffie-Hellman exchange

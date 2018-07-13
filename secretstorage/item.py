@@ -9,7 +9,7 @@ secret is possible only when the :doc:`collection <collection>` storing
 the item is unlocked. The collection can be unlocked using collection's
 :meth:`~secretstorage.collection.Collection.unlock` method."""
 
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, Optional
 from jeepney.integrate.blocking import DBusConnection
 from secretstorage.defines import SS_PREFIX
 from secretstorage.dhcrypto import Session

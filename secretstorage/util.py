@@ -7,7 +7,7 @@
 normally be used by external applications."""
 
 import os
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Tuple
 
 from jeepney import DBusAddress
 from jeepney.integrate.blocking import DBusConnection
