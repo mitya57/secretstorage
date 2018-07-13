@@ -6,6 +6,7 @@
 
 import unittest
 from secretstorage import dbus_init, get_any_collection, get_all_collections, Collection
+from secretstorage import create_collection, get_default_collection
 from secretstorage.util import BUS_NAME
 
 class CollectionTest(unittest.TestCase):
@@ -35,13 +36,26 @@ class CollectionTest(unittest.TestCase):
 		self.collection.set_label(old_label)
 		self.assertEqual(self.collection.get_label(), old_label)
 
-	@unittest.skipIf(BUS_NAME == "org.freedesktop.secrets",
-	                 "This test should only be run with the mocked server.")
+
+@unittest.skipIf(BUS_NAME == "org.freedesktop.secrets",
+                "This test should only be run with the mocked server.")
+class MockCollectionTest(unittest.TestCase):
+	def setUp(self) -> None:
+		self.connection = dbus_init()
+
+	def test_default_collection(self) -> None:
+		collection = get_default_collection(self.connection)
+		self.assertEqual(collection.get_label(), "Collection One")
+
 	def test_deleting(self) -> None:
 		collection_path = "/org/freedesktop/secrets/collection/spanish"
 		collection = Collection(self.connection, collection_path)
 		collection.unlock()
 		collection.delete()
+
+	def test_create_collection(self) -> None:
+		collection = create_collection(self.connection, "My Label")
+		self.assertEqual(collection.get_label(), "My Label")
 
 
 if __name__ == '__main__':
