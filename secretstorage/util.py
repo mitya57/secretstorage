@@ -133,7 +133,8 @@ def exec_prompt(connection: DBusConnection,
 		dismissed, result = bool(_dismissed), _result
 	connection.router.subscribe_signal(callback, prompt_path, PROMPT_IFACE, 'Completed')
 	prompt.call('Prompt', 's', '')
-	connection.recv_messages()
+	if result is None:
+		connection.recv_messages()
 	assert dismissed is not None
 	assert result is not None
 	return dismissed, result
