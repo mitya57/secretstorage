@@ -14,7 +14,7 @@ from secretstorage.collection import Collection, create_collection, \
 from secretstorage.item import Item
 from secretstorage.exceptions import SecretStorageException, \
  SecretServiceNotAvailableException, LockedException, \
- ItemNotFoundException
+ ItemNotFoundException, PromptDismissedException
 from secretstorage.util import add_match_rules
 
 __version_tuple__ = (3, 0, 1)
