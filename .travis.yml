@@ -11,7 +11,7 @@ addons:
 install:
   - pip install jeepney cryptography codecov mypy
 before_script:
-  - git clone git://git.gnome.org/libsecret.git
+  - git clone https://gitlab.gnome.org/GNOME/libsecret.git
 script:
   - dbus-launch --exit-with-session coverage run tests/run_tests.py libsecret/libsecret/mock-service-normal.py
   - dbus-launch --exit-with-session coverage run -a tests/run_tests.py libsecret/libsecret/mock-service-only-plain.py
