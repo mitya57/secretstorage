@@ -15,6 +15,7 @@ before_script:
 script:
   - dbus-launch --exit-with-session coverage run tests/run_tests.py libsecret/libsecret/mock-service-normal.py
   - dbus-launch --exit-with-session coverage run -a tests/run_tests.py libsecret/libsecret/mock-service-only-plain.py
+  - dbus-launch --exit-with-session coverage run -a tests/run_tests.py libsecret/libsecret/mock-service-lock.py
   - mypy --strict --ignore-missing-imports secretstorage/
 after_success:
   - codecov

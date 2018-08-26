@@ -5,9 +5,11 @@
 # This file tests the secretstorage.Collection class.
 
 import unittest
-from secretstorage import dbus_init, get_any_collection, get_all_collections, Collection
+from secretstorage import Collection, Item
+from secretstorage import dbus_init, get_any_collection, get_all_collections
 from secretstorage import create_collection, get_default_collection
 from secretstorage.util import BUS_NAME
+from secretstorage.exceptions import ItemNotFoundException
 
 class CollectionTest(unittest.TestCase):
 	"""A test case that tests that all common methods of Collection
@@ -52,6 +54,23 @@ class MockCollectionTest(unittest.TestCase):
 		collection = Collection(self.connection, collection_path)
 		collection.unlock()
 		collection.delete()
+
+	def test_deleting_prompt(self) -> None:
+		collection_path = "/org/freedesktop/secrets/collection/lockprompt"
+		try:
+			collection = Collection(self.connection, collection_path)
+		except ItemNotFoundException:
+			self.skipTest("This test should only be run with mock-service-lock.")
+		collection.unlock()
+		collection.delete()
+
+	def test_deleting_item_prompt(self) -> None:
+		item_path = "/org/freedesktop/secrets/collection/lockone/confirm"
+		try:
+			item = Item(self.connection, item_path)
+		except ItemNotFoundException:
+			self.skipTest("This test should only be run with mock-service-lock.")
+		item.delete()
 
 	def test_create_collection(self) -> None:
 		collection = create_collection(self.connection, "My Label")

@@ -74,7 +74,11 @@ class Collection(object):
 	def delete(self) -> None:
 		"""Deletes the collection and all items inside it."""
 		self.ensure_not_locked()
-		self._collection.call('Delete', '')
+		prompt, = self._collection.call('Delete', '')
+		if prompt != "/":
+			dismissed, _result = exec_prompt(self.connection, prompt)
+			if dismissed:
+				raise PromptDismissedException('Prompt dismissed.')
 
 	def get_all_items(self) -> Iterator[Item]:
 		"""Returns a generator of all items in the collection."""

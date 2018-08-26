@@ -13,9 +13,9 @@ from typing import Dict, Optional
 from jeepney.integrate.blocking import DBusConnection
 from secretstorage.defines import SS_PREFIX
 from secretstorage.dhcrypto import Session
-from secretstorage.exceptions import LockedException
+from secretstorage.exceptions import LockedException, PromptDismissedException
 from secretstorage.util import DBusAddressWrapper, \
- open_session, format_secret, unlock_objects
+ exec_prompt, open_session, format_secret, unlock_objects
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 
@@ -84,9 +84,12 @@ class Item(object):
 
 	def delete(self) -> None:
 		"""Deletes the item."""
-		# TODO: Support deleting prompts?
 		self.ensure_not_locked()
-		self._item.call('Delete', '')
+		prompt, = self._item.call('Delete', '')
+		if prompt != "/":
+			dismissed, _result = exec_prompt(self.connection, prompt)
+			if dismissed:
+				raise PromptDismissedException('Prompt dismissed.')
 
 	def get_secret(self) -> bytes:
 		"""Returns item secret (bytestring)."""
