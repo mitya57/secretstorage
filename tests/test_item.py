@@ -77,6 +77,9 @@ class ItemTest(unittest.TestCase):
 		created = self.item.get_created()
 		self.assertAlmostEqual(self.created_timestamp, created, places=-1)
 
+	def test_unlock(self) -> None:
+		self.item.unlock()
+
 	def tearDown(self) -> None:
 		self.item.delete()
 		self.other_item.delete()
