@@ -19,7 +19,8 @@ from typing import Dict, Iterator, Optional
 from jeepney.integrate.blocking import DBusConnection
 from secretstorage.defines import SS_PREFIX, SS_PATH
 from secretstorage.dhcrypto import Session
-from secretstorage.exceptions import LockedException, ItemNotFoundException
+from secretstorage.exceptions import LockedException, ItemNotFoundException, \
+ PromptDismissedException
 from secretstorage.item import Item
 from secretstorage.util import DBusAddressWrapper, exec_prompt, \
  format_secret, open_session, unlock_objects
@@ -122,8 +123,10 @@ class Collection(object):
 def create_collection(connection: DBusConnection, label: str, alias: str = '',
                       session: Optional[Session] = None) -> Collection:
 	"""Creates a new :class:`Collection` with the given `label` and `alias`
-	and returns it. This action requires prompting. If prompt is dismissed,
-	raises :exc:`~secretstorage.exceptions.ItemNotFoundException`.
+	and returns it. This action requires prompting.
+
+	:raises: :exc:`~secretstorage.exceptions.PromptDismissedException`
+	         if the prompt is dismissed.
 	"""
 	if not session:
 		session = open_session(connection)
@@ -135,7 +138,7 @@ def create_collection(connection: DBusConnection, label: str, alias: str = '',
 		return Collection(connection, collection_path, session=session)
 	dismissed, result = exec_prompt(connection, prompt)
 	if dismissed:
-		raise ItemNotFoundException('Prompt dismissed.')
+		raise PromptDismissedException('Prompt dismissed.')
 	signature, collection_path = result
 	assert signature == 'o'
 	return Collection(connection, collection_path, session=session)
