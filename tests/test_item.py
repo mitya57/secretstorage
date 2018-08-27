@@ -83,6 +83,3 @@ class ItemTest(unittest.TestCase):
 	def tearDown(self) -> None:
 		self.item.delete()
 		self.other_item.delete()
-
-if __name__ == '__main__':
-	unittest.main()

@@ -15,6 +15,3 @@ class ConversionTest(unittest.TestCase):
 		self.assertEqual(int_to_bytes(1), b'\x01')
 		self.assertEqual(int_to_bytes(258), b'\x01\x02')
 		self.assertEqual(int_to_bytes(1 << 64), b'\x01' + b'\x00' * 8)
-
-if __name__ == '__main__':
-	unittest.main()

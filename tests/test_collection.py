@@ -75,7 +75,3 @@ class MockCollectionTest(unittest.TestCase):
 	def test_create_collection(self) -> None:
 		collection = create_collection(self.connection, "My Label")
 		self.assertEqual(collection.get_label(), "My Label")
-
-
-if __name__ == '__main__':
-	unittest.main()

@@ -30,6 +30,3 @@ class ExceptionsTest(unittest.TestCase):
 		self.assertRaises(ItemNotFoundException,
 			secretstorage.get_collection_by_alias,
 			self.connection, 'non-existing-alias')
-
-if __name__ == '__main__':
-	unittest.main()
