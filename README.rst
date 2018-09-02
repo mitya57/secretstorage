@@ -4,6 +4,9 @@
 .. image:: https://codecov.io/gh/mitya57/secretstorage/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/mitya57/secretstorage
    :alt: Coverage status
+.. image:: https://readthedocs.org/projects/secretstorage/badge/?version=latest
+   :target: https://secretstorage.readthedocs.io/en/latest/
+   :alt: ReadTheDocs status
 
 Module description
 ==================
