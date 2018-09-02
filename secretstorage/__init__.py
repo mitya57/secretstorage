@@ -17,7 +17,7 @@ from secretstorage.exceptions import SecretStorageException, \
  ItemNotFoundException, PromptDismissedException
 from secretstorage.util import add_match_rules
 
-__version_tuple__ = (3, 0, 1)
+__version_tuple__ = (3, 1, 0)
 __version__ = '.'.join(map(str, __version_tuple__))
 
 def dbus_init() -> DBusConnection:

@@ -1,3 +1,15 @@
+SecretStorage 3.1.0, 2018-09-02
+===============================
+
+* The ``dbus_init`` function no longer accepts any arguments.
+* The ``dbus_init`` function now converts ``ConnectionError`` and
+  ``ValueError`` to ``SecretServiceNotAvailableException``.
+* New exception class: ``PromptDismissedException``.
+* Switched to declarative setup configuration. Build now requires
+  setuptools 30.3 or newer.
+* Added support for prompts when deleting collections and items.
+* Added type annotations to all methods.
+
 SecretStorage 3.0.1, 2018-04-24
 ===============================
 
