@@ -103,7 +103,7 @@ class Item(object):
 		aes_iv = bytes(secret[1])
 		decryptor = Cipher(aes, modes.CBC(aes_iv), default_backend()).decryptor()
 		encrypted_secret = secret[2]
-		padded_secret = decryptor.update(encrypted_secret) + decryptor.finalize()
+		padded_secret = decryptor.update(bytes(encrypted_secret)) + decryptor.finalize()
 		assert isinstance(padded_secret, bytes)
 		return padded_secret[:-padded_secret[-1]]
 
