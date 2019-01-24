@@ -1,3 +1,9 @@
+SecretStorage 3.1.1, 2019-01-24
+===============================
+
+* Fixes TypeError with cryptography 2.5.
+  Thanks Zach Hoffman for the pull request!
+
 SecretStorage 3.1.0, 2018-09-02
 ===============================
 
