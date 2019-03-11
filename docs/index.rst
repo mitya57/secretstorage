@@ -32,7 +32,12 @@ Initializing D-Bus
    .. _`Introduction to D-Bus`: https://www.freedesktop.org/wiki/IntroductionToDBus
 
 Before using SecretStorage, you need to initialize D-Bus. This can be done
-using this function:
+using this context manager:
+
+.. autoclass:: secretstorage.create_connection
+
+If for some reason you cannot use the context manager, there is also a plain
+function that returns a new connection:
 
 .. autofunction:: secretstorage.dbus_init
 
