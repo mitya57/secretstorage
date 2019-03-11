@@ -19,6 +19,9 @@ class CollectionTest(unittest.TestCase):
 		self.connection = dbus_init()
 		self.collection = get_any_collection(self.connection)
 
+	def tearDown(self) -> None:
+		self.connection.sock.close()
+
 	def test_all_collections(self) -> None:
 		labels = map(Collection.get_label, get_all_collections(self.connection))
 		self.assertIn(self.collection.get_label(), labels)
@@ -44,6 +47,9 @@ class CollectionTest(unittest.TestCase):
 class MockCollectionTest(unittest.TestCase):
 	def setUp(self) -> None:
 		self.connection = dbus_init()
+
+	def tearDown(self) -> None:
+		self.connection.sock.close()
 
 	def test_default_collection(self) -> None:
 		collection = get_default_collection(self.connection)

@@ -17,6 +17,9 @@ class LockingUnlockingTest(unittest.TestCase):
 		collection_path = "/org/freedesktop/secrets/collection/english"
 		self.collection = Collection(self.connection, collection_path)
 
+	def tearDown(self) -> None:
+		self.connection.sock.close()
+
 	def test_lock_unlock(self) -> None:
 		self.assertFalse(self.collection.is_locked())
 		self.collection.lock()

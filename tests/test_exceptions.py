@@ -16,6 +16,9 @@ class ExceptionsTest(unittest.TestCase):
 		self.connection = secretstorage.dbus_init()
 		self.collection = secretstorage.get_any_collection(self.connection)
 
+	def tearDown(self) -> None:
+		self.connection.sock.close()
+
 	def test_double_deleting(self) -> None:
 		item = self.collection.create_item('MyItem',
 			{'application': 'secretstorage-test'}, b'pa$$word')

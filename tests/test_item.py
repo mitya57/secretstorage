@@ -25,6 +25,11 @@ class ItemTest(unittest.TestCase):
 		self.other_item = self.collection.create_item('My item',
 			ATTRIBUTES, b'', content_type='data/null')
 
+	def tearDown(self) -> None:
+		self.item.delete()
+		self.other_item.delete()
+		self.connection.sock.close()
+
 	def test_equal(self) -> None:
 		self.assertEqual(self.item, self.item)
 		self.assertNotEqual(self.item, self.other_item)
@@ -79,7 +84,3 @@ class ItemTest(unittest.TestCase):
 
 	def test_unlock(self) -> None:
 		self.item.unlock()
-
-	def tearDown(self) -> None:
-		self.item.delete()
-		self.other_item.delete()
