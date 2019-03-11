@@ -22,7 +22,7 @@ __version__ = '.'.join(map(str, __version_tuple__))
 
 def dbus_init() -> DBusConnection:
 	"""Returns a new connection to the session bus, instance of
-	:class:`jeepney.DBusConnection` instance. This connection can
+	jeepney's :class:`DBusConnection` class. This connection can
 	then be passed to various SecretStorage functions, such as
 	:func:`~secretstorage.collection.get_default_collection`.
 
