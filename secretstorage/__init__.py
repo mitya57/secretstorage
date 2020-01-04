@@ -29,6 +29,7 @@ __all__ = [
 	'SecretServiceNotAvailableException',
 	'SecretStorageException',
 	'create_collection',
+	'dbus_init',
 	'get_all_collections',
 	'get_any_collection',
 	'get_collection_by_alias',
