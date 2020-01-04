@@ -97,8 +97,10 @@ def format_secret(session: Session, secret: bytes,
                   content_type: str) -> Tuple[str, bytes, bytes, str]:
 	"""Formats `secret` to make possible to pass it to the
 	Secret Service API."""
-	if not isinstance(secret, bytes):
+	if isinstance(secret, str):
 		secret = secret.encode('utf-8')
+	elif not isinstance(secret, bytes):
+		raise TypeError('secret must be bytes')
 	assert session.object_path is not None
 	if not session.encrypted:
 		return (session.object_path, b'', secret, content_type)
