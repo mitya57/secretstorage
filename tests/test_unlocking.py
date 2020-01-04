@@ -18,7 +18,7 @@ class LockingUnlockingTest(unittest.TestCase):
 		self.collection = Collection(self.connection, collection_path)
 
 	def tearDown(self) -> None:
-		self.connection.sock.close()
+		self.connection.close()
 
 	def test_lock_unlock(self) -> None:
 		self.assertFalse(self.collection.is_locked())

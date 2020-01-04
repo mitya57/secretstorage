@@ -2,18 +2,20 @@
 # Author: Dmitry Shachnev, 2019
 # License: 3-clause BSD, see LICENSE file
 
-# This file tests the secretstorage.create_connection() context manager.
+# This file tests using secretstorage.dbus_init() function
+# together with contextlib.closing context manager.
 
+from contextlib import closing
 import unittest
-from secretstorage import create_connection, get_any_collection
+from secretstorage import dbus_init, get_any_collection
 
 
 class ContextManagerTest(unittest.TestCase):
-	"""A test case that tests the :class:`secretstorage.create_connection`
+	"""``dbus_init()`` should work fine with ``contextlib.closing``
 	context manager."""
 
-	def test_create_connection(self) -> None:
-		with create_connection() as connection:
+	def test_closing_context_manager(self) -> None:
+		with closing(dbus_init()) as connection:
 			collection = get_any_collection(connection)
 			self.assertIsNotNone(collection)
 			label = collection.get_label()

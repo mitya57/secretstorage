@@ -28,7 +28,7 @@ class ItemTest(unittest.TestCase):
 	def tearDown(self) -> None:
 		self.item.delete()
 		self.other_item.delete()
-		self.connection.sock.close()
+		self.connection.close()
 
 	def test_equal(self) -> None:
 		self.assertEqual(self.item, self.item)

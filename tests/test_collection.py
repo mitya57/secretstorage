@@ -20,7 +20,7 @@ class CollectionTest(unittest.TestCase):
 		self.collection = get_any_collection(self.connection)
 
 	def tearDown(self) -> None:
-		self.connection.sock.close()
+		self.connection.close()
 
 	def test_all_collections(self) -> None:
 		labels = map(Collection.get_label, get_all_collections(self.connection))
@@ -49,7 +49,7 @@ class MockCollectionTest(unittest.TestCase):
 		self.connection = dbus_init()
 
 	def tearDown(self) -> None:
-		self.connection.sock.close()
+		self.connection.close()
 
 	def test_default_collection(self) -> None:
 		collection = get_default_collection(self.connection)

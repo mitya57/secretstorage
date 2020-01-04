@@ -27,10 +27,19 @@ def dbus_init() -> DBusConnection:
 	:func:`~secretstorage.collection.get_default_collection`.
 
 	.. warning::
-	   If you use this function directly, it may result in resource
-	   leak as the D-Bus socket will not be closed automatically.
-	   We recommend to use :class:`create_connection` context manager
-	   instead, which will close the socket on exit.
+	   The D-Bus socket will not be closed automatically. You can
+	   close it manually using the :meth:`DBusConnection.close` method,
+	   or you can use the :class:`contextlib.closing` context manager:
+
+	   .. code-block:: python
+
+	      from contextlib import closing
+	      with closing(dbus_init()) as conn:
+	          collection = secretstorage.get_default_collection(conn)
+	          items = collection.search_items({'application': 'myapp'})
+
+	   However, you will not be able to call any methods on the objects
+	   created within the context after you leave it.
 
 	.. versionchanged:: 3.0
 	   Before the port to Jeepney, this function returned an
@@ -49,25 +58,3 @@ def dbus_init() -> DBusConnection:
 		raise SecretServiceNotAvailableException(reason) from ex
 	except (ConnectionError, ValueError) as ex:
 		raise SecretServiceNotAvailableException(str(ex)) from ex
-
-
-class create_connection:
-	"""A context manager that returns a new connection to the session bus,
-	that will be an instance of jeepney's :class:`DBusConnection` class.
-
-	The D-Bus socket will be automatically closed on exit.
-
-	Example of usage:
-
-	.. code-block:: python
-
-	   with secretstorage.create_connection() as conn:
-	       collection = secretstorage.get_default_collection(conn)
-	       items = collection.search_items({'application': 'myapp'})
-	"""
-	def __enter__(self) -> DBusConnection:
-		self.connection = dbus_init()
-		return self.connection
-
-	def __exit__(self, exc_type, exc_value, traceback):  # type: ignore
-		self.connection.sock.close()

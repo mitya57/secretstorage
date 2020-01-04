@@ -17,7 +17,7 @@ class ExceptionsTest(unittest.TestCase):
 		self.collection = secretstorage.get_any_collection(self.connection)
 
 	def tearDown(self) -> None:
-		self.connection.sock.close()
+		self.connection.close()
 
 	def test_double_deleting(self) -> None:
 		item = self.collection.create_item('MyItem',
