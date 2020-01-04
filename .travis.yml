@@ -1,19 +1,20 @@
-sudo: false
-dist: xenial
+dist: bionic
 language: python
 matrix:
   include:
     - python: "3.5"
     - python: "3.6"
     - python: "3.7"
+    - python: "3.8"
 install:
-  - pip install jeepney cryptography codecov mypy
+  - pip install jeepney cryptography codecov pyflakes mypy
 before_script:
   - git clone https://gitlab.gnome.org/GNOME/libsecret.git
 script:
   - dbus-run-session -- coverage run tests/run_tests.py libsecret/libsecret/mock-service-normal.py
   - dbus-run-session -- coverage run -a tests/run_tests.py libsecret/libsecret/mock-service-only-plain.py
   - dbus-run-session -- coverage run -a tests/run_tests.py libsecret/libsecret/mock-service-lock.py
+  - pyflakes secretstorage/ tests/
   - mypy --strict --ignore-missing-imports secretstorage/ tests/
 after_success:
   - codecov
