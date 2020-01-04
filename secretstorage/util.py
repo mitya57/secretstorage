@@ -102,6 +102,7 @@ def format_secret(session: Session, secret: bytes,
 	assert session.object_path is not None
 	if not session.encrypted:
 		return (session.object_path, b'', secret, content_type)
+	assert session.aes_key is not None
 	# PKCS-7 style padding
 	padding = 0x10 - (len(secret) & 0xf)
 	secret += bytes((padding,) * padding)

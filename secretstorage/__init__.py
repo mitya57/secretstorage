@@ -20,6 +20,22 @@ from secretstorage.util import add_match_rules
 __version_tuple__ = (3, 1, 0)
 __version__ = '.'.join(map(str, __version_tuple__))
 
+__all__ = [
+	'Collection',
+	'Item',
+	'ItemNotFoundException',
+	'LockedException',
+	'PromptDismissedException',
+	'SecretServiceNotAvailableException',
+	'SecretStorageException',
+	'create_collection',
+	'get_all_collections',
+	'get_any_collection',
+	'get_collection_by_alias',
+	'get_default_collection',
+	'search_items',
+]
+
 def dbus_init() -> DBusConnection:
 	"""Returns a new connection to the session bus, instance of
 	jeepney's :class:`DBusConnection` class. This connection can

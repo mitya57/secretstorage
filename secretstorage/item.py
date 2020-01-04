@@ -99,6 +99,7 @@ class Item(object):
 		secret, = self._item.call('GetSecret', 'o', self.session.object_path)
 		if not self.session.encrypted:
 			return bytes(secret[2])
+		assert self.session.aes_key is not None
 		aes = algorithms.AES(self.session.aes_key)
 		aes_iv = bytes(secret[1])
 		decryptor = Cipher(aes, modes.CBC(aes_iv), default_backend()).decryptor()
