@@ -69,12 +69,12 @@ class ItemTest(unittest.TestCase):
 
 	def test_secret_wrong_type(self) -> None:
 		# string passwords are encoded as bytes
-		self.item.set_secret('test тест')
+		self.item.set_secret('test тест')  # type: ignore
 		self.assertEqual(self.item.get_secret(),
 		                 'test тест'.encode('utf-8'))
 		# other types are not allowed
 		with self.assertRaises(TypeError):
-			self.item.set_secret(None)
+			self.item.set_secret(None)  # type: ignore
 
 	def test_secret_content_type(self) -> None:
 		self.assertEqual(self.item.get_secret_content_type(), 'text/plain')
