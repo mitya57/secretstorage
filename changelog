@@ -1,3 +1,11 @@
+SecretStorage 3.1.2, 2020-01-08
+===============================
+
+* Updated the docs to describe how to close the D-Bus connection after use.
+* For secrets of wrong type, a TypeError is now raised [`#20`_].
+
+.. _`#20`: https://github.com/mitya57/secretstorage/issues/20
+
 SecretStorage 3.1.1, 2019-01-24
 ===============================
 

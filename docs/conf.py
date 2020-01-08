@@ -33,7 +33,7 @@ copyright = '2018, Dmitry Shachnev'
 # The short X.Y version.
 version = '3.1'
 # The full version, including alpha/beta/rc tags.
-release = '3.1.1'
+release = '3.1.2'
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
