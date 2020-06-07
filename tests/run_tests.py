@@ -19,6 +19,7 @@ if __name__ == '__main__':
 		mock = subprocess.Popen(('/usr/bin/python3', sys.argv[1],),
 		                        stdout=subprocess.PIPE,
 		                        universal_newlines=True)
+		assert mock.stdout is not None  # for mypy
 		bus_name = mock.stdout.readline().rstrip()
 		secretstorage.util.BUS_NAME = bus_name
 		print('Bus name set to %r' % secretstorage.util.BUS_NAME)
