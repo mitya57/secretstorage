@@ -1,3 +1,9 @@
+SecretStorage 3.2.0, 2020-11-07
+===============================
+
+* Added helper function ``check_service_availability`` for checking if the
+  Secret Service daemon is available without using it.
+
 SecretStorage 3.1.2, 2020-01-08
 ===============================
 

@@ -24,16 +24,16 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'SecretStorage'
-copyright = '2018, Dmitry Shachnev'
+copyright = '2020, Dmitry Shachnev'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-version = '3.1'
+version = '3.2'
 # The full version, including alpha/beta/rc tags.
-release = '3.1.2'
+release = '3.2.0'
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'

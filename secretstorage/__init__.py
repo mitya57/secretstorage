@@ -1,6 +1,6 @@
 # SecretStorage module for Python
 # Access passwords using the SecretService DBus API
-# Author: Dmitry Shachnev, 2013-2018
+# Author: Dmitry Shachnev, 2013-2020
 # License: 3-clause BSD, see LICENSE file
 
 """This file provides quick access to all SecretStorage API. Please
@@ -20,7 +20,7 @@ from secretstorage.exceptions import SecretStorageException, \
  ItemNotFoundException, PromptDismissedException
 from secretstorage.util import add_match_rules
 
-__version_tuple__ = (3, 1, 0)
+__version_tuple__ = (3, 2, 0)
 __version__ = '.'.join(map(str, __version_tuple__))
 
 __all__ = [
