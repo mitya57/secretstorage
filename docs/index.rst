@@ -36,6 +36,14 @@ using this function:
 
 .. autofunction:: secretstorage.dbus_init
 
+If you need to quickly check whether the Secret Service daemon is available
+(either running or `activatable via D-Bus`_) without trying to call any its
+methods, you can use the following function:
+
+.. autofunction:: secretstorage.check_service_availability
+
+.. _`activatable via D-Bus`: https://www.freedesktop.org/wiki/IntroductionToDBus/#activation
+
 Examples of using SecretStorage
 ===============================
 
