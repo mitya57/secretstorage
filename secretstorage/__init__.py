@@ -7,7 +7,10 @@
 refer to documentation of individual modules for API details.
 """
 
-from jeepney.integrate.blocking import DBusConnection, connect_and_authenticate
+from jeepney.bus_messages import message_bus
+from jeepney.integrate.blocking import DBusConnection, Proxy, \
+ connect_and_authenticate
+
 from secretstorage.collection import Collection, create_collection, \
  get_all_collections, get_default_collection, get_any_collection, \
  get_collection_by_alias, search_items
@@ -15,7 +18,7 @@ from secretstorage.item import Item
 from secretstorage.exceptions import SecretStorageException, \
  SecretServiceNotAvailableException, LockedException, \
  ItemNotFoundException, PromptDismissedException
-from secretstorage.util import add_match_rules
+from secretstorage.util import BUS_NAME, add_match_rules
 
 __version_tuple__ = (3, 1, 0)
 __version__ = '.'.join(map(str, __version_tuple__))
@@ -28,6 +31,7 @@ __all__ = [
 	'PromptDismissedException',
 	'SecretServiceNotAvailableException',
 	'SecretStorageException',
+	'check_service_availability',
 	'create_collection',
 	'dbus_init',
 	'get_all_collections',
@@ -75,3 +79,12 @@ def dbus_init() -> DBusConnection:
 		raise SecretServiceNotAvailableException(reason) from ex
 	except (ConnectionError, ValueError) as ex:
 		raise SecretServiceNotAvailableException(str(ex)) from ex
+
+
+def check_service_availability(connection: DBusConnection) -> bool:
+	"""Returns True if the Security Service daemon is either running or
+	available for activation via D-Bus, False otherwise.
+	"""
+	proxy = Proxy(message_bus, connection)
+	return (proxy.NameHasOwner(BUS_NAME)[0] == 1
+	        or BUS_NAME in proxy.ListActivatableNames()[0])
