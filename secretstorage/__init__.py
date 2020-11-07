@@ -18,7 +18,7 @@ from secretstorage.item import Item
 from secretstorage.exceptions import SecretStorageException, \
  SecretServiceNotAvailableException, LockedException, \
  ItemNotFoundException, PromptDismissedException
-from secretstorage.util import BUS_NAME, add_match_rules
+from secretstorage.util import add_match_rules
 
 __version_tuple__ = (3, 1, 0)
 __version__ = '.'.join(map(str, __version_tuple__))
@@ -84,7 +84,10 @@ def dbus_init() -> DBusConnection:
 def check_service_availability(connection: DBusConnection) -> bool:
 	"""Returns True if the Security Service daemon is either running or
 	available for activation via D-Bus, False otherwise.
+
+	.. versionadded:: 3.2
 	"""
+	from secretstorage.util import BUS_NAME
 	proxy = Proxy(message_bus, connection)
 	return (proxy.NameHasOwner(BUS_NAME)[0] == 1
 	        or BUS_NAME in proxy.ListActivatableNames()[0])

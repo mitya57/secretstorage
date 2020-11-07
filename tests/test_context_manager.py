@@ -7,7 +7,8 @@
 
 from contextlib import closing
 import unittest
-from secretstorage import dbus_init, get_any_collection
+from secretstorage import check_service_availability, dbus_init
+from secretstorage.collection import get_any_collection
 
 
 class ContextManagerTest(unittest.TestCase):
@@ -16,6 +17,7 @@ class ContextManagerTest(unittest.TestCase):
 
 	def test_closing_context_manager(self) -> None:
 		with closing(dbus_init()) as connection:
+			self.assertTrue(check_service_availability(connection))
 			collection = get_any_collection(connection)
 			self.assertIsNotNone(collection)
 			label = collection.get_label()
