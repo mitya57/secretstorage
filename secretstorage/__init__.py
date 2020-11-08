@@ -82,7 +82,7 @@ def dbus_init() -> DBusConnection:
 
 
 def check_service_availability(connection: DBusConnection) -> bool:
-	"""Returns True if the Security Service daemon is either running or
+	"""Returns True if the Secret Service daemon is either running or
 	available for activation via D-Bus, False otherwise.
 
 	.. versionadded:: 3.2
