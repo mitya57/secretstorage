@@ -10,7 +10,7 @@ the item is unlocked. The collection can be unlocked using collection's
 :meth:`~secretstorage.collection.Collection.unlock` method."""
 
 from typing import Dict, Optional
-from jeepney.integrate.blocking import DBusConnection
+from jeepney.io.blocking import DBusConnection
 from secretstorage.defines import SS_PREFIX
 from secretstorage.dhcrypto import Session
 from secretstorage.exceptions import LockedException, PromptDismissedException

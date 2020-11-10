@@ -8,8 +8,7 @@ refer to documentation of individual modules for API details.
 """
 
 from jeepney.bus_messages import message_bus
-from jeepney.integrate.blocking import DBusConnection, Proxy, \
- connect_and_authenticate
+from jeepney.io.blocking import DBusConnection, Proxy, open_dbus_connection
 
 from secretstorage.collection import Collection, create_collection, \
  get_all_collections, get_default_collection, get_any_collection, \
@@ -70,7 +69,7 @@ def dbus_init() -> DBusConnection:
 	   This function no longer accepts any arguments.
 	"""
 	try:
-		connection = connect_and_authenticate()
+		connection = open_dbus_connection()
 		add_match_rules(connection)
 		return connection
 	except KeyError as ex:

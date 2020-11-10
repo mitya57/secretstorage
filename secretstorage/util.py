@@ -9,11 +9,11 @@ normally be used by external applications."""
 import os
 from typing import Any, List, Tuple
 
-from jeepney import DBusAddress
-from jeepney.bus_messages import MatchRule
-from jeepney.integrate.blocking import DBusConnection
-from jeepney.low_level import Message
-from jeepney.wrappers import new_method_call, Properties, DBusErrorResponse
+from jeepney import (
+	DBusAddress, DBusErrorResponse, MatchRule, Message, MessageType,
+	new_method_call, Properties,
+)
+from jeepney.io.blocking import DBusConnection
 from secretstorage.defines import DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT, \
  DBUS_SERVICE_UNKNOWN, DBUS_NO_REPLY, DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED, \
  SS_PATH, SS_PREFIX, ALGORITHM_DH, ALGORITHM_PLAIN
@@ -44,7 +44,7 @@ class DBusAddressWrapper(DBusAddress):  # type: ignore
 
 	def send_and_get_reply(self, msg: Message) -> Any:
 		try:
-			return self._connection.send_and_get_reply(msg)
+			return self._connection.send_and_get_reply(msg, unwrap=True)
 		except DBusErrorResponse as resp:
 			if resp.name in (DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT):
 				raise ItemNotFoundException('Item does not exist!') from resp
@@ -129,15 +129,17 @@ def exec_prompt(connection: DBusConnection,
 	          is a list of unlocked object paths
 	"""
 	prompt = DBusAddressWrapper(prompt_path, PROMPT_IFACE, connection)
-	dismissed = result = None
-	def callback(msg_body: Tuple[bool, List[str]]) -> None:
-		_dismissed, _result = msg_body
-		nonlocal dismissed, result
-		dismissed, result = bool(_dismissed), _result
-	connection.router.subscribe_signal(callback, prompt_path, PROMPT_IFACE, 'Completed')
-	prompt.call('Prompt', 's', '')
-	if result is None:
-		connection.recv_messages()
+	rule = MatchRule(
+		path=prompt_path,
+		interface=PROMPT_IFACE,
+		member='Completed',
+		type=MessageType.signal,
+	)
+	with connection.filter(rule) as signals:
+		prompt.call('Prompt', 's', '')
+		while len(signals) == 0:
+			connection.recv_messages()
+	dismissed, result = signals.popleft().body
 	assert dismissed is not None
 	assert result is not None
 	return dismissed, result

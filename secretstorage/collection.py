@@ -16,7 +16,7 @@ asynchronous). Creating new items and editing existing ones is possible
 only in unlocked collection."""
 
 from typing import Dict, Iterator, Optional
-from jeepney.integrate.blocking import DBusConnection
+from jeepney.io.blocking import DBusConnection
 from secretstorage.defines import SS_PREFIX, SS_PATH
 from secretstorage.dhcrypto import Session
 from secretstorage.exceptions import LockedException, ItemNotFoundException, \
