@@ -137,9 +137,7 @@ def exec_prompt(connection: DBusConnection,
 	)
 	with connection.filter(rule) as signals:
 		prompt.call('Prompt', 's', '')
-		while len(signals) == 0:
-			connection.recv_messages()
-	dismissed, result = signals.popleft().body
+		dismissed, result = connection.recv_until_filtered(signals).body
 	assert dismissed is not None
 	assert result is not None
 	return dismissed, result
