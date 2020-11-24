@@ -1,3 +1,10 @@
+SecretStorage 3.3.0, 2020-11-24
+===============================
+
+* Use new-style Jeepney blocking I/O API.
+  Thanks Thomas Kluyver for the pull request!
+* Python ≥ 3.6 and Jeepney ≥ 0.6 are now required.
+
 SecretStorage 3.2.0, 2020-11-07
 ===============================
 
