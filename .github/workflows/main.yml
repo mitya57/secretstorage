@@ -1,0 +1,39 @@
+name: tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        python: [3.6, 3.7, 3.8, 3.9]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install Python dependencies
+        run: pip install jeepney cryptography codecov
+      - name: Clone libsecret repository
+        run: git clone https://gitlab.gnome.org/GNOME/libsecret.git
+      - name: Run tests
+        run: |
+          dbus-run-session -- coverage run tests/run_tests.py libsecret/libsecret/mock-service-normal.py
+          dbus-run-session -- coverage run -a tests/run_tests.py libsecret/libsecret/mock-service-only-plain.py
+          dbus-run-session -- coverage run -a tests/run_tests.py libsecret/libsecret/mock-service-lock.py
+      - name: Upload reports to Codecov
+        if: ${{ matrix.python == 3.9 }}
+        run: codecov
+  static-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - name: Install mypy and pyflakes
+        run: pip install mypy pyflakes
+      - name: Run pyflakes
+        run: pyflakes secretstorage/ tests/
+      - name: Run mypy
+        run: mypy --strict --ignore-missing-imports secretstorage/ tests/
