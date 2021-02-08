@@ -22,7 +22,6 @@ from secretstorage.exceptions import ItemNotFoundException, \
  SecretServiceNotAvailableException
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
-from cryptography.utils import int_from_bytes
 
 BUS_NAME = 'org.freedesktop.secrets'
 SERVICE_IFACE = SS_PREFIX + 'Service'
@@ -88,7 +87,7 @@ def open_session(connection: DBusConnection) -> Session:
 	else:
 		signature, value = output
 		assert signature == 'ay'
-		key = int_from_bytes(value, 'big')
+		key = int.from_bytes(value, 'big')
 		session.set_server_public_key(key)
 	session.object_path = result
 	return session
