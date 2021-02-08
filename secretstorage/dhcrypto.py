@@ -41,9 +41,9 @@ class Session(object):
 		self.my_public_key = pow(2, self.my_private_key, DH_PRIME_1024)
 
 	def set_server_public_key(self, server_public_key: int) -> None:
-		common_secret = pow(server_public_key, self.my_private_key,
+		common_secret_int = pow(server_public_key, self.my_private_key,
 			DH_PRIME_1024)
-		common_secret = int_to_bytes(common_secret)
+		common_secret = int_to_bytes(common_secret_int)
 		# Prepend NULL bytes if needed
 		common_secret = b'\x00' * (0x80 - len(common_secret)) + common_secret
 		# HKDF with null salt, empty info and SHA-256 hash
