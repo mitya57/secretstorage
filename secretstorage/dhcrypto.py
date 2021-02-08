@@ -13,7 +13,6 @@ import os
 
 from hashlib import sha256
 from typing import Optional  # Needed for mypy
-from cryptography.utils import int_from_bytes
 
 # A standard 1024 bits (128 bytes) prime number for use in Diffie-Hellman exchange
 DH_PRIME_1024_BYTES = (
@@ -30,7 +29,7 @@ DH_PRIME_1024_BYTES = (
 def int_to_bytes(number: int) -> bytes:
 	return number.to_bytes(math.ceil(number.bit_length() / 8), 'big')
 
-DH_PRIME_1024 = int_from_bytes(DH_PRIME_1024_BYTES, 'big')
+DH_PRIME_1024 = int.from_bytes(DH_PRIME_1024_BYTES, 'big')
 
 class Session(object):
 	def __init__(self) -> None:
@@ -38,7 +37,7 @@ class Session(object):
 		self.aes_key = None  # type: Optional[bytes]
 		self.encrypted = True
 		# 128-bytes-long strong random number
-		self.my_private_key = int_from_bytes(os.urandom(0x80), 'big')
+		self.my_private_key = int.from_bytes(os.urandom(0x80), 'big')
 		self.my_public_key = pow(2, self.my_private_key, DH_PRIME_1024)
 
 	def set_server_public_key(self, server_public_key: int) -> None:
