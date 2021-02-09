@@ -19,7 +19,7 @@ from secretstorage.exceptions import SecretStorageException, \
  ItemNotFoundException, PromptDismissedException
 from secretstorage.util import add_match_rules
 
-__version_tuple__ = (3, 3, 0)
+__version_tuple__ = (3, 3, 1)
 __version__ = '.'.join(map(str, __version_tuple__))
 
 __all__ = [

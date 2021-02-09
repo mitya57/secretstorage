@@ -1,3 +1,10 @@
+SecretStorage 3.3.1, 2021-02-09
+===============================
+
+* Fixed a deprecation warning from cryptography module.
+  Thanks to Jante Jomppanen for the pull request!
+* Added a :PEP:`561` ``py.typed`` file to declare typing support.
+
 SecretStorage 3.3.0, 2020-11-24
 ===============================
 
