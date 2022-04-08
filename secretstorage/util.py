@@ -43,7 +43,10 @@ class DBusAddressWrapper(DBusAddress):  # type: ignore
 
 	def send_and_get_reply(self, msg: Message) -> Any:
 		try:
-			return self._connection.send_and_get_reply(msg, unwrap=True)
+			resp_msg: Message = self._connection.send_and_get_reply(msg)
+			if resp_msg.header.message_type == MessageType.error:
+				raise DBusErrorResponse(resp_msg)
+			return resp_msg.body
 		except DBusErrorResponse as resp:
 			if resp.name in (DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT):
 				raise ItemNotFoundException('Item does not exist!') from resp
