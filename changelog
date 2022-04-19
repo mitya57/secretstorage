@@ -1,3 +1,9 @@
+SecretStorage 3.3.2, 2022-04-19
+===============================
+
+* Fixed a deprecation warning with jeepney 0.8.
+  Thanks to Sam McKelvie for the pull request!
+
 SecretStorage 3.3.1, 2021-02-09
 ===============================
 
