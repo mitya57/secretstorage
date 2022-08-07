@@ -120,9 +120,22 @@ class Collection(object):
             SS_PREFIX + 'Item.Label': ('s', label),
             SS_PREFIX + 'Item.Attributes': ('a{ss}', attributes),
         }
-        new_item, prompt = self._collection.call('CreateItem', 'a{sv}(oayays)b',
-                                                 properties, _secret, replace)
-        return Item(self.connection, new_item, self.session)
+        item_path, prompt = self._collection.call(
+            'CreateItem',
+            'a{sv}(oayays)b',
+            properties,
+            _secret,
+            replace
+        )
+        if len(item_path) > 1:
+            return Item(self.connection, item_path, self.session)
+        dismissed, result = exec_prompt(self.connection, prompt)
+        if dismissed:
+            raise PromptDismissedException('Prompt dismissed.')
+        signature, item_path = result
+        assert signature == 'o'
+        return Item(self.connection, item_path, self.session)
+
 
 def create_collection(connection: DBusConnection, label: str, alias: str = '',
                       session: Optional[Session] = None) -> Collection:
