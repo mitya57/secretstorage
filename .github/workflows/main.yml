@@ -31,9 +31,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
-      - name: Install mypy and pyflakes
-        run: pip install mypy pyflakes
-      - name: Run pyflakes
-        run: pyflakes secretstorage/ tests/
+      - name: Install mypy and flake8
+        run: pip install mypy flake8
+      - name: Run flake8
+        run: flake8 --max-line-length=88 .
       - name: Run mypy
         run: mypy --strict --ignore-missing-imports secretstorage/ tests/
