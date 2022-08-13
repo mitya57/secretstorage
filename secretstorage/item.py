@@ -21,6 +21,7 @@ from cryptography.hazmat.backends import default_backend
 
 ITEM_IFACE = SS_PREFIX + 'Item'
 
+
 class Item(object):
     """Represents a secret item."""
 

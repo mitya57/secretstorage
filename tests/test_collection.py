@@ -11,6 +11,7 @@ from secretstorage import create_collection, get_default_collection
 from secretstorage.util import BUS_NAME
 from secretstorage.exceptions import ItemNotFoundException
 
+
 class CollectionTest(unittest.TestCase):
     """A test case that tests that all common methods of Collection
     class work and do not crash."""
@@ -43,7 +44,7 @@ class CollectionTest(unittest.TestCase):
 
 
 @unittest.skipIf(BUS_NAME == "org.freedesktop.secrets",
-                "This test should only be run with the mocked server.")
+                 "This test should only be run with the mocked server.")
 class MockCollectionTest(unittest.TestCase):
     def setUp(self) -> None:
         self.connection = dbus_init()

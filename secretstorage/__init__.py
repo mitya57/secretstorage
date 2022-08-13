@@ -40,6 +40,7 @@ __all__ = [
     'search_items',
 ]
 
+
 def dbus_init() -> DBusConnection:
     """Returns a new connection to the session bus, instance of
     jeepney's :class:`DBusConnection` class. This connection can

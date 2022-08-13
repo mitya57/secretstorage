@@ -10,7 +10,8 @@ from secretstorage import dbus_init, search_items, get_any_collection
 
 ATTRIBUTES = {'application': 'secretstorage-test', 'attribute': 'qwerty'}
 NEW_ATTRIBUTES = {'application': 'secretstorage-test',
-    'newattribute': 'asdfgh'}
+                  'newattribute': 'asdfgh'}
+
 
 class ItemTest(unittest.TestCase):
     """A test case that tests that all common methods of Item
@@ -20,9 +21,11 @@ class ItemTest(unittest.TestCase):
         self.connection = dbus_init()
         self.collection = get_any_collection(self.connection)
         self.created_timestamp = time.time()
-        self.item = self.collection.create_item('My item', ATTRIBUTES,
+        self.item = self.collection.create_item(
+            'My item', ATTRIBUTES,
             b'pa$$word')
-        self.other_item = self.collection.create_item('My item',
+        self.other_item = self.collection.create_item(
+            'My item',
             ATTRIBUTES, b'', content_type='data/null')
 
     def tearDown(self) -> None:
@@ -80,7 +83,7 @@ class ItemTest(unittest.TestCase):
         self.assertEqual(self.item.get_secret_content_type(), 'text/plain')
         # The check below fails in gnome-keyring because it doesn't really
         # support content types.
-        #self.assertEqual(self.other_item.get_secret_content_type(), 'data/null')
+        # self.assertEqual(self.other_item.get_secret_content_type(), 'data/null')
 
     def test_modified(self) -> None:
         now = time.time()

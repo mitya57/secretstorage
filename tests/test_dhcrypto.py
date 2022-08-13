@@ -7,6 +7,7 @@
 import unittest
 from secretstorage.dhcrypto import int_to_bytes
 
+
 class ConversionTest(unittest.TestCase):
     """A test case that tests conversion functions
     between bytes and long."""

@@ -26,9 +26,10 @@ from secretstorage.util import DBusAddressWrapper, exec_prompt, \
  format_secret, open_session, unlock_objects
 
 COLLECTION_IFACE = SS_PREFIX + 'Collection'
-SERVICE_IFACE    = SS_PREFIX + 'Service'
+SERVICE_IFACE = SS_PREFIX + 'Service'
 DEFAULT_COLLECTION = '/org/freedesktop/secrets/aliases/default'
 SESSION_COLLECTION = '/org/freedesktop/secrets/collection/session'
+
 
 class Collection(object):
     """Represents a collection."""
@@ -160,11 +161,13 @@ def create_collection(connection: DBusConnection, label: str, alias: str = '',
     assert signature == 'o'
     return Collection(connection, collection_path, session=session)
 
+
 def get_all_collections(connection: DBusConnection) -> Iterator[Collection]:
     """Returns a generator of all available collections."""
     service = DBusAddressWrapper(SS_PATH, SERVICE_IFACE, connection)
     for collection_path in service.get_property('Collections'):
         yield Collection(connection, collection_path)
+
 
 def get_default_collection(connection: DBusConnection,
                            session: Optional[Session] = None) -> Collection:
@@ -173,8 +176,8 @@ def get_default_collection(connection: DBusConnection,
     try:
         return Collection(connection)
     except ItemNotFoundException:
-        return create_collection(connection, 'Default',
-        'default', session)
+        return create_collection(connection, 'Default', 'default', session)
+
 
 def get_any_collection(connection: DBusConnection) -> Collection:
     """Returns any collection, in the following order of preference:
@@ -198,6 +201,7 @@ def get_any_collection(connection: DBusConnection) -> Collection:
     else:
         raise ItemNotFoundException('No collections found.')
 
+
 def get_collection_by_alias(connection: DBusConnection,
                             alias: str) -> Collection:
     """Returns the collection with the given `alias`. If there is no
@@ -208,6 +212,7 @@ def get_collection_by_alias(connection: DBusConnection,
     if len(collection_path) <= 1:
         raise ItemNotFoundException('No collection with such alias.')
     return Collection(connection, collection_path)
+
 
 def search_items(connection: DBusConnection,
                  attributes: Dict[str, str]) -> Iterator[Item]:

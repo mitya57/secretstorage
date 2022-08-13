@@ -77,13 +77,15 @@ def open_session(connection: DBusConnection) -> Session:
     service = DBusAddressWrapper(SS_PATH, SERVICE_IFACE, connection)
     session = Session()
     try:
-        output, result = service.call('OpenSession', 'sv',
+        output, result = service.call(
+            'OpenSession', 'sv',
             ALGORITHM_DH,
             ('ay', int_to_bytes(session.my_public_key)))
     except DBusErrorResponse as resp:
         if resp.name != DBUS_NOT_SUPPORTED:
             raise
-        output, result = service.call('OpenSession', 'sv',
+        output, result = service.call(
+            'OpenSession', 'sv',
             ALGORITHM_PLAIN,
             ('s', ''))
         session.encrypted = False
@@ -94,6 +96,7 @@ def open_session(connection: DBusConnection) -> Session:
         session.set_server_public_key(key)
     session.object_path = result
     return session
+
 
 def format_secret(session: Session, secret: bytes,
                   content_type: str) -> Tuple[str, bytes, bytes, str]:
@@ -123,7 +126,7 @@ def format_secret(session: Session, secret: bytes,
 
 
 def exec_prompt(connection: DBusConnection,
-            prompt_path: str) -> Tuple[bool, List[str]]:
+                prompt_path: str) -> Tuple[bool, List[str]]:
     """Executes the prompt in a blocking mode.
 
     :returns: a tuple; the first element is a boolean value showing

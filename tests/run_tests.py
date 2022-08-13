@@ -8,7 +8,7 @@ import unittest
 tests_dir = os.path.dirname(__file__)
 sys.path.insert(0, os.path.dirname(tests_dir))
 
-import secretstorage
+import secretstorage  # noqa
 
 if __name__ == '__main__':
     major, minor, patch = sys.version_info[:3]
