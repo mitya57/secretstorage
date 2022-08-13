@@ -1,3 +1,11 @@
+SecretStorage 3.3.3, 2022-08-13
+===============================
+
+* Handle case when CreateItem method returns a prompt [`#39`_].
+* Reformatted code in accordance with :PEP:`8` standard.
+
+.. _`#39`: https://github.com/mitya57/secretstorage/issues/39
+
 SecretStorage 3.3.2, 2022-04-19
 ===============================
 
