@@ -36,7 +36,7 @@ def int_to_bytes(number: int) -> bytes:
 DH_PRIME_1024 = int.from_bytes(DH_PRIME_1024_BYTES, 'big')
 
 
-class Session(object):
+class Session:
     def __init__(self) -> None:
         self.object_path = None  # type: Optional[str]
         self.aes_key = None  # type: Optional[bytes]

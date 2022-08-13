@@ -22,7 +22,7 @@ from cryptography.hazmat.backends import default_backend
 ITEM_IFACE = SS_PREFIX + 'Item'
 
 
-class Item(object):
+class Item:
     """Represents a secret item."""
 
     def __init__(self, connection: DBusConnection,

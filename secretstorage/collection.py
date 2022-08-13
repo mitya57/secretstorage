@@ -31,7 +31,7 @@ DEFAULT_COLLECTION = '/org/freedesktop/secrets/aliases/default'
 SESSION_COLLECTION = '/org/freedesktop/secrets/collection/session'
 
 
-class Collection(object):
+class Collection:
     """Represents a collection."""
 
     def __init__(self, connection: DBusConnection,
