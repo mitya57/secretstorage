@@ -9,11 +9,12 @@ registered collection. Use :func:`get_default_collection` to get the
 default collection (and create it, if necessary).
 
 Collections are usually automatically unlocked when user logs in, but
-collections can also be locked and unlocked using
-:meth:`Collection.lock` and :meth:`Collection.unlock` methods (unlocking
-requires showing the unlocking prompt to user and can be synchronous or
-asynchronous). Creating new items and editing existing ones is possible
-only in unlocked collection."""
+collections can also be locked and unlocked using :meth:`Collection.lock`
+and :meth:`Collection.unlock` methods (unlocking requires showing the
+unlocking prompt to user and blocks until user accepts or declines it).
+Creating new items and editing existing ones is possible only in unlocked
+collections.
+"""
 
 from typing import Dict, Iterator, Optional
 from jeepney.io.blocking import DBusConnection

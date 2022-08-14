@@ -22,7 +22,7 @@ item (that has a *label*, a *secret* and some *attributes*) and
 
 SecretStorage supports most of the functions provided by Secret Service,
 including creating and deleting items and collections, editing items,
-locking and unlocking collections (asynchronous unlocking is also supported).
+locking and unlocking collections.
 
 The documentation can be found on `secretstorage.readthedocs.io`_.
 
