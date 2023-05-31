@@ -7,12 +7,13 @@
 to implement dh-ietf1024-sha256-aes128-cbc-pkcs7 secret encryption
 algorithm.'''
 
-import hmac
 import math
 import os
 
-from hashlib import sha256
 from typing import Optional  # Needed for mypy
+
+from cryptography.hazmat.primitives.hashes import SHA256
+from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 
 # A standard 1024 bits (128 bytes) prime number for use in Diffie-Hellman exchange
 DH_PRIME_1024_BYTES = (
@@ -52,8 +53,7 @@ class Session:
         # Prepend NULL bytes if needed
         common_secret = b'\x00' * (0x80 - len(common_secret)) + common_secret
         # HKDF with null salt, empty info and SHA-256 hash
-        salt = b'\x00' * 0x20
-        pseudo_random_key = hmac.new(salt, common_secret, sha256).digest()
-        output_block = hmac.new(pseudo_random_key, b'\x01', sha256).digest()
+        hkdf = HKDF(algorithm=SHA256(), length=32, salt=None, info=None)
+        output_block = hkdf.derive(common_secret)
         # Resulting AES key should be 128-bit
         self.aes_key = output_block[:0x10]
