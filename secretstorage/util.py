@@ -7,7 +7,7 @@
 normally be used by external applications."""
 
 import os
-from typing import Any, List, Tuple
+from typing import Any
 
 from jeepney import (
     DBusAddress, DBusErrorResponse, MatchRule, Message, MessageType,
@@ -99,7 +99,7 @@ def open_session(connection: DBusConnection) -> Session:
 
 
 def format_secret(session: Session, secret: bytes,
-                  content_type: str) -> Tuple[str, bytes, bytes, str]:
+                  content_type: str) -> tuple[str, bytes, bytes, str]:
     """Formats `secret` to make possible to pass it to the
     Secret Service API."""
     if isinstance(secret, str):
@@ -126,7 +126,7 @@ def format_secret(session: Session, secret: bytes,
 
 
 def exec_prompt(connection: DBusConnection,
-                prompt_path: str) -> Tuple[bool, List[str]]:
+                prompt_path: str) -> tuple[bool, list[str]]:
     """Executes the prompt in a blocking mode.
 
     :returns: a tuple; the first element is a boolean value showing
@@ -148,7 +148,7 @@ def exec_prompt(connection: DBusConnection,
     return dismissed, result
 
 
-def unlock_objects(connection: DBusConnection, paths: List[str]) -> bool:
+def unlock_objects(connection: DBusConnection, paths: list[str]) -> bool:
     """Requests unlocking objects specified in `paths`.
     Returns a boolean representing whether the operation was dismissed.
 

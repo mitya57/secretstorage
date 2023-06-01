@@ -9,7 +9,7 @@ secret is possible only when the :doc:`collection <collection>` storing
 the item is unlocked. The collection can be unlocked using collection's
 :meth:`~secretstorage.collection.Collection.unlock` method."""
 
-from typing import Dict, Optional
+from typing import Optional
 from jeepney.io.blocking import DBusConnection
 from secretstorage.defines import SS_PREFIX
 from secretstorage.dhcrypto import Session
@@ -63,12 +63,12 @@ class Item:
         """
         return unlock_objects(self.connection, [self.item_path])
 
-    def get_attributes(self) -> Dict[str, str]:
+    def get_attributes(self) -> dict[str, str]:
         """Returns item attributes (dictionary)."""
         attrs = self._item.get_property('Attributes')
         return dict(attrs)
 
-    def set_attributes(self, attributes: Dict[str, str]) -> None:
+    def set_attributes(self, attributes: dict[str, str]) -> None:
         """Sets item attributes to `attributes` (dictionary)."""
         self._item.set_property('Attributes', 'a{ss}', attributes)
 

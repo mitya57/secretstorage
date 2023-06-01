@@ -16,7 +16,7 @@ Creating new items and editing existing ones is possible only in unlocked
 collections.
 """
 
-from typing import Dict, Iterator, Optional
+from typing import Iterator, Optional
 from jeepney.io.blocking import DBusConnection
 from secretstorage.defines import SS_PREFIX, SS_PATH
 from secretstorage.dhcrypto import Session
@@ -87,7 +87,7 @@ class Collection:
         for item_path in self._collection.get_property('Items'):
             yield Item(self.connection, item_path, self.session)
 
-    def search_items(self, attributes: Dict[str, str]) -> Iterator[Item]:
+    def search_items(self, attributes: dict[str, str]) -> Iterator[Item]:
         """Returns a generator of items with the given attributes.
         `attributes` should be a dictionary."""
         result, = self._collection.call('SearchItems', 'a{ss}', attributes)
@@ -105,7 +105,7 @@ class Collection:
         self.ensure_not_locked()
         self._collection.set_property('Label', 's', label)
 
-    def create_item(self, label: str, attributes: Dict[str, str],
+    def create_item(self, label: str, attributes: dict[str, str],
                     secret: bytes, replace: bool = False,
                     content_type: str = 'text/plain') -> Item:
         """Creates a new :class:`~secretstorage.item.Item` with given
@@ -216,7 +216,7 @@ def get_collection_by_alias(connection: DBusConnection,
 
 
 def search_items(connection: DBusConnection,
-                 attributes: Dict[str, str]) -> Iterator[Item]:
+                 attributes: dict[str, str]) -> Iterator[Item]:
     """Returns a generator of items in all collections with the given
     attributes. `attributes` should be a dictionary."""
     service = DBusAddressWrapper(SS_PATH, SERVICE_IFACE, connection)
