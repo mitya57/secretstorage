@@ -39,11 +39,11 @@ SecretStorage requires Python ≥ 3.9 and these packages to work:
 
 To build SecretStorage, use this command::
 
-   python3 setup.py build
+   python3 -m build
 
 If you have Sphinx_ installed, you can also build the documentation::
 
-   python3 setup.py build_sphinx
+   python3 -m sphinx docs build/sphinx/html
 
 .. _Jeepney: https://pypi.org/project/jeepney/
 .. _`python-cryptography`: https://pypi.org/project/cryptography/

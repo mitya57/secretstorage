@@ -1,2 +1,37 @@
 [build-system]
-requires = ["setuptools>=30.3", "wheel"]
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "SecretStorage"
+version = "3.3.3"
+description = "Python bindings to FreeDesktop.org Secret Service API"
+authors = [{name = "Dmitry Shachnev", email = "mitya57@gmail.com"}]
+license = {text = "BSD 3-Clause License"}
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: POSIX",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+urls = {Homepage = "https://github.com/mitya57/secretstorage"}
+requires-python = ">=3.9"
+dependencies = ["cryptography>=2.0", "jeepney>=0.6"]
+
+[project.readme]
+file = "README.rst"
+content-type = "text/x-rst"
+
+[tool.setuptools]
+packages = ["secretstorage"]
+platforms = ["Linux"]
+include-package-data = false
+
+[tool.setuptools.package-data]
+secretstorage = ["py.typed"]
