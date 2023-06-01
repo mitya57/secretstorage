@@ -32,13 +32,7 @@ The documentation can be found on `secretstorage.readthedocs.io`_.
 Building the module
 ===================
 
-.. note::
-   SecretStorage 3.x supports Python 3.6 and newer versions.
-   If you have an older version of Python, install SecretStorage 2.x::
-
-      pip install "SecretStorage < 3"
-
-SecretStorage requires these packages to work:
+SecretStorage requires Python ≥ 3.9 and these packages to work:
 
 * Jeepney_
 * `python-cryptography`_
