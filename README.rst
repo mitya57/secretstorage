@@ -47,7 +47,7 @@ If you have Sphinx_ installed, you can also build the documentation::
 
 .. _Jeepney: https://pypi.org/project/jeepney/
 .. _`python-cryptography`: https://pypi.org/project/cryptography/
-.. _Sphinx: http://sphinx-doc.org/
+.. _Sphinx: https://www.sphinx-doc.org/en/master/
 
 Testing the module
 ==================
