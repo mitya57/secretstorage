@@ -16,7 +16,7 @@ from jeepney import (
 from jeepney.io.blocking import DBusConnection
 from secretstorage.defines import DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT, \
  DBUS_SERVICE_UNKNOWN, DBUS_NO_REPLY, DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED, \
- SS_PATH, SS_PREFIX, ALGORITHM_DH, ALGORITHM_PLAIN
+ DBUS_UNKNOWN_OBJECT, SS_PATH, SS_PREFIX, ALGORITHM_DH, ALGORITHM_PLAIN
 from secretstorage.dhcrypto import Session, int_to_bytes
 from secretstorage.exceptions import ItemNotFoundException, \
  SecretServiceNotAvailableException
@@ -48,7 +48,7 @@ class DBusAddressWrapper(DBusAddress):  # type: ignore
                 raise DBusErrorResponse(resp_msg)
             return resp_msg.body
         except DBusErrorResponse as resp:
-            if resp.name in (DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT):
+            if resp.name in (DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT, DBUS_UNKNOWN_OBJECT):
                 raise ItemNotFoundException('Item does not exist!') from resp
             elif resp.name in (DBUS_SERVICE_UNKNOWN, DBUS_EXEC_FAILED,
                                DBUS_NO_REPLY):
