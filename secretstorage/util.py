@@ -48,7 +48,11 @@ class DBusAddressWrapper(DBusAddress):  # type: ignore
                 raise DBusErrorResponse(resp_msg)
             return resp_msg.body
         except DBusErrorResponse as resp:
-            if resp.name in (DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT, DBUS_UNKNOWN_OBJECT):
+            if resp.name in (
+                DBUS_UNKNOWN_METHOD,
+                DBUS_NO_SUCH_OBJECT,
+                DBUS_UNKNOWN_OBJECT,
+            ):
                 raise ItemNotFoundException('Item does not exist!') from resp
             elif resp.name in (DBUS_SERVICE_UNKNOWN, DBUS_EXEC_FAILED,
                                DBUS_NO_REPLY):
