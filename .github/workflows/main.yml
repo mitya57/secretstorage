@@ -6,14 +6,15 @@ jobs:
   test:
     strategy:
       matrix:
-        python: ['3.9', '3.10', '3.11']
+        python: ['3.9', '3.10', '3.11', '3.12']
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python }}
+          allow-prereleases: true
       - name: Install Python dependencies
         run: pip install jeepney cryptography codecov
       - name: Clone libsecret repository
@@ -29,7 +30,7 @@ jobs:
   static-analysis:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
       - name: Install mypy and flake8
         run: pip install mypy flake8 types-cryptography
