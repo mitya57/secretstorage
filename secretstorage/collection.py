@@ -16,7 +16,8 @@ Creating new items and editing existing ones is possible only in unlocked
 collections.
 """
 
-from typing import Iterator, Optional
+from typing import Optional
+from collections.abc import Iterator
 from jeepney.io.blocking import DBusConnection
 from secretstorage.defines import SS_PREFIX, SS_PATH
 from secretstorage.dhcrypto import Session
