@@ -75,7 +75,7 @@ def dbus_init() -> DBusConnection:
         return connection
     except KeyError as ex:
         # os.environ['DBUS_SESSION_BUS_ADDRESS'] may raise it
-        reason = "Environment variable {} is unset".format(ex.args[0])
+        reason = f"Environment variable {ex.args[0]} is unset"
         raise SecretServiceNotAvailableException(reason) from ex
     except (ConnectionError, ValueError) as ex:
         raise SecretServiceNotAvailableException(str(ex)) from ex

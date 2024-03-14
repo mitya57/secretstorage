@@ -74,7 +74,7 @@ class ItemTest(unittest.TestCase):
         # string passwords are encoded as bytes
         self.item.set_secret('test тест')  # type: ignore
         self.assertEqual(self.item.get_secret(),
-                         'test тест'.encode('utf-8'))
+                         'test тест'.encode())
         # other types are not allowed
         with self.assertRaises(TypeError):
             self.item.set_secret(None)  # type: ignore
