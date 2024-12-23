@@ -5,8 +5,9 @@
 # This file tests using secretstorage.dbus_init() function
 # together with contextlib.closing context manager.
 
-from contextlib import closing
 import unittest
+from contextlib import closing
+
 from secretstorage import check_service_availability, dbus_init
 from secretstorage.collection import get_any_collection
 

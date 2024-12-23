@@ -9,19 +9,37 @@ normally be used by external applications."""
 import os
 from typing import Any
 
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from jeepney import (
-    DBusAddress, DBusErrorResponse, MatchRule, Message, MessageType,
-    new_method_call, Properties,
+    DBusAddress,
+    DBusErrorResponse,
+    MatchRule,
+    Message,
+    MessageType,
+    Properties,
+    new_method_call,
 )
 from jeepney.io.blocking import DBusConnection
-from secretstorage.defines import DBUS_UNKNOWN_METHOD, DBUS_NO_SUCH_OBJECT, \
- DBUS_SERVICE_UNKNOWN, DBUS_NO_REPLY, DBUS_NOT_SUPPORTED, DBUS_EXEC_FAILED, \
- DBUS_UNKNOWN_OBJECT, SS_PATH, SS_PREFIX, ALGORITHM_DH, ALGORITHM_PLAIN
+
+from secretstorage.defines import (
+    ALGORITHM_DH,
+    ALGORITHM_PLAIN,
+    DBUS_EXEC_FAILED,
+    DBUS_NO_REPLY,
+    DBUS_NO_SUCH_OBJECT,
+    DBUS_NOT_SUPPORTED,
+    DBUS_SERVICE_UNKNOWN,
+    DBUS_UNKNOWN_METHOD,
+    DBUS_UNKNOWN_OBJECT,
+    SS_PATH,
+    SS_PREFIX,
+)
 from secretstorage.dhcrypto import Session, int_to_bytes
-from secretstorage.exceptions import ItemNotFoundException, \
- SecretServiceNotAvailableException
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.backends import default_backend
+from secretstorage.exceptions import (
+    ItemNotFoundException,
+    SecretServiceNotAvailableException,
+)
 
 BUS_NAME = 'org.freedesktop.secrets'
 SERVICE_IFACE = SS_PREFIX + 'Service'

@@ -4,9 +4,9 @@
 
 import unittest
 
-from secretstorage import dbus_init, Collection
-from secretstorage.util import BUS_NAME
+from secretstorage import Collection, dbus_init
 from secretstorage.exceptions import LockedException
+from secretstorage.util import BUS_NAME
 
 
 @unittest.skipIf(BUS_NAME == "org.freedesktop.secrets",

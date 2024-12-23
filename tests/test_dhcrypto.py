@@ -5,6 +5,7 @@
 # This file tests the dhcrypto module.
 
 import unittest
+
 from secretstorage.dhcrypto import int_to_bytes
 
 

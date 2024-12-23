@@ -10,7 +10,6 @@ algorithm.'''
 import hmac
 import math
 import os
-
 from hashlib import sha256
 from typing import Optional
 

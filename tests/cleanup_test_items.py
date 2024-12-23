@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from contextlib import closing
+
 import secretstorage
 
 with closing(secretstorage.dbus_init()) as connection:

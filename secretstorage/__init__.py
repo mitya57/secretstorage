@@ -10,13 +10,23 @@ refer to documentation of individual modules for API details.
 from jeepney.bus_messages import message_bus
 from jeepney.io.blocking import DBusConnection, Proxy, open_dbus_connection
 
-from secretstorage.collection import Collection, create_collection, \
- get_all_collections, get_default_collection, get_any_collection, \
- get_collection_by_alias, search_items
+from secretstorage.collection import (
+    Collection,
+    create_collection,
+    get_all_collections,
+    get_any_collection,
+    get_collection_by_alias,
+    get_default_collection,
+    search_items,
+)
+from secretstorage.exceptions import (
+    ItemNotFoundException,
+    LockedException,
+    PromptDismissedException,
+    SecretServiceNotAvailableException,
+    SecretStorageException,
+)
 from secretstorage.item import Item
-from secretstorage.exceptions import SecretStorageException, \
- SecretServiceNotAvailableException, LockedException, \
- ItemNotFoundException, PromptDismissedException
 from secretstorage.util import add_match_rules
 
 __version_tuple__ = (3, 3, 3)

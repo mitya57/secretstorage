@@ -10,14 +10,21 @@ the item is unlocked. The collection can be unlocked using collection's
 :meth:`~secretstorage.collection.Collection.unlock` method."""
 
 from typing import Optional
+
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from jeepney.io.blocking import DBusConnection
+
 from secretstorage.defines import SS_PREFIX
 from secretstorage.dhcrypto import Session
 from secretstorage.exceptions import LockedException, PromptDismissedException
-from secretstorage.util import DBusAddressWrapper, \
- exec_prompt, open_session, format_secret, unlock_objects
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.backends import default_backend
+from secretstorage.util import (
+    DBusAddressWrapper,
+    exec_prompt,
+    format_secret,
+    open_session,
+    unlock_objects,
+)
 
 ITEM_IFACE = SS_PREFIX + 'Item'
 

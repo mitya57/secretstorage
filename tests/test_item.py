@@ -4,9 +4,10 @@
 
 # This file tests the secretstorage.Collection class.
 
-import unittest
 import time
-from secretstorage import dbus_init, search_items, get_any_collection
+import unittest
+
+from secretstorage import dbus_init, get_any_collection, search_items
 
 ATTRIBUTES = {'application': 'secretstorage-test', 'attribute': 'qwerty'}
 NEW_ATTRIBUTES = {'application': 'secretstorage-test',

@@ -5,6 +5,7 @@
 # Various exception tests
 
 import unittest
+
 import secretstorage
 from secretstorage.exceptions import ItemNotFoundException
 

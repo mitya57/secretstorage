@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import os.path
-import sys
 import subprocess
+import sys
 import unittest
 
 tests_dir = os.path.dirname(__file__)

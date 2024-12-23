@@ -16,16 +16,26 @@ Creating new items and editing existing ones is possible only in unlocked
 collections.
 """
 
-from typing import Optional
 from collections.abc import Iterator
+from typing import Optional
+
 from jeepney.io.blocking import DBusConnection
-from secretstorage.defines import SS_PREFIX, SS_PATH
+
+from secretstorage.defines import SS_PATH, SS_PREFIX
 from secretstorage.dhcrypto import Session
-from secretstorage.exceptions import LockedException, ItemNotFoundException, \
- PromptDismissedException
+from secretstorage.exceptions import (
+    ItemNotFoundException,
+    LockedException,
+    PromptDismissedException,
+)
 from secretstorage.item import Item
-from secretstorage.util import DBusAddressWrapper, exec_prompt, \
- format_secret, open_session, unlock_objects
+from secretstorage.util import (
+    DBusAddressWrapper,
+    exec_prompt,
+    format_secret,
+    open_session,
+    unlock_objects,
+)
 
 COLLECTION_IFACE = SS_PREFIX + 'Collection'
 SERVICE_IFACE = SS_PREFIX + 'Service'

@@ -5,11 +5,18 @@
 # This file tests the secretstorage.Collection class.
 
 import unittest
-from secretstorage import Collection, Item
-from secretstorage import dbus_init, get_any_collection, get_all_collections
-from secretstorage import create_collection, get_default_collection
-from secretstorage.util import BUS_NAME
+
+from secretstorage import (
+    Collection,
+    Item,
+    create_collection,
+    dbus_init,
+    get_all_collections,
+    get_any_collection,
+    get_default_collection,
+)
 from secretstorage.exceptions import ItemNotFoundException
+from secretstorage.util import BUS_NAME
 
 
 class CollectionTest(unittest.TestCase):
