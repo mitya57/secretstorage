@@ -149,6 +149,9 @@ class Collection:
         assert signature == 'o'
         return Item(self.connection, item_path, self.session)
 
+    def __repr__(self) -> str:
+        return f"<Collection {self.get_label()!r} path={self.collection_path!r}>"
+
 
 def create_collection(connection: DBusConnection, label: str, alias: str = '',
                       session: Optional[Session] = None) -> Collection:

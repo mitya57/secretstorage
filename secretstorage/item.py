@@ -150,3 +150,6 @@ class Item:
         modified = self._item.get_property('Modified')
         assert isinstance(modified, int)
         return modified
+
+    def __repr__(self) -> str:
+        return f"<Item {self.get_label()!r} path={self.item_path!r}>"

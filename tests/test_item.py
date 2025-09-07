@@ -97,3 +97,9 @@ class ItemTest(unittest.TestCase):
 
     def test_unlock(self) -> None:
         self.item.unlock()
+
+    def test_repr(self) -> None:
+        self.assertEqual(
+            repr(self.item),
+            f"<Item 'My item' path='{self.item.item_path}'>",
+        )

@@ -26,8 +26,10 @@ class CollectionTest(unittest.TestCase):
     def setUp(self) -> None:
         self.connection = dbus_init()
         self.collection = get_any_collection(self.connection)
+        self.original_label = self.collection.get_label()
 
     def tearDown(self) -> None:
+        self.collection.set_label(self.original_label)
         self.connection.close()
 
     def test_all_collections(self) -> None:
@@ -48,6 +50,13 @@ class CollectionTest(unittest.TestCase):
         self.assertEqual(self.collection.get_label(), 'Hello!')
         self.collection.set_label(old_label)
         self.assertEqual(self.collection.get_label(), old_label)
+
+    def test_repr(self) -> None:
+        self.collection.set_label("My collection")
+        self.assertEqual(
+            repr(self.collection),
+            f"<Collection 'My collection' path='{self.collection.collection_path}'>",
+        )
 
 
 @unittest.skipIf(BUS_NAME == "org.freedesktop.secrets",
