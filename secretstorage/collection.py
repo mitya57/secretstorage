@@ -17,7 +17,6 @@ collections.
 """
 
 from collections.abc import Iterator
-from typing import Optional
 
 from jeepney.io.blocking import DBusConnection
 
@@ -48,7 +47,7 @@ class Collection:
 
     def __init__(self, connection: DBusConnection,
                  collection_path: str = DEFAULT_COLLECTION,
-                 session: Optional[Session] = None) -> None:
+                 session: Session | None = None) -> None:
         self.connection = connection
         self.session = session
         self.collection_path = collection_path
@@ -154,7 +153,7 @@ class Collection:
 
 
 def create_collection(connection: DBusConnection, label: str, alias: str = '',
-                      session: Optional[Session] = None) -> Collection:
+                      session: Session | None = None) -> Collection:
     """Creates a new :class:`Collection` with the given `label` and `alias`
     and returns it. This action requires prompting.
 
@@ -185,7 +184,7 @@ def get_all_collections(connection: DBusConnection) -> Iterator[Collection]:
 
 
 def get_default_collection(connection: DBusConnection,
-                           session: Optional[Session] = None) -> Collection:
+                           session: Session | None = None) -> Collection:
     """Returns the default collection. If it doesn't exist,
     creates it."""
     try:
