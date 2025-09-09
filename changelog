@@ -1,3 +1,17 @@
+SecretStorage 3.4.0, 2025-09-09
+===============================
+
+* Handle D-Bus ``UnknownObject`` error when no collection is found [`#43`_].
+  Thanks to Renato Alencar for the pull request!
+* Added ``__repr__`` methods to Collection and Item classes [`#47`_].
+* Moved project metadata to ``pyproject.toml``.
+* Python ≥ 3.10 and setuptools ≥ 77.0 are now required.
+* Various code modernizations.
+  Thanks to Hugo van Kemenade and Tomasz Kłoczko for the pull requests!
+
+.. _`#43`: https://github.com/mitya57/secretstorage/pull/43
+.. _`#47`: https://github.com/mitya57/secretstorage/issues/47
+
 SecretStorage 3.3.3, 2022-08-13
 ===============================
 

@@ -29,7 +29,7 @@ from secretstorage.exceptions import (
 from secretstorage.item import Item
 from secretstorage.util import add_match_rules
 
-__version_tuple__ = (3, 3, 3)
+__version_tuple__ = (3, 4, 0)
 __version__ = '.'.join(map(str, __version_tuple__))
 
 __all__ = [
