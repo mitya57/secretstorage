@@ -32,7 +32,7 @@ The documentation can be found on `secretstorage.readthedocs.io`_.
 Building the module
 ===================
 
-SecretStorage requires Python ≥ 3.9 and these packages to work:
+SecretStorage requires Python ≥ 3.10 and these packages to work:
 
 * Jeepney_
 * `python-cryptography`_
