@@ -35,7 +35,7 @@ from secretstorage.defines import (
     SS_PATH,
     SS_PREFIX,
 )
-from secretstorage.dhcrypto import Session, int_to_bytes
+from secretstorage.dhcrypto import Session
 from secretstorage.exceptions import (
     ItemNotFoundException,
     SecretServiceNotAvailableException,
@@ -102,7 +102,7 @@ def open_session(connection: DBusConnection) -> Session:
         output, result = service.call(
             'OpenSession', 'sv',
             ALGORITHM_DH,
-            ('ay', int_to_bytes(session.my_public_key, 128)))
+            ('ay', session.my_public_key.to_bytes(128, 'big')))
     except DBusErrorResponse as resp:
         if resp.name != DBUS_NOT_SUPPORTED:
             raise

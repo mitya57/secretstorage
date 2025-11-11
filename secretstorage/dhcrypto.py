@@ -8,7 +8,6 @@ to implement dh-ietf1024-sha256-aes128-cbc-pkcs7 secret encryption
 algorithm.'''
 
 import hmac
-import math
 import os
 from hashlib import sha256
 
@@ -27,12 +26,6 @@ DH_PRIME_1024_BYTES = (
 )
 
 
-def int_to_bytes(number: int, length: int) -> bytes:
-    result = number.to_bytes(math.ceil(number.bit_length() / 8), 'big')
-    # Pad with zero bytes if needed.
-    return b'\x00' * (length - len(result)) + result
-
-
 DH_PRIME_1024 = int.from_bytes(DH_PRIME_1024_BYTES, 'big')
 
 
@@ -48,7 +41,7 @@ class Session:
     def set_server_public_key(self, server_public_key: int) -> None:
         common_secret_int = pow(server_public_key, self.my_private_key,
                                 DH_PRIME_1024)
-        common_secret = int_to_bytes(common_secret_int, 128)
+        common_secret = common_secret_int.to_bytes(128, 'big')
         # HKDF with null salt, empty info and SHA-256 hash
         salt = b'\x00' * 0x20
         pseudo_random_key = hmac.new(salt, common_secret, sha256).digest()
