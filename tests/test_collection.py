@@ -41,7 +41,7 @@ class CollectionTest(unittest.TestCase):
             item.get_label()
 
     def test_create_empty_item(self) -> None:
-        item = self.collection.create_item('', {}, b'')
+        item = self.collection.create_item('Test', {}, b'')
         item.delete()
 
     def test_label(self) -> None:
