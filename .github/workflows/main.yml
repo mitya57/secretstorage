@@ -6,7 +6,7 @@ jobs:
   test:
     strategy:
       matrix:
-        python: ['3.10', '3.11', '3.12', '3.13']
+        python: ['3.10', '3.11', '3.12', '3.13', '3.14']
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -25,7 +25,7 @@ jobs:
           dbus-run-session -- coverage run -a tests/run_tests.py libsecret/libsecret/mock-service-only-plain.py
           dbus-run-session -- coverage run -a tests/run_tests.py libsecret/libsecret/mock-service-lock.py
       - name: Upload reports to Codecov
-        if: ${{ matrix.python == '3.13' }}
+        if: ${{ matrix.python == '3.14' }}
         run: codecov
   static-analysis:
     runs-on: ubuntu-latest
@@ -50,7 +50,7 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
         with:
-          python-version: '3.13'
+          python-version: '3.14'
       - run: pip install build
       - run: python -m build
       - if: success()
