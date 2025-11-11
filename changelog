@@ -1,3 +1,11 @@
+SecretStorage 3.4.1, 2025-11-11
+===============================
+
+* Make sure public key length is exactly 128 bytes [`#48`_].
+  This fixes ``Client public key size is invalid`` error from KWallet.
+
+.. _`#48`: https://github.com/mitya57/secretstorage/issues/48
+
 SecretStorage 3.4.0, 2025-09-09
 ===============================
 

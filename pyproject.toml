@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "SecretStorage"
-version = "3.4.0"
+version = "3.4.1"
 description = "Python bindings to FreeDesktop.org Secret Service API"
 authors = [{name = "Dmitry Shachnev", email = "mitya57@gmail.com"}]
 license = "BSD-3-Clause"
