@@ -1,5 +1,5 @@
 # Tests for SecretStorage
-# Author: Dmitry Shachnev, 2013-2018
+# Author: Dmitry Shachnev, 2013-2025
 # License: 3-clause BSD, see LICENSE file
 
 # This file tests the secretstorage.Collection class.
