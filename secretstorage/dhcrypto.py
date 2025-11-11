@@ -27,8 +27,10 @@ DH_PRIME_1024_BYTES = (
 )
 
 
-def int_to_bytes(number: int) -> bytes:
-    return number.to_bytes(math.ceil(number.bit_length() / 8), 'big')
+def int_to_bytes(number: int, length: int) -> bytes:
+    result = number.to_bytes(math.ceil(number.bit_length() / 8), 'big')
+    # Pad with zero bytes if needed.
+    return b'\x00' * (length - len(result)) + result
 
 
 DH_PRIME_1024 = int.from_bytes(DH_PRIME_1024_BYTES, 'big')
@@ -46,9 +48,7 @@ class Session:
     def set_server_public_key(self, server_public_key: int) -> None:
         common_secret_int = pow(server_public_key, self.my_private_key,
                                 DH_PRIME_1024)
-        common_secret = int_to_bytes(common_secret_int)
-        # Prepend NULL bytes if needed
-        common_secret = b'\x00' * (0x80 - len(common_secret)) + common_secret
+        common_secret = int_to_bytes(common_secret_int, 128)
         # HKDF with null salt, empty info and SHA-256 hash
         salt = b'\x00' * 0x20
         pseudo_random_key = hmac.new(salt, common_secret, sha256).digest()

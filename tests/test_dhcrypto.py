@@ -14,6 +14,7 @@ class ConversionTest(unittest.TestCase):
     between bytes and long."""
 
     def test_int_to_bytes(self) -> None:
-        self.assertEqual(int_to_bytes(1), b'\x01')
-        self.assertEqual(int_to_bytes(258), b'\x01\x02')
-        self.assertEqual(int_to_bytes(1 << 64), b'\x01' + b'\x00' * 8)
+        self.assertEqual(int_to_bytes(1, 1), b'\x01')
+        self.assertEqual(int_to_bytes(1, 2), b'\x00\x01')
+        self.assertEqual(int_to_bytes(258, 2), b'\x01\x02')
+        self.assertEqual(int_to_bytes(1 << 64, 9), b'\x01' + b'\x00' * 8)
