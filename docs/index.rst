@@ -17,7 +17,7 @@ when unlocking is needed.
 .. _`Secret Service`: https://specifications.freedesktop.org/secret-service/
 .. _`GNOME Keyring`: https://wiki.gnome.org/Projects/GnomeKeyring
 .. _KWallet: https://invent.kde.org/frameworks/kwallet
-.. _KeePassXC: https://avaldes.co/2020/01/28/secret-service-keepassxc.html
+.. _KeePassXC: https://c3pb.de/blog/keepassxc-secrets-service.html
 
 SecretStorage code is hosted on GitHub_.
 
