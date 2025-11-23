@@ -148,12 +148,17 @@ def format_secret(session: Session, secret: bytes,
 
 
 def exec_prompt(connection: DBusConnection,
-                prompt_path: str) -> tuple[bool, list[str]]:
+                prompt_path: str) -> tuple[bool, tuple[str, Any]]:
     """Executes the prompt in a blocking mode.
 
-    :returns: a tuple; the first element is a boolean value showing
-              whether the operation was dismissed, the second element
-              is a list of unlocked object paths
+    :returns: a two-element tuple:
+
+       - The first element is a boolean value indicating whether the operation was
+         dismissed.
+       - The second element is a (signature, result) tuple. For creating items and
+         collections, ``signature`` is ``'o'`` and ``result`` is a single object
+         path. For unlocking, ``signature`` is ``'ao'`` and ``result`` is a list of
+         object paths.
     """
     prompt = DBusAddressWrapper(prompt_path, PROMPT_IFACE, connection)
     rule = MatchRule(
