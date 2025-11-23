@@ -66,17 +66,23 @@ class Collection:
         if self.is_locked():
             raise LockedException('Collection is locked!')
 
-    def unlock(self) -> bool:
+    def unlock(self, timeout: float | None = None) -> bool:
         """Requests unlocking the collection.
 
         Returns a boolean representing whether the prompt has been
         dismissed; that means :const:`False` on successful unlocking
         and :const:`True` if it has been dismissed.
 
+        :raises: ``TimeoutError`` if `timeout` (in seconds) passed
+           and the prompt was neither accepted nor dismissed.
+
         .. versionchanged:: 3.0
            No longer accepts the ``callback`` argument.
+
+        .. versionchanged:: 3.5
+           Added ``timeout`` argument.
         """
-        return unlock_objects(self.connection, [self.collection_path])
+        return unlock_objects(self.connection, [self.collection_path], timeout=timeout)
 
     def lock(self) -> None:
         """Locks the collection."""

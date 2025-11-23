@@ -147,8 +147,12 @@ def format_secret(session: Session, secret: bytes,
     )
 
 
-def exec_prompt(connection: DBusConnection,
-                prompt_path: str) -> tuple[bool, tuple[str, Any]]:
+def exec_prompt(
+    connection: DBusConnection,
+    prompt_path: str,
+    *,
+    timeout: float | None = None,
+) -> tuple[bool, tuple[str, Any]]:
     """Executes the prompt in a blocking mode.
 
     :returns: a two-element tuple:
@@ -159,6 +163,9 @@ def exec_prompt(connection: DBusConnection,
          collections, ``signature`` is ``'o'`` and ``result`` is a single object
          path. For unlocking, ``signature`` is ``'ao'`` and ``result`` is a list of
          object paths.
+
+    .. versionchanged:: 3.5
+       Added ``timeout`` keyword argument.
     """
     prompt = DBusAddressWrapper(prompt_path, PROMPT_IFACE, connection)
     rule = MatchRule(
@@ -169,21 +176,35 @@ def exec_prompt(connection: DBusConnection,
     )
     with connection.filter(rule) as signals:
         prompt.call('Prompt', 's', '')
-        dismissed, result = connection.recv_until_filtered(signals).body
+        message = connection.recv_until_filtered(signals, timeout=timeout)
+        dismissed, result = message.body
     assert dismissed is not None
     assert result is not None
     return dismissed, result
 
 
-def unlock_objects(connection: DBusConnection, paths: list[str]) -> bool:
+def unlock_objects(
+    connection: DBusConnection,
+    paths: list[str],
+    *,
+    timeout: float | None = None,
+) -> bool:
     """Requests unlocking objects specified in `paths`.
     Returns a boolean representing whether the operation was dismissed.
 
-    .. versionadded:: 2.1.2"""
+    .. versionadded:: 2.1.2
+
+    .. versionchanged:: 3.5
+       Added ``timeout`` keyword argument.
+    """
     service = DBusAddressWrapper(SS_PATH, SERVICE_IFACE, connection)
     unlocked_paths, prompt = service.call('Unlock', 'ao', paths)
     if len(prompt) > 1:
-        dismissed, (signature, unlocked) = exec_prompt(connection, prompt)
+        dismissed, (signature, unlocked) = exec_prompt(
+            connection,
+            prompt,
+            timeout=timeout,
+        )
         assert signature == 'ao'
         return dismissed
     return False

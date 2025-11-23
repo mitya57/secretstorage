@@ -53,7 +53,7 @@ class Item:
         if self.is_locked():
             raise LockedException('Item is locked!')
 
-    def unlock(self) -> bool:
+    def unlock(self, timeout: float | None = None) -> bool:
         """Requests unlocking the item. Usually, this means that the
         whole collection containing this item will be unlocked.
 
@@ -61,12 +61,18 @@ class Item:
         dismissed; that means :const:`False` on successful unlocking
         and :const:`True` if it has been dismissed.
 
+        :raises: ``TimeoutError`` if `timeout` (in seconds) passed
+           and the prompt was neither accepted nor dismissed.
+
         .. versionadded:: 2.1.2
 
         .. versionchanged:: 3.0
            No longer accepts the ``callback`` argument.
+
+        .. versionchanged:: 3.5
+           Added ``timeout`` argument.
         """
-        return unlock_objects(self.connection, [self.item_path])
+        return unlock_objects(self.connection, [self.item_path], timeout=timeout)
 
     def get_attributes(self) -> dict[str, str]:
         """Returns item attributes (dictionary)."""
