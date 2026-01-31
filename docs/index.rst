@@ -6,8 +6,8 @@ This module provides a way for securely storing passwords and other
 secrets.
 
 It uses `D-Bus`_-based FreeDesktop.org `Secret Service`_ standard that is,
-for example, supported by `GNOME Keyring`_ (since version 2.30),
-KWallet_ (since version 5.97) and KeePassXC_.
+for example, supported by `GNOME Keyring`_, ksecretd_ (part of KWallet_),
+KeePassXC_ and OO7_.
 
 It allows one to create new secret items, delete and search for
 passwords matching given attributes. It also supports graphical prompts
@@ -16,8 +16,10 @@ when unlocking is needed.
 .. _`D-Bus`: https://www.freedesktop.org/wiki/Software/dbus
 .. _`Secret Service`: https://specifications.freedesktop.org/secret-service/
 .. _`GNOME Keyring`: https://wiki.gnome.org/Projects/GnomeKeyring
+.. _ksecretd: https://notmart.org/blog/2025/04/towards-a-transition-from-kwallet-to-secret-service/
 .. _KWallet: https://invent.kde.org/frameworks/kwallet
 .. _KeePassXC: https://c3pb.de/blog/keepassxc-secrets-service.html
+.. _OO7: https://github.com/bilelmoussaoui/oo7
 
 SecretStorage code is hosted on GitHub_.
 

@@ -13,8 +13,8 @@ Module description
 
 This module provides a way for securely storing passwords and other secrets.
 
-It uses D-Bus `Secret Service`_ API that is supported by GNOME Keyring,
-KWallet (since version 5.97) and KeePassXC.
+It uses D-Bus `Secret Service`_ API that is supported by `GNOME Keyring`_,
+ksecretd (part of KWallet_), KeePassXC_ and OO7_.
 
 The main classes provided are ``secretstorage.Item``, representing a secret
 item (that has a *label*, a *secret* and some *attributes*) and
@@ -27,6 +27,10 @@ locking and unlocking collections.
 The documentation can be found on `secretstorage.readthedocs.io`_.
 
 .. _`Secret Service`: https://specifications.freedesktop.org/secret-service/
+.. _`GNOME Keyring`: https://wiki.gnome.org/Projects/GnomeKeyring
+.. _KWallet: https://invent.kde.org/frameworks/kwallet
+.. _KeePassXC: https://c3pb.de/blog/keepassxc-secrets-service.html
+.. _OO7: https://github.com/bilelmoussaoui/oo7
 .. _`secretstorage.readthedocs.io`: https://secretstorage.readthedocs.io/en/latest/
 
 Building the module
@@ -55,8 +59,6 @@ Testing the module
 First, make sure that you have the Secret Service daemon installed.
 The `GNOME Keyring`_ is the reference server-side implementation for the
 Secret Service specification.
-
-.. _`GNOME Keyring`: https://download.gnome.org/sources/gnome-keyring/
 
 Then, start the daemon and unlock the ``default`` collection, if needed.
 The testsuite will fail to run if the ``default`` collection exists and is
