@@ -30,7 +30,7 @@ The documentation can be found on `secretstorage.readthedocs.io`_.
 .. _`GNOME Keyring`: https://wiki.gnome.org/Projects/GnomeKeyring
 .. _KWallet: https://invent.kde.org/frameworks/kwallet
 .. _KeePassXC: https://c3pb.de/blog/keepassxc-secrets-service.html
-.. _OO7: https://github.com/bilelmoussaoui/oo7
+.. _OO7: https://github.com/linux-credentials/oo7
 .. _`secretstorage.readthedocs.io`: https://secretstorage.readthedocs.io/en/latest/
 
 Building the module

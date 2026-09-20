@@ -19,7 +19,7 @@ when unlocking is needed.
 .. _ksecretd: https://notmart.org/blog/2025/04/towards-a-transition-from-kwallet-to-secret-service/
 .. _KWallet: https://invent.kde.org/frameworks/kwallet
 .. _KeePassXC: https://c3pb.de/blog/keepassxc-secrets-service.html
-.. _OO7: https://github.com/bilelmoussaoui/oo7
+.. _OO7: https://github.com/linux-credentials/oo7
 
 SecretStorage code is hosted on GitHub_.
 
