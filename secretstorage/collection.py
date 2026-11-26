@@ -194,7 +194,7 @@ def get_default_collection(connection: DBusConnection,
     """Returns the default collection. If it doesn't exist,
     creates it."""
     try:
-        return Collection(connection)
+        return Collection(connection, session=session)
     except ItemNotFoundException:
         return create_collection(connection, 'Default', 'default', session)
 

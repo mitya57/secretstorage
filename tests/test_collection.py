@@ -16,7 +16,7 @@ from secretstorage import (
     get_default_collection,
 )
 from secretstorage.exceptions import ItemNotFoundException
-from secretstorage.util import BUS_NAME
+from secretstorage.util import BUS_NAME, open_session
 
 
 class CollectionTest(unittest.TestCase):
@@ -35,6 +35,11 @@ class CollectionTest(unittest.TestCase):
     def test_all_collections(self) -> None:
         labels = map(Collection.get_label, get_all_collections(self.connection))
         self.assertIn(self.collection.get_label(), labels)
+
+    def test_default_collection_session(self) -> None:
+        session = open_session(self.connection)
+        collection = get_default_collection(self.connection, session)
+        self.assertIs(collection.session, session)
 
     def test_all_items(self) -> None:
         for item in self.collection.get_all_items():
