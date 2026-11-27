@@ -36,11 +36,6 @@ class CollectionTest(unittest.TestCase):
         labels = map(Collection.get_label, get_all_collections(self.connection))
         self.assertIn(self.collection.get_label(), labels)
 
-    def test_default_collection_session(self) -> None:
-        session = open_session(self.connection)
-        collection = get_default_collection(self.connection, session)
-        self.assertIs(collection.session, session)
-
     def test_all_items(self) -> None:
         for item in self.collection.get_all_items():
             item.get_label()
@@ -76,6 +71,11 @@ class MockCollectionTest(unittest.TestCase):
     def test_default_collection(self) -> None:
         collection = get_default_collection(self.connection)
         self.assertEqual(collection.get_label(), "Collection One")
+
+    def test_default_collection_session(self) -> None:
+        session = open_session(self.connection)
+        collection = get_default_collection(self.connection, session)
+        self.assertIs(collection.session, session)
 
     def test_deleting(self) -> None:
         collection_path = "/org/freedesktop/secrets/collection/spanish"
