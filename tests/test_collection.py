@@ -16,7 +16,7 @@ from secretstorage import (
     get_default_collection,
 )
 from secretstorage.exceptions import ItemNotFoundException
-from secretstorage.util import BUS_NAME
+from secretstorage.util import BUS_NAME, open_session
 
 
 class CollectionTest(unittest.TestCase):
@@ -71,6 +71,11 @@ class MockCollectionTest(unittest.TestCase):
     def test_default_collection(self) -> None:
         collection = get_default_collection(self.connection)
         self.assertEqual(collection.get_label(), "Collection One")
+
+    def test_default_collection_session(self) -> None:
+        session = open_session(self.connection)
+        collection = get_default_collection(self.connection, session)
+        self.assertIs(collection.session, session)
 
     def test_deleting(self) -> None:
         collection_path = "/org/freedesktop/secrets/collection/spanish"
